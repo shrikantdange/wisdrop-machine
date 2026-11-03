@@ -1,0 +1,32 @@
+{
+ "set_tailor_shop__dusk": {
+  "asset": "lib/sets/tailor_shop/set_tailor_shop__dusk__fe0b448446ef4ac3.png",
+  "hash": "fe0b448446ef4ac3",
+  "cut": null
+ },
+ "set_tailor_shop__dusk_base30": {
+  "asset": "lib/abtest/set_tailor_shop__dusk_base30__905173294d964d8f.png",
+  "hash": "905173294d964d8f",
+  "cut": null
+ },
+ "set_kitchen__night": {
+  "asset": "lib/sets/kitchen/set_kitchen__night__726842004e3ed941.png",
+  "hash": "726842004e3ed941",
+  "cut": null
+ },
+ "char_rosa__master": {
+  "asset": "lib/cast/rosa/char_rosa__master__0593305eabf913b9.png",
+  "hash": "0593305eabf913b9",
+  "cut": "lib/cast/rosa/char_rosa__master__0593305eabf913b9__cut.png"
+ },
+ "char_rosa__phone_worried": {
+  "asset": "lib/cast/rosa/char_rosa__phone_worried__fc8ea5e236bbb046.png",
+  "hash": "fc8ea5e236bbb046",
+  "cut": "lib/cast/rosa/char_rosa__phone_worried__fc8ea5e236bbb046__cut.png"
+ },
+ "char_rosa__arms_crossed": {
+  "asset": "lib/cast/rosa/char_rosa__arms_crossed__bb5af7967583b6c3.png",
+  "hash": "bb5af7967583b6c3",
+  "cut": "lib/cast/rosa/char_rosa__arms_crossed__bb5af7967583b6c3__cut.png"
+ }
+}
