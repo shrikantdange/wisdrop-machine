@@ -71,7 +71,27 @@ jobs:
         run: |
           modal run machine/worker_render.py::render --ep "$EP" --seconds "${{ inputs.preview_seconds }}"
           if [ "$TEST" != "true" ]; then python machine/wis.py reach "$EP" render_ok && python machine/wis.py reach "$EP" packaged; fi
+      - name: Summary (one tiny file an AI reads instead of logs)
+        if: always()
+        env: {JOB_STATUS: "${{ job.status }}", RUN_URL: "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}", REPO: "${{ github.repository }}"}
+        run: |
+          python - <<'PY'
+          import json, os, glob
+          ep = os.environ["EP"]; n = os.path.basename(ep.rstrip("/")); o = f"out/{n}"; os.makedirs(o, exist_ok=True)
+          fails = []
+          for f in glob.glob(f"{ep}/qa/craft.json") + glob.glob(f"{ep}/qa/motion.json"):
+              try: fails += [os.path.basename(f)[:-5] + ": " + r.get("rule", "") for r in json.load(open(f)) if r.get("status") == "FAIL"]
+              except Exception: pass
+          c = json.load(open(f"{o}/cost.json")) if os.path.exists(f"{o}/cost.json") else {}
+          test = os.environ.get("TEST") == "true"
+          s = {"ep": n, "status": os.environ["JOB_STATUS"], "test": test, "failed_checks": fails,
+               "cost_usd": c.get("total_usd"), "gpu_secs": c.get("gpu_secs"), "video": os.path.exists(f"{o}/video.mp4"),
+               "preview_url": f"https://github.com/{os.environ['REPO']}/raw/preview/preview.mp4" if test else None,
+               "run_url": os.environ["RUN_URL"]}
+          json.dump(s, open(f"{o}/summary.json", "w"), indent=1); print(json.dumps(s))
+          PY
       - name: Upload video + package (artifact, 14 days)
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: ${{ github.run_id }}-review
@@ -83,13 +103,14 @@ jobs:
             out/*/vo/vo_qc.json
             out/*/cost.json
             out/*/audio_qc.json
+            out/*/summary.json
           retention-days: 14
       - name: Test runs only - push the preview video to branch preview (one commit, overwritten each test)
         if: env.TEST == 'true'
         run: |
           N=$(basename "$EP"); mkdir -p /tmp/pv && cd /tmp/pv
           cp "$GITHUB_WORKSPACE/out/$N/video.mp4" preview.mp4
-          cp $GITHUB_WORKSPACE/out/$N/package/thumb* $GITHUB_WORKSPACE/out/$N/cost.json $GITHUB_WORKSPACE/out/$N/audio_qc.json . 2>/dev/null || true
+          cp $GITHUB_WORKSPACE/out/$N/package/thumb* $GITHUB_WORKSPACE/out/$N/cost.json $GITHUB_WORKSPACE/out/$N/audio_qc.json $GITHUB_WORKSPACE/out/$N/summary.json . 2>/dev/null || true
           git init -q -b preview && git add -A && git -c user.name=wisdrop-bot -c user.email=bot@users.noreply.github.com commit -qm "$N test preview, run ${{ github.run_id }}"
           git push -qf "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" preview
       - name: Save state + open the owner's final review PR

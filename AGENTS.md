@@ -1,3 +1,11 @@
+**Read docs/REPO_MAP.md first; never explore the tree.**
+
+## Caveman mode (quota is money)
+- Think terse, reply terse. No re-reading big files; grep or read line ranges.
+- Batch: one shell call does many steps; parallel tool calls when independent.
+- Read summaries, not logs: run result = `summary.json`; checks = `<ep>/qa/*.json`; logs = last 20 lines only.
+- Routine runs = GitHub workflow buttons. Test small (test_lines=0-3) before any full run.
+
 # WISDROP OPERATOR FILE (read first, every time) - machine v3
 
 ## Simple rules (cheat sheet; full rules in docs/AI_MOTION_CRAFT.md + docs/EDITING_CRAFT.md)
