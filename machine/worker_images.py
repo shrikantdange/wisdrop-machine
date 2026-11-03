@@ -143,7 +143,8 @@ def run_images(jobs: list, style: str) -> list:
                 img = pipe(width=j.get("w", 1664), height=j.get("h", 928), **kw).images[0]
             else:
                 refs = [Image.open("/assets/" + r).convert("RGB") for r in j["refs"]]
-                img = pipe(image=refs, **kw).images[0]
+                ek = {"width": j["w"], "height": j["h"]} if j.get("w") else {}
+                img = pipe(image=refs, **ek, **kw).images[0]
             p = pathlib.Path("/assets/" + j["out"]); p.parent.mkdir(parents=True, exist_ok=True)
             img.save(p, "PNG")
             out.append({"name": j["name"], "out": j["out"], "secs": round(time.time() - t, 1)})

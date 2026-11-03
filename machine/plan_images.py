@@ -55,7 +55,7 @@ def plan(ep_dir):
                 acts.append(f"the person from image {k + 2} {where} of the frame, {pose.replace('on an invisible stool', 'on a stool').replace('on an invisible chair', 'on a chair').replace(' (no machine drawn)', ' at the sewing machine').replace(' (no laptop drawn)', ' at the laptop').replace(' (no keyboard drawn)', ' at the desk')}")
             n = "shot_" + st + "__" + tm + "__" + "+".join(f"{c['who']}-{c.get('pose', 'front_neutral')}" for c in cast[:2])
             jobs.setdefault(n, {"name": n, "lib": f"shots/{st}", "mode": "edit", "seed": lib["sets"][st]["seed"] + 7,
-                                "people": True, "refs_from": [setn] + [f"char_{c['who']}__master" for c in cast[:2]],
+                                "people": True, "w": 1664, "h": 928, "refs_from": [setn] + [f"char_{c['who']}__master" for c in cast[:2]],
                                 "prompt": T["compose"].format(acts="; ".join(acts))})
             s["_shot"] = n
     # masters first so poses can reference them

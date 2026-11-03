@@ -39,6 +39,8 @@
   "mode": "edit",
   "seed": 38,
   "people": true,
+  "w": 1664,
+  "h": 928,
   "refs_from": [
    "set_tailor_shop__afternoon",
    "char_rosa__master"
@@ -51,6 +53,8 @@
   "mode": "edit",
   "seed": 38,
   "people": true,
+  "w": 1664,
+  "h": 928,
   "refs_from": [
    "set_tailor_shop__afternoon",
    "char_rosa__master"
@@ -63,6 +67,8 @@
   "mode": "edit",
   "seed": 38,
   "people": true,
+  "w": 1664,
+  "h": 928,
   "refs_from": [
    "set_tailor_shop__morning",
    "char_rosa__master"
@@ -75,6 +81,8 @@
   "mode": "edit",
   "seed": 38,
   "people": true,
+  "w": 1664,
+  "h": 928,
   "refs_from": [
    "set_tailor_shop__morning",
    "char_rosa__master"
