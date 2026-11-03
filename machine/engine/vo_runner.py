@@ -28,6 +28,11 @@ print(f'{len(todo)} of {len(LINES)} lines to make', flush=True)
 if not todo: sys.exit(0)
 
 torch.set_num_threads(max(1, os.cpu_count() or 2))
+DEV = os.environ.get('WIS_DEVICE') or ('cuda' if torch.cuda.is_available() else ('mps' if getattr(torch.backends, 'mps', None) and torch.backends.mps.is_available() else 'cpu'))
+def _trim():
+    try:
+        import ctypes; ctypes.CDLL('libc.so.6').malloc_trim(0)
+    except Exception: pass
 import chatterbox.tts as _ct, safetensors.torch as _st
 def _load_nommap(path, device='cpu'):
     # Stream weights tensor-by-tensor with plain reads: no mmap (mmap over the /workspace network drive threw 'Bus error')
@@ -47,12 +52,17 @@ _ct.load_file = _load_nommap
 from chatterbox.tts import ChatterboxTTS
 from faster_whisper import WhisperModel
 FP16 = _FP16
-m = ChatterboxTTS.from_local(FP16, device='cpu') if os.path.exists(FP16 + '/t3_cfg.safetensors') else ChatterboxTTS.from_pretrained(device='cpu')
-import ctypes; gc.collect(); ctypes.CDLL('libc.so.6').malloc_trim(0)   # hand freed load buffers back to the OS; m.prepare_conditionals(REF, exaggeration=0.55)
-wm = WhisperModel('small.en', device='cpu', compute_type='int8')
+m = ChatterboxTTS.from_local(FP16, device=DEV) if os.path.exists(FP16 + '/t3_cfg.safetensors') else ChatterboxTTS.from_pretrained(device=DEV)
+gc.collect(); _trim()   # hand freed load buffers back to the OS
+m.prepare_conditionals(REF, exaggeration=0.55)   # THE WISDROP VOICE: ref_michael.wav (generate() then only adjusts exaggeration per preset)
+assert m.conds is not None, 'voice reference not loaded'
+wm = WhisperModel('small.en', device='cuda' if DEV == 'cuda' else 'cpu', compute_type='float16' if DEV == 'cuda' else 'int8')
 import resource
-def rss(): return round(int(open('/proc/self/statm').read().split()[1]) * 4096 / 2**30, 2)
+def rss():
+    try: return round(int(open('/proc/self/statm').read().split()[1]) * 4096 / 2**30, 2)
+    except Exception: return -1
 def avail():
+    if not os.path.exists('/proc/meminfo'): return -1
     for l in open('/proc/meminfo'):
         if l.startswith(('MemAvailable', 'MemFree')): return round(int(l.split()[1]) / 2**20, 2)
 print('models loaded', round(time.time() - T0), 's  rss', rss(), 'GB  free', avail(), 'GB', flush=True)
@@ -71,7 +81,7 @@ def wer(ref, hyp):
         for j in range(1, len(h) + 1): d[j] = min(p[j] + 1, d[j - 1] + 1, p[j - 1] + (r[i - 1] != h[j - 1]))
     return d[len(h)] / max(1, len(r))
 def qc(w, sr, L):
-    a = w.squeeze().numpy(); dur = len(a) / sr
+    w = w.cpu(); a = w.squeeze().numpy(); dur = len(a) / sr
     words = len(L['text'].split()); exp = words / 2.75   # ~165 WPM
     a16 = ta.functional.resample(w, sr, 16000).squeeze().numpy().astype(np.float32)
     segs, _ = wm.transcribe(a16, language='en', beam_size=5); heard = ''.join(s.text for s in segs).strip()
@@ -105,9 +115,9 @@ for L in todo:
         avg = (avg * n + r['secs']) / (n + 1); n += 1
         if not r['issues']: break
         if A.budget - (time.time() - T0) < avg + 20: break
-        del w; gc.collect(); ctypes.CDLL('libc.so.6').malloc_trim(0)
+        del w; gc.collect(); _trim()
     w, r = best; f = f"{EP}/vo/l{L['id']:02d}.wav"
-    ta.save(f + '.tmp.wav', w, m.sr); os.replace(f + '.tmp.wav', f)
+    ta.save(f + '.tmp.wav', w.cpu(), m.sr); os.replace(f + '.tmp.wav', f)
     r['status'] = 'pass' if not r['issues'] else 'review'; QC[str(L['id'])] = r
     json.dump(QC, open(QCF, 'w'), indent=1); gc.collect()
 rev = [k for k, v in QC.items() if v['status'] == 'review']

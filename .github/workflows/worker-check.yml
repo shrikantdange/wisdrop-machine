@@ -1,0 +1,28 @@
+name: worker-check
+on:
+  workflow_dispatch:
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install modal
+      - name: Check secrets present
+        env:
+          MODAL_TOKEN_ID: ${{ secrets.MODAL_TOKEN_ID }}
+          MODAL_TOKEN_SECRET: ${{ secrets.MODAL_TOKEN_SECRET }}
+        run: |
+          test -n "$MODAL_TOKEN_ID" || { echo "FAIL MODAL_TOKEN_ID missing"; exit 1; }
+          test -n "$MODAL_TOKEN_SECRET" || { echo "FAIL MODAL_TOKEN_SECRET missing"; exit 1; }
+          case "$MODAL_TOKEN_ID" in ak-*) ;; *) echo "FAIL MODAL_TOKEN_ID should start ak-"; exit 1;; esac
+          case "$MODAL_TOKEN_SECRET" in as-*) ;; *) echo "FAIL MODAL_TOKEN_SECRET should start as-"; exit 1;; esac
+          echo "OK secrets present"
+      - name: GPU probe
+        env:
+          MODAL_TOKEN_ID: ${{ secrets.MODAL_TOKEN_ID }}
+          MODAL_TOKEN_SECRET: ${{ secrets.MODAL_TOKEN_SECRET }}
+        run: modal run machine/worker_modal.py::gpu_check
