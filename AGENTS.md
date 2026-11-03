@@ -64,3 +64,15 @@ Owner merged the final PR, the video is uploaded with title, thumbnail, descript
 ## Image style (owner lock, 2026-11-03)
 - Style = kit/style_prompt.txt (technique is fixed; palette follows the scene). References: kit/style_ref/owner_ref_*.jpg.
 - Every image prompt MUST state the scene's TIME/LIGHT (e.g. "overcast morning", "night, one street lamp", "sunny afternoon"). Not every scene is night.
+
+## Library-first and frugal (owner rule, 2026-11-03)
+- Read library/LIBRARY.md and docs/COST_PLAN.md before making any picture or sound.
+- Reuse before you make: cast from the repertory, use existing sets and their time
+  variants, draw evidence in code. Make only what library/library.json lacks, then add it there.
+- Never re-run a whole batch to fix one item. Images: `force=<names>`. Voice: `redo=<line ids>`.
+  Everything else is cached by hash and costs nothing to re-run.
+- GPU only for images (A100-80GB, Lightning 8-step) and voice (T4). Render, motion, mix,
+  master, cutouts: Modal CPU. Outputs live in volume wisdrop-assets or Actions artifacts,
+  never committed.
+- Workflows: images.yml (job, fetch_weights, force), voice.yml (ep, only, takes, redo),
+  render.yml (ep).
