@@ -44,8 +44,12 @@ def main(ep):
     sh = json.load(open(os.path.join(ep, "shots.json"))); md = os.path.join(ep, "media"); os.makedirs(md, exist_ok=True)
     cp = os.path.join(md, "credits.json"); cred = json.load(open(cp)) if os.path.exists(cp) else {}
     bad = 0
+    items = []
     for s in sh["shots"]:
-        if s.get("type") != "photo" or s.get("file") and os.path.exists(os.path.join(md, s["file"])): continue
+        if s.get("type") in ("photo", "magnify"): items.append(s)
+        elif s.get("type") in ("pair", "trio", "wall", "polaroids", "split"): items += s.get("photos", [])
+    for s in items:
+        if s.get("file") and os.path.exists(os.path.join(md, s["file"])): continue
         key = s.get("commons") or s.get("q"); fn = slug(key) + ".jpg"; path = os.path.join(md, fn)
         if os.path.exists(path) and fn in cred: print("OK cached", fn); continue
         try:

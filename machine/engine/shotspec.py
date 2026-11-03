@@ -37,11 +37,15 @@ def events(s, d):
         ev += _steps(n, s.get("step", .9), s.get("first", .5))
     elif t in ("pair", "trio", "wall", "polaroids", "split"):
         n = len(s.get("photos", [])) or {"pair": 2, "trio": 3, "split": 2}.get(t, 4)
-        ev += _steps(n, s.get("step", .45)) + [n * s.get("step", .45) + .3]
+        ev += _steps(n, s.get("step", .45)) + [n * s.get("step", .45) + .3] + [k * s.get("step", .45) + .5 for k in range(n)]
+        if s.get("circle") is not None: ev.append(n * s.get("step", .45) + .2)
     elif t == "photo": ev += [.55, .5]
     elif t == "stamp": ev += [.0, .35, .8]
     elif t == "chapter": ev += [.6]
     elif t in ("scene", "name", "screen", "end"): ev += [.5]
+    if s.get("label") and t in ("scene", "photo", "phone", "map"): ev.append(.5)
+    for k, _ in enumerate(s.get("stickers", [])): ev.append(.7 + k * .6)
+    if t == "phone" and s.get("side"): ev += [.8, 1.05]
     for k, x in enumerate(s.get("marks", [])):       # extra marker strokes / stickers placed by the operator
         ev.append(x.get("t", .9 + k * .8))
     return sorted(x for x in set(round(e, 3) for e in ev) if 0 <= x < d)
@@ -51,10 +55,11 @@ def accents(s, d):
     """Times for automatic camera punch-ins so no static stretch is longer than MAX_HOLD."""
     if s["type"] in CONTINUOUS or s["type"] in ("chapter", "end"): return []
     ev = events(s, d) + [d]; out = []
+    import math
     for a, b in zip(ev, ev[1:]):
-        t = a + ACCENT_EVERY
-        while b - t > .4 and t < d:
-            out.append(round(t, 3)); t += ACCENT_EVERY
+        if b - a <= MAX_HOLD: continue
+        n = math.ceil((b - a) / ACCENT_EVERY)          # n equal pieces, each <= ACCENT_EVERY
+        out += [round(a + (b - a) * k / n, 3) for k in range(1, n)]
     return out
 
 

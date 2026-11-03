@@ -1,13 +1,13 @@
 [
  {
   "rule": "P1 nothing holds still > 2.5 s",
-  "status": "FAIL",
-  "detail": "shots at lines [(5, 2.58), (6, 2.6)]"
+  "status": "OK",
+  "detail": ""
  },
  {
   "rule": "P2 first minute changes every <= 3 s",
-  "status": "FAIL",
-  "detail": "gaps at [(0.6, 5.4), (9.1, 3.4), (13.7, 3.4), (17.6, 4.0), (22.5, 4.8)]"
+  "status": "OK",
+  "detail": ""
  },
  {
   "rule": "T1 every shot >= 0.8 s",
@@ -37,27 +37,27 @@
  {
   "rule": "AI pictures <= 6 per episode",
   "status": "OK",
-  "detail": "3 distinct"
+  "detail": "4 distinct"
  },
  {
   "rule": "No lone picture without surround motion (label, marks or stickers)",
-  "status": "FAIL",
-  "detail": "lines [7, 8, 11]"
+  "status": "OK",
+  "detail": ""
  },
  {
   "rule": "Every number on screen has a source",
   "status": "OK",
-  "detail": "lines []"
+  "detail": ""
  },
  {
   "rule": "T6 nothing placed in the caption band",
   "status": "OK",
-  "detail": "lines []"
+  "detail": ""
  },
  {
   "rule": "T2 kinetic text short (<= 90 characters)",
   "status": "OK",
-  "detail": "lines []"
+  "detail": ""
  },
  {
   "rule": "T1 cards stay long enough to read (13 chars/s)",

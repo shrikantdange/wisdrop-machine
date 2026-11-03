@@ -72,9 +72,10 @@ def source(dr, s, recreated=False):
     if s: cw(dr, ("RECREATED FROM: " if recreated else "SOURCE: ") + s.upper(), F(MONO, 24), 1000 - 190, GREY)
 def drift(fr, t, d, k=.03): return zoom(fr, 1 + k * ease(t / max(d, .1)))
 
+CARDC = (244, 238, 224)
 def paper_card(wd, ht, accent=RED):
     c = Image.new("RGBA", (wd, ht), (0, 0, 0, 0)); d = ImageDraw.Draw(c)
-    d.rectangle([0, 0, wd - 1, ht - 1], fill=PAPER + (255,)); d.rectangle([0, 0, wd - 1, 9], fill=accent + (255,)); return c, d
+    d.rectangle([0, 0, wd - 1, ht - 1], fill=CARDC + (255,)); d.rectangle([0, 0, wd - 1, 9], fill=accent + (255,)); return c, d
 def drop(fr, card, x, y, a, rot=-1.0):
     card = card.rotate(rot, resample=Image.BICUBIC, expand=True)
     sh = Image.new("RGBA", card.size, (0, 0, 0, 0)); sh.putalpha(card.getchannel("A").point(lambda v: v * 0.45)); sh = sh.filter(ImageFilter.GaussianBlur(14))
@@ -324,7 +325,7 @@ TYPES = {"scene": s_scene, "stat": s_stat, "headline": s_headline, "card": s_car
 
 # ---------------- COLLAGE look (library.json "look": "collage") ----------------
 LOOK = LIB.get("look", "noir")
-if LOOK == "collage":
+if LOOK in ("collage", "v3"):
     import collage as C
     NAVY, GOLD, RED, PAPER = C.CHAR, C.YEL, C.RED, C.CREAM
     COL.update({"red": C.RED, "gold": C.YEL, "amber": C.YEL, "paper": C.CREAM})
@@ -437,15 +438,116 @@ def caption(fr, t):
 def tag(fr):
     dr = ImageDraw.Draw(fr); dr.rounded_rectangle([44, 40, 262, 80], 6, fill=(0, 0, 0)); dr.text((60, 48), "DRAMATISATION", font=F(MONO, 22), fill=PAPER); return fr
 
+CUR_PART = 0
+PART = []
+_n = 0
+for _st, _s in SHOTS:
+    if _s["type"] == "chapter": _n += 1
+    PART.append(_n)
+def shot_at(t):
+    return max(j for j in range(len(SHOTS)) if STARTS[j] <= t)
 def render(i):
+    global CUR_PART
     t = i / FPS
-    k = max(j for j in range(len(SHOTS)) if STARTS[j] <= t)
+    k = shot_at(t)
     st, s = SHOTS[k]; d = STARTS[k + 1] - st
+    CUR_PART = PART[k]
+    if LOOK == "v3": apply_theme(CUR_PART)
     fr, story = TYPES[s["type"]](s, t - st, d)
+    if LOOK == "v3": fr = v3_after(fr, s, t - st, d, k)
     if 0 <= t - st < DIP and k > 0: fr = Image.blend(Image.new("RGB", (W, H), (0, 0, 0)), fr, .45 + .55 * ease((t - st) / DIP))
     fr = finish(fr, i, 0)
+    if LOOK == "v3" and s["type"] not in ("chapter", "end"): fr = v3_counter(fr, k, t)
     if story and s["type"] == "scene": fr = tag(fr)
     return bug(caption(fr, t)) if s["type"] not in ("chapter", "end") else fr
 
-if LOOK == "collage":
+if LOOK in ("collage", "v3"):
     caption, tag = _c_caption, _c_tag
+
+# ---------------- v3 look: rotating boards, phones, photo layouts, maps, money, stamps ----------------
+if LOOK == "v3":
+    import re as _re2
+    import v3kit as V
+    import shotspec as SS
+    _base_col = dict(COL)
+    def apply_theme(part):
+        global PAPER, GREY, GOLD
+        th = V.theme(part); PAPER = th["ink"]; GREY = th["sub"]; GOLD = th["acc"]
+        COL.update({"paper": th["ink"], "grey": th["sub"], "gold": th["acc"], "amber": th["acc"], "white": th["ink"]})
+    board = lambda: V.board(CUR_PART)
+    def _fn(p):
+        return p.get("file") or _re2.sub(r"[^a-z0-9]+", "-", (p.get("commons") or p.get("q", "")).lower()).strip("-")[:60] + ".jpg"
+    def _m(p): return _media(_fn(p))
+    def _credit(p):
+        if "_cred" not in _pc:
+            cp = os.path.join(EP, "media", "credits.json"); _pc["_cred"] = json.load(open(cp)) if os.path.exists(cp) else {}
+        c = _pc["_cred"].get(_fn(p), {})
+        return p.get("credit") or (f"PHOTO: {c['artist']} / {c['licence']}".upper()[:80] if c else "")
+    def s_kinetic(s, t, d):  # words stamp in one by one; hl words get the highlighter; "stamp" words slam in red
+        th = V.theme(CUR_PART); fr = board(); dr = ImageDraw.Draw(fr); words = s["text"].split(); step = s.get("step", .28)
+        f = F(ANTON, s.get("size", 132)); hl = {w.upper().strip(".,!?") for w in s.get("hl", "").split()}; stp = {w.upper() for w in s.get("stamp", [])}
+        lines, cur = [], []
+        for w_ in words:
+            if dr.textlength(" ".join(cur + [w_]).upper(), font=f) > W * .78 and cur: lines.append(cur); cur = []
+            cur.append(w_)
+        lines.append(cur); lh = int(f.size * 1.12); y = H * .42 - lh * len(lines) / 2; k = 0
+        for ln in lines:
+            toks = [x.upper() for x in ln]; ws = [dr.textlength(x, font=f) for x in toks]; sp = dr.textlength(" ", font=f)
+            x = (W - sum(ws) - sp * (len(toks) - 1)) / 2
+            for tok, w_ in zip(toks, ws):
+                tt = t - k * step; k += 1; bare = tok.strip(".,!?")
+                if tt > 0:
+                    if bare in hl: C.highlighter(dr, [x - 6, y + lh * .18, x + w_ + 6, y + lh * .92], tt / .3)
+                    e = back(min(1, tt / .22)); sz = max(8, int(f.size * ((.6 + .4 * e) if bare not in stp else (1.6 - .6 * min(1, tt / .14)))))
+                    ff = F(ANTON, sz); col = C.INK if bare in hl else (C.RED if bare in stp else th["ink"])
+                    dr.text((x + (w_ - dr.textlength(tok, font=ff)) / 2, y + (f.size - sz) * .5), tok, font=ff, fill=col)
+                x += w_ + sp
+            y += lh
+        if s.get("source"): V.source_line(dr, s["source"], th)
+        return fr, False
+    def s_chapter(s, t, d):
+        th = V.theme(CUR_PART); fr = V.board(CUR_PART); dr = ImageDraw.Draw(fr); a = eout(t / .5)
+        st_ = V.stamp_img(f"PART {s.get('num', '')}", C.RED, 90); fr.paste(st_, (int(W / 2 - st_.size[0] / 2), 300), st_) if t > .1 else None
+        f = F(ANTON, 150); dr.text((W / 2, 560 + 30 * (1 - a)), s.get("title", "").upper(), font=f, fill=th["ink"], anchor="mm")
+        if t > .5: V.underline(dr, W / 2 - 420, W / 2 + 420, 660, (t - .5) / .5, C.RED, 10)
+        return zoom(fr, 1 + .03 * ease(t / max(d, .1))), False
+    def _surround(fn):
+        def g(s, t, d):
+            fr, story = fn(s, t, d)
+            if s.get("stickers"):
+                for k, st_ in enumerate(s["stickers"]):
+                    V.pop_sticker(fr, st_.upper(), int(W * (.82 if k % 2 == 0 else .18)), int(H * (.2 + .5 * (k // 2))), t - .7 - k * .6, F(ANTON, 40), C.YEL if k % 2 == 0 else C.CREAM, C.INK, 4 if k % 2 else -4)
+            return fr, story
+        return g
+    TYPES.update(kinetic=s_kinetic, chapter=s_chapter, scene=_surround(TYPES["scene"]), photo=_surround(TYPES["photo"]),
+                 phone=lambda s, t, d: (V.s_phone(s, t, d, CUR_PART), False),
+                 pair=lambda s, t, d: (V.s_photos(s, t, d, CUR_PART, _m, _credit), False),
+                 trio=lambda s, t, d: (V.s_photos(s, t, d, CUR_PART, _m, _credit), False),
+                 wall=lambda s, t, d: (V.s_photos(s, t, d, CUR_PART, _m, _credit), False),
+                 polaroids=lambda s, t, d: (V.s_photos(s, t, d, CUR_PART, _m, _credit), False),
+                 split=lambda s, t, d: (V.s_photos(s, t, d, CUR_PART, _m, _credit), False),
+                 magnify=lambda s, t, d: (V.s_magnify(s, t, d, CUR_PART, _m, _credit), False),
+                 map=lambda s, t, d: (V.s_map(s, t, d, CUR_PART), False),
+                 money=lambda s, t, d: (V.s_money(s, t, d, CUR_PART), False),
+                 stamp=lambda s, t, d: (V.s_stamp(s, t, d, CUR_PART), False),
+                 scrub=lambda s, t, d: (V.s_scrub(s, t, d, CUR_PART), False),
+                 barrace=lambda s, t, d: (V.s_barrace(s, t, d, CUR_PART), False))
+    _acc = {}
+    def v3_after(fr, s, tt, d, k):
+        fr = V.marks(fr, s, tt, CUR_PART)
+        if k not in _acc: _acc[k] = SS.accents(s, d)
+        z, cx = 1.0, .5
+        for j, a in enumerate(_acc[k]):
+            if tt >= a: z += .035 * ease((tt - a) / .35); cx += (.012 if j % 2 else -.012) * ease((tt - a) / .35)
+        return zoom(fr, z, cx, .5) if z > 1.0001 else fr
+    _cnt = [(st_, s_["counter_to"]) for st_, s_ in SHOTS if "counter_to" in s_]
+    def v3_counter(fr, k, t):
+        c = SH.get("counter")
+        if not c or not _cnt or t < _cnt[0][0]: return fr
+        j = max(i for i, (a, _) in enumerate(_cnt) if a <= t); v0 = _cnt[j - 1][1] if j else 0; v1 = _cnt[j][1]
+        v = v0 + (v1 - v0) * eout((t - _cnt[j][0]) / 1.0); dec = c.get("decimals", 1)
+        txt = c.get("prefix", "$") + f"{v:,.{dec}f}" + c.get("suffix", "B")
+        dr = ImageDraw.Draw(fr); f = F(ANTON, 54); tw = dr.textlength(txt, font=f)
+        dr.rectangle([W - 70 - tw - 24, 40, W - 46, 128], fill=(20, 20, 22)); dr.text((W - 58 - tw, 46), txt, font=f, fill=C.YEL)
+        dr.text((W - 58, 134), c.get("label", "").upper(), font=F(MONO, 18), fill=(235, 230, 220), anchor="ra", stroke_width=3, stroke_fill=(0, 0, 0))
+        return fr

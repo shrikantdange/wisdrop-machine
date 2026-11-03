@@ -34,6 +34,7 @@ def main(ep, tl_path=None, upto=None):
     durs = [b - a for a, b in zip(starts, starts[1:] + [end])]
     res = []
     def out(rule, status, detail=""):
+        detail = detail if status != "OK" or "first" in detail or "distinct" in detail else ""
         res.append({"rule": rule, "status": status, "detail": detail}); print(f"{status}: {rule}" + (f" ({detail})" if detail else ""), flush=True)
     print(f"PLAN {len(sh)} shots over {end:.1f} s ({'measured' if real else 'estimated'} timeline)")
 
@@ -43,7 +44,7 @@ def main(ep, tl_path=None, upto=None):
     heavy = [s["at"] for s, d in zip(sh, durs) if len(SS.accents(s, d)) > 2]
     if heavy: out("P1b shots needing >2 automatic accents (split them or add marks)", "REVIEW", f"lines {heavy[:8]}")
     # P2 first minute: a visual change every <= 3 s (cuts + element events)
-    ev = sorted({round(t + e, 2) for s, t, d in zip(sh, starts, durs) for e in SS.events(s, d)} | {round(t, 2) for t in starts})
+    ev = sorted({round(t + e, 2) for s, t, d in zip(sh, starts, durs) for e in (SS.events(s, d) if s["type"] not in SS.CONTINUOUS else [x * .5 for x in range(int(d * 2) + 1)])} | {round(t, 2) for t in starts})
     ev = [e for e in ev if e < min(60, end)] + [min(60, end)]
     gaps = [(round(a, 1), round(b - a, 1)) for a, b in zip(ev, ev[1:]) if b - a > 3.0]
     out("P2 first minute changes every <= 3 s", "FAIL" if gaps else "OK", f"gaps at {gaps[:5]}" if gaps else "")
@@ -79,7 +80,7 @@ def main(ep, tl_path=None, upto=None):
     nos = [s["at"] for s in sh if has_num(s) and not s.get("source")]
     out("Every number on screen has a source", "FAIL" if nos else "OK", f"lines {nos[:8]}")
     # captions never overlap cards; text volume
-    low = [s["at"] for s in sh if float(s.get("y", .4)) > .78]
+    low = [s["at"] for s in sh if float(s.get("y", .4)) > .78 or any(max(m.get("y", 0), m.get("y0", 0), m.get("y1", 0)) > .8 for m in s.get("marks", []))]
     out("T6 nothing placed in the caption band", "FAIL" if low else "OK", f"lines {low[:8]}")
     wordy = [s["at"] for s in sh if s["type"] in ("kinetic", "stamp") and len(s.get("text", "")) > 90]
     out("T2 kinetic text short (<= 90 characters)", "FAIL" if wordy else "OK", f"lines {wordy[:8]}")
