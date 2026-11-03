@@ -11,7 +11,7 @@ chunks run side by side.
 Contract for an episode's render.py: importable with sys.argv = [render.py, ep_dir, out],
 exposes render(i) -> PIL image and module-level FPS, W, H; timeline.json has "dur".
 
-  modal run machine/worker_render.py::render --ep episodes/ep00-onecoin-test
+  modal run machine/worker_render.py::render --ep episodes/ep01-onecoin
 """
 import json, pathlib
 import modal
@@ -30,10 +30,8 @@ MAX_PAR = 20          # containers side by side
 
 def _engine(ep_dir):
     import os
-    if os.path.exists(f"{ep_dir}/shots.json"):
-        os.environ["WIS_TIMELINE"] = f"/assets/eps/{os.path.basename(ep_dir)}/work/timeline.json"
-        return "/repo/machine/engine/shots_render.py"
-    return f"{ep_dir}/render.py"          # legacy hand-written episode (ep00 test)
+    os.environ["WIS_TIMELINE"] = f"/assets/eps/{os.path.basename(ep_dir)}/work/timeline.json"
+    return "/repo/machine/engine/shots_render.py"
 
 
 @app.function(image=image, cpu=1.0, memory=2048, timeout=600, scaledown_window=2, volumes={"/assets": avol})

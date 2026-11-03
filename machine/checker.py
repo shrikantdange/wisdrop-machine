@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Wisdrop checker: playbook rules as code. usage: checker.py <episode_dir> <target_state>
-Prints PASS/FAIL lines per rule, writes qa/check_<state>.json, exits 1 on any FAIL. Rules live in playbook/rules.yaml."""
+Prints OK/FAIL lines per rule, writes qa/check_<state>.json, exits 1 on any FAIL. Rules live in playbook/rules.yaml."""
 import os, sys, json, re
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from paths import REPO
@@ -20,7 +20,7 @@ results = []
 
 def rule(name, ok, detail=''):
     results.append({'rule': name, 'ok': bool(ok), 'detail': detail})
-    print(f"{'PASS' if ok else 'FAIL'}: {name}" + (f' ({detail})' if detail and not ok else ''), flush=True)
+    print(f"{'OK' if ok else 'FAIL'}: {name}" + (f' ({detail})' if detail and not ok else ''), flush=True)
 
 
 def read(f):

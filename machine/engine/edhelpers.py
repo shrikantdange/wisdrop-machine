@@ -1,4 +1,4 @@
-"""Wisdrop shared look. Asset dictionaries PL (plates) and C (cutouts) below are the EXAMPLE episode assets: replace per episode."""
+"""Wisdrop shared drawing helpers (easing, glow, grain, zoom, fonts). Used by shots_render.py."""
 import sys, math, random, subprocess, json
 import numpy as np
 from PIL import Image, ImageDraw, ImageFont, ImageFilter, ImageChops, ImageEnhance
@@ -7,8 +7,6 @@ V = "C"
 W, H, FPS = 1920, 1080, 30
 import os
 import sys as _s; _s.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__)))); from paths import KIT
-P = os.path.join(KIT, "style_ref/plates/")   # episode plates folder: change per episode
-L = os.path.join(KIT, "style_ref/cutouts/")   # episode cutouts folder: change per episode
 NAVY = (16, 24, 42); PAPER = (244, 238, 224); GOLD = (236, 184, 64); RED = (232, 64, 56)
 GREY = (150, 158, 176); WHITE = (255, 255, 255); GREEN = (70, 214, 120)
 ANTON = os.path.join(KIT, "fonts/Anton.ttf"); MONO = os.path.join(KIT, "fonts/DejaVuSansMono-Bold.ttf")
@@ -54,16 +52,7 @@ def warm(im):  # pull green out, keep amber/navy
     a[:, :, 1] *= 0.93; a[:, :, 0] *= 1.03
     return Image.fromarray(np.clip(a, 0, 255).astype(np.uint8))
 
-# ---------- assets ----------
-PL = {"hall": plate("ed-plate-hall.png", blur=1.6),
-      "street": Image.open(P + "ed-plate-street.png").convert("RGB").resize((W, H), Image.LANCZOS),
-      "factory": Image.open(P + "ed-plate-factory2.png").convert("RGB").resize((W, H), Image.LANCZOS)}
-C = {"ray_awe": match(cut("ed-ray-awe.png", 860), (255, 214, 160), .12, (255, 205, 140), .5),
-     "kenzie": match(cut("ed-kenzie.png", 900), (255, 214, 160), .12, (255, 205, 140), .5),
-     "ray_shock": match(cut("ed-ray-uneasy.png", 860), (175, 190, 225), .18, (255, 210, 140), .55),
-     "vic_prom": match(cut("ed-victor-promise.png", 1000), (255, 225, 170), .06),
-     "vic_lever": match(cut("ed-victor-lever.png", 820), (230, 210, 175), .10, (255, 205, 140), .45),
-     "box": cut("ed-box.png", 150), "press": cut("ed-press.png", 620)}
+# v3: no example assets are loaded here (episode pictures come from the asset manifest)
 
 def crop_cam(pl, t, z0, z1, dx, dy):
     z = z0 + (z1 - z0) * ease(t); bw, bh = pl.size; base = bw / (W * 1.18) if False else 1

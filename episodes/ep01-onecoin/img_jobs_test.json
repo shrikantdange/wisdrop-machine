@@ -1,8 +1,0 @@
-[
- {"name": "s1_shop_dusk", "seed": 31,
-  "prompt": "Wide interior of a small neighbourhood tailoring shop at night, seen from inside: wooden front counter with one sewing machine under a single hanging amber lamp, a dress form wearing a half-finished white wedding dress, a large shop window showing a dark rainy street with one glowing street lamp outside, a small old TV on a shelf. Clear empty floor left of centre. The shop is empty, nobody inside."},
- {"name": "s5_airport_dawn", "seed": 41,
-  "prompt": "Wide shot of an empty airport departure hall before dawn: huge dark windows with a navy sky and a faint amber horizon, rows of empty seats, polished reflective floor with long amber light reflections, one lonely rolling suitcase standing in the middle. No people."},
- {"name": "rosa_master_front", "seed": 21, "w": 1328, "h": 1328,
-  "prompt": "Full-body character portrait of ONE fictional woman aged 54, sturdy build, dark brown hair with a few grey streaks pinned in a low bun, reading glasses pushed up into her hair, kind tired face, wearing a burgundy cardigan over a beige blouse, an olive knee-length skirt, flat brown shoes, a cloth tape measure around her neck. Standing calmly, front view, hands relaxed at her sides, empty hands. Plain flat dark-navy studio background, soft amber key light from the left, whole figure visible with margin, nothing else in the frame."}
-]

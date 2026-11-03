@@ -1,6 +1,6 @@
 """Wisdrop images on Modal, v3: fast, cached, library-first.
 
-Speed / cost (see docs/COST_PLAN.md):
+Speed / cost (see docs/OPERATOR_GUIDE.md (cost section)):
 - Qwen-Image + Lightning 8-step LoRA (both Apache 2.0): 8 passes per image
   instead of 60 (30 steps x CFG). About 6-8x less GPU time per image.
 - Poses: Qwen-Image-Edit-2509 + its Lightning 8-step LoRA (Apache 2.0), fed the
@@ -249,12 +249,12 @@ def images(job: str, force: str = ""):
                 part = [j for j in todo if j.get("mode", "t2i") == mode]
                 if part:
                     for r in run_images.remote(part, style):
-                        meta.append(r); print("IMG", json.dumps(r))
+                        meta.append(r); print("OK img", json.dumps(r))
         checks = [j for j in ordered if not j.get("people") and j.get("mode", "t2i") == "t2i"]
         res = qc.remote([j["out"] for j in checks]) if checks else {}
         bad = [j for j in checks if not res[j["out"]]["pass"]]
         for j in bad:
-            print("QC-FAIL", j["name"], json.dumps(res[j["out"]]))
+            print("REVIEW", j["name"], json.dumps(res[j["out"]]))
         if not bad or rnd == MAX_QC_ROUNDS:
             flagged = {j["name"]: res[j["out"]] for j in bad}; break
         todo = []

@@ -10,7 +10,7 @@ Cost rules baked in:
   fallback if CUDA libs are missing), so no second machine is needed.
 
   modal run machine/worker_voice.py::fetch_weights            # once, CPU only
-  modal run machine/worker_voice.py::voice --ep episodes/ep00-onecoin-test --only 3,4,5
+  modal run machine/worker_voice.py::voice --ep episodes/ep01-onecoin --only 3,4,5
 """
 import json, os, pathlib
 import modal
@@ -162,7 +162,7 @@ def voice(ep: str, only: str = "", takes: int = 2, redo: str = ""):
     for r in res:
         if "wav" in r:
             (od / f"line_{r['qc']['id']:03d}.wav").write_bytes(r["wav"])
-        qc.append(r["qc"]); print("QC", json.dumps(r["qc"]))
+        qc.append(r["qc"]); print("OK line", json.dumps(r["qc"]))
     (od / "vo_qc.json").write_text(json.dumps(qc, indent=1))
     index = [{"id": L["id"], "hash": L["hash"], "gap": L.get("gap", 0.3)} for L in lines]
     put_index.remote(f"eps/{pathlib.Path(ep).name}/vo_index.json", json.dumps(index, indent=1).encode())

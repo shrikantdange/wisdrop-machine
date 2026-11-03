@@ -1,4 +1,7 @@
 # WISDROP: INSTRUCTIONS FOR AN AI PRODUCER (v1, 2026-11-03)
+
+> v3 note (2026-11-03): render_template.py / mix_template.py and per-episode render.py / mix.py are retired.
+> Episodes are drawn from shots.json by machine/engine/shots_render.py and mixed by machine/engine/automix.py (see docs/SHOTS.md).
 You are producing a video for the YouTube channel Wisdrop. Read WISDROP_PLAYBOOK.md first: it holds the creative rules. This file tells you HOW to build the video, step by step, with the tools and code in the starter kit.
 Follow both files exactly. When something is unclear, ask the channel owner. Do not improvise new styles, voices or formats.
 
