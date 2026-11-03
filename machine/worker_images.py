@@ -38,6 +38,13 @@ cpu_image = (modal.Image.debian_slim(python_version="3.11")
              .pip_install("rembg[cpu]==2.0.67", "pillow", "huggingface_hub")
              .env({"U2NET_HOME": "/weights/u2net", "HF_HOME": HF}))
 
+qc_image = (modal.Image.debian_slim(python_version="3.11")
+            .apt_install("libgl1", "libglib2.0-0")
+            .pip_install("torch==2.6.0", "torchvision==0.21.0", index_url="https://download.pytorch.org/whl/cpu")
+            .pip_install("rapidocr_onnxruntime==1.4.4", "pillow")
+            .env({"TORCH_HOME": "/weights/torch"}))
+MAX_QC_ROUNDS = 2      # a plate that keeps failing is flagged for a human look, never looped forever
+
 NO_PEOPLE = " The place is completely empty: no people, no figures, no silhouettes, no reflections of people."
 NO_TEXT = " Every surface is blank: no writing, no letters, no numbers, no signs, no labels, no screens with text."
 
@@ -140,6 +147,44 @@ def run_images(jobs: list, style: str) -> list:
     return out
 
 
+@app.function(image=qc_image, volumes={"/weights": wvol, "/assets": avol}, timeout=600, cpu=2, memory=4096,
+              max_containers=1, scaledown_window=2)
+def qc(paths: list) -> dict:
+    """Free CPU check for plates that must be empty and blank: people (torchvision detector,
+    BSD) and readable text (RapidOCR, Apache 2.0). Result cached next to each picture."""
+    import os, torch, torchvision
+    from PIL import Image
+    from rapidocr_onnxruntime import RapidOCR
+    res = {}; todo = []
+    for p in paths:
+        q = "/assets/" + p + ".qc.json"
+        if os.path.exists(q):
+            res[p] = json.load(open(q))
+        else:
+            todo.append(p)
+    if todo:
+        wts = torchvision.models.detection.FasterRCNN_MobileNet_V3_Large_FPN_Weights.DEFAULT
+        det = torchvision.models.detection.fasterrcnn_mobilenet_v3_large_fpn(weights=wts).eval()
+        ocr = RapidOCR()
+        for p in todo:
+            im = Image.open("/assets/" + p).convert("RGB")
+            x = torchvision.transforms.functional.to_tensor(im)
+            with torch.inference_mode():
+                o = det([x])[0]
+            people = [round(float(sc), 2) for lb, sc in zip(o["labels"], o["scores"]) if int(lb) == 1 and float(sc) > 0.55]
+            txt, _ = ocr("/assets/" + p)
+            words = [t[1] for t in (txt or []) if float(t[2]) > 0.8 and len(t[1].strip()) >= 3]
+            r = {"people": people, "text": words, "pass": not people and not words}
+            json.dump(r, open("/assets/" + p + ".qc.json", "w")); res[p] = r
+        avol.commit(); wvol.commit()
+    return res
+
+
+@app.function(image=cpu_image, volumes={"/assets": avol}, timeout=60, cpu=0.25, memory=512)
+def write_asset(path: str, data: bytes):
+    p = pathlib.Path("/assets/" + path); p.parent.mkdir(parents=True, exist_ok=True); p.write_bytes(data); avol.commit()
+
+
 @app.function(image=cpu_image, volumes={"/weights": wvol, "/assets": avol}, timeout=600, cpu=2, memory=3072,
               max_containers=1, scaledown_window=2)
 def cutouts(pairs: list) -> list:
@@ -180,13 +225,32 @@ def images(job: str, force: str = ""):
         j["out"] = f"lib/{j.get('lib', 'misc')}/{j['name']}__{j['hash']}.png"
         j["refs"] = [by_name[r]["out"] for r in j.get("refs_from", [])]
         by_name[j["name"]] = j; ordered.append(j)
+    def place(j):
+        rh = [by_name[r]["hash"] for r in j.get("refs_from", [])]
+        j["hash"] = job_hash(j, style, rh)
+        j["out"] = f"lib/{j.get('lib', 'misc')}/{j['name']}__{j['hash']}.png"
+        j["refs"] = [by_name[r]["out"] for r in j.get("refs_from", [])]
     have = set(which_exist.remote([j["out"] for j in ordered]))
     todo = [j for j in ordered if j["out"] not in have]
     print(f"PLAN {len(ordered)} pictures, {len(have)} cached, {len(todo)} to make")
-    meta = []
-    if todo:
-        for r in run_images.remote(todo, style):
-            meta.append(r); print("IMG", json.dumps(r))
+    meta = []; flagged = {}
+    for rnd in range(MAX_QC_ROUNDS + 1):
+        if todo:
+            for r in run_images.remote(todo, style):
+                meta.append(r); print("IMG", json.dumps(r))
+        checks = [j for j in ordered if not j.get("people") and j.get("mode", "t2i") == "t2i"]
+        res = qc.remote([j["out"] for j in checks]) if checks else {}
+        bad = [j for j in checks if not res[j["out"]]["pass"]]
+        for j in bad:
+            print("QC-FAIL", j["name"], json.dumps(res[j["out"]]))
+        if not bad or rnd == MAX_QC_ROUNDS:
+            flagged = {j["name"]: res[j["out"]] for j in bad}; break
+        todo = []
+        for j in bad:                       # same prompt, next seed; hash changes so it is a new picture
+            j["seed"] = j.get("seed", 7) + 1000; place(j); todo.append(j)
+        have = set(which_exist.remote([j["out"] for j in todo])); todo = [j for j in todo if j["out"] not in have]
+    for n, r in flagged.items():
+        print("REVIEW", n, json.dumps(r))
     cut_pairs = [(j["out"], j["out"].replace(".png", "__cut.png")) for j in ordered if j.get("cutout")]
     have_cut = set(which_exist.remote([d for _, d in cut_pairs]))
     need_cut = [p for p in cut_pairs if p[1] not in have_cut]
@@ -205,6 +269,9 @@ def images(job: str, force: str = ""):
         im.convert("RGB").save(od / f"{name}.jpg", quality=88)
     man = {j["name"]: {"asset": j["out"], "hash": j["hash"], "cut": j["out"].replace(".png", "__cut.png") if j.get("cutout") else None}
            for j in ordered}
+    for n in flagged:
+        man[n]["review"] = flagged[n]
     (od / "asset_manifest.json").write_text(json.dumps(man, indent=1))
+    write_asset.remote(f"eps/{jp.parent.name}/asset_manifest.json", json.dumps(man, indent=1).encode())
     (od / "img_meta.json").write_text(json.dumps(meta, indent=1))
-    print("OK images done")
+    print("OK images done" if not flagged else f"WAIT images done, {len(flagged)} flagged for a look: {', '.join(flagged)}")

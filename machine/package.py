@@ -1,0 +1,89 @@
+#!/usr/bin/env python3
+"""Package an episode for upload: titles, two thumbnails, description (chapters, sources,
+credits, disclosure) and tags. Code only, no AI cost.
+
+  python machine/package.py <ep_dir> <timeline.json> <assets_root> <out_dir>
+"""
+import json, os, re, sys
+from PIL import Image, ImageDraw, ImageFilter, ImageFont, ImageEnhance
+
+REPO = os.path.dirname(os.path.dirname(os.path.abspath(__file__))); KIT = os.path.join(REPO, "kit")
+ANTON = os.path.join(KIT, "fonts", "Anton.ttf"); RED = (232, 64, 56); PAPER = (244, 238, 224); NAVY = (16, 24, 42); GOLD = (236, 184, 64)
+TW, TH = 1280, 720
+
+
+def mmss(s): s = int(s); return f"{s // 60}:{s % 60:02d}"
+
+
+def titles(ep):
+    p = os.path.join(ep, "titles.md"); t = open(p).read() if os.path.exists(p) else ""
+    opts = [re.sub(r"\s*<-.*$", "", m).strip() for m in re.findall(r"^\d+\.\s*(.+)$", t, re.M)]
+    pick = next((re.sub(r"\s*<-.*$", "", m).strip() for m in re.findall(r"^\d+\.\s*(.+<-\s*pick.*)$", t, re.M)), opts[0] if opts else "")
+    thumbs = re.findall(r'"([^"]{2,24})"', t.split("Thumbnail", 1)[1]) if "Thumbnail" in t else []
+    return pick, opts, thumbs
+
+
+def sources(ep):
+    t = open(os.path.join(ep, "research.md")).read(); seen = []
+    for u in re.findall(r"https?://[^\s;|)]+", t):
+        u = u.rstrip(".,")
+        if u not in seen: seen.append(u)
+    return seen
+
+
+def fit(d, txt, maxw, size):
+    while size > 40:
+        f = ImageFont.truetype(ANTON, size)
+        if d.textlength(txt, font=f) <= maxw: return f
+        size -= 6
+    return ImageFont.truetype(ANTON, size)
+
+
+def thumb(bg, cut, words, red_word, path):
+    im = bg.resize((TW, TH), Image.LANCZOS) if bg else Image.new("RGB", (TW, TH), NAVY)
+    im = ImageEnhance.Brightness(im).enhance(1.25); im = ImageEnhance.Contrast(im).enhance(1.1)   # phones show dark art muddy
+    if cut:
+        h = int(TH * .92); c = cut.resize((int(cut.size[0] * h / cut.size[1]), h), Image.LANCZOS)
+        glow = Image.new("RGBA", c.size, (0, 0, 0, 0)); glow.putalpha(c.getchannel("A").filter(ImageFilter.GaussianBlur(18)))
+        im.paste((255, 220, 160), (TW - c.size[0] - 30, TH - h), glow); im.paste(c, (TW - c.size[0] - 40, TH - h), c)
+    d = ImageDraw.Draw(im); y = 70
+    for k, w in enumerate(words[:2]):
+        f = fit(d, w.upper(), 700, 190); col = RED if w == red_word else PAPER
+        d.text((60, y), w.upper(), font=f, fill=col, stroke_width=10, stroke_fill=(0, 0, 0)); y += f.size + 30
+    im.save(path, quality=92)
+
+
+def main(ep, tl_p, assets, out):
+    os.makedirs(out, exist_ok=True)
+    tl = json.load(open(tl_p)); shots = json.load(open(os.path.join(ep, "shots.json")))["shots"]
+    st = {s["i"]: s["start"] for s in tl["segs"]}; pick, opts, thumbs = titles(ep); srcs = sources(ep)
+    man_p = os.path.join(assets, "eps", os.path.basename(ep.rstrip("/")), "asset_manifest.json")
+    man = json.load(open(man_p)) if os.path.exists(man_p) else {}
+    # chapters: cold open + each chapter card
+    ch = [("0:00", "Cold open")] + [(mmss(st.get(s["at"], 0)), f"Part {s.get('num')}: {s.get('title')}") for s in shots if s["type"] == "chapter"]
+    hook = " ".join(L["text"] for L in tl["segs"][:2])
+    music = open(os.path.join(KIT, "music", "ATTRIBUTION.txt")).read().split("SFX")[0].replace("MUSIC (CC BY 4.0, credit in description):", "").strip()
+    desc = "\n".join([hook, "", "Chapters"] + [f"{a} {b}" for a, b in ch] + ["", "Sources"] + srcs +
+                     ["", "Characters in story scenes are fictional composites; real people are never shown. Illustrations are AI-assisted and dramatised; every number on screen is sourced above.",
+                      "", "Music", music, "", "#Wisdrop #moneycrimes #fraud"])
+    open(os.path.join(out, "description.txt"), "w").write(desc)
+    case = re.sub(r"^ep\d+-", "", os.path.basename(ep.rstrip("/"))).replace("-", " ")
+    tags = [case, f"{case} scam", f"{case} explained", "financial fraud", "crypto scam", "ponzi scheme", "pyramid scheme", "true crime", "money crimes", "documentary", "Wisdrop"]
+    json.dump({"title": pick, "alternates": [o for o in opts if o != pick], "tags": tags, "chapters": ch}, open(os.path.join(out, "meta.json"), "w"), indent=1)
+    # thumbnails: A = first story set + main character cutout; B = board with big text
+    scene = next((s for s in shots if s["type"] == "scene" and s.get("set") not in (None, "board")), None)
+    def load(rel, rgba=False):
+        p = os.path.join(assets, rel) if rel else ""
+        return Image.open(p).convert("RGBA" if rgba else "RGB") if p and os.path.exists(p) else None
+    bg = load(man.get(f"set_{scene['set']}__{scene.get('time', 'night')}", {}).get("asset")) if scene else None
+    who = next((c for s in shots if s["type"] == "scene" for c in s.get("cast", [])), None)
+    cut = load(man.get(f"char_{who['who']}__{who.get('pose', 'front_neutral')}", {}).get("cut"), True) if who else None
+    tA = (thumbs[0] if thumbs else pick.split()[1] if pick else "").split() or ["WISDROP"]
+    tB = (thumbs[1] if len(thumbs) > 1 else "NO COIN").split()
+    thumb(bg, cut, [" ".join(tA)], " ".join(tA), os.path.join(out, "thumb_A.jpg"))
+    thumb(None, None, [" ".join(tB[:-1]) or tB[0], tB[-1]], tB[-1], os.path.join(out, "thumb_B.jpg"))
+    print(f"OK packaged: title '{pick}', {len(srcs)} sources, {len(ch)} chapters, 2 thumbnails")
+
+
+if __name__ == "__main__":
+    main(*sys.argv[1:5])

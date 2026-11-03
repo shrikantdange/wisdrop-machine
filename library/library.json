@@ -1,0 +1,113 @@
+{
+ "version": 1,
+ "templates": {
+  "master": "Character model sheet of ONE fictional person: {look} Full body, standing, front view, arms relaxed at the sides. Background is a perfectly plain flat mid-grey with nothing on it: no wall texture, no floor line, no lamp, no cast shadow. Even soft front light, whole figure visible with margin on all sides.",
+  "pose": "The same person from the reference image, identical face, hair, glasses, body and identical clothes and colours. Now {pose}. Keep exactly the same illustration style, ink outlines and colours. Plain flat mid-grey background, no floor, no cast shadow, no lamp, no props except those named, full body visible with margin.",
+  "set": "TIME/LIGHT: {light}. {base} Clear empty floor space where a person could stand later."
+ },
+ "time_light": {
+  "dawn": "pale cold dawn, navy sky warming to a thin amber horizon, long soft shadows",
+  "morning": "warm low morning sun through the window, soft gold light pools, cool shadows",
+  "day": "flat overcast daylight, muted greys and greens, soft shadows",
+  "afternoon": "sunny late afternoon, warm amber light raking across, crisp shadows",
+  "dusk": "dusk, the last blue light outside, one warm amber lamp inside",
+  "night": "late night, deep navy shadows, one warm lamp as the only strong light",
+  "rain_night": "rainy night, wet reflective surfaces, cold blue street light and one warm amber lamp",
+  "screen_glow": "dark room lit mostly by cool blue-white screen glow, one small warm lamp"
+ },
+ "cast": {
+  "rosa": {
+   "look": "a woman aged 54 who looks early fifties, sturdy build, medium height, dark brown hair with a few thin grey streaks in a neat low bun, tortoiseshell reading glasses worn on her face, warm kind face with light smile lines, burgundy knit cardigan over a beige blouse, olive knee-length skirt, flat brown shoes, a pale off-white cloth tape measure draped around her neck.",
+   "seed": 21,
+   "h": 0.84,
+   "poses": {
+    "front_neutral": "standing front view, calm neutral face, hands relaxed",
+    "three_quarter_left": "standing in three-quarter view facing left, calm",
+    "three_quarter_right": "standing in three-quarter view facing right, calm",
+    "hopeful": "standing three-quarter view, hands clasped at her chest, hopeful small smile",
+    "excited": "standing, both hands raised slightly with an excited smile",
+    "phone_worried": "seated on an invisible stool, three-quarter view facing left, holding a smartphone in both hands and looking down at it, worried, brows drawn together",
+    "phone_reading": "standing three-quarter view facing left, reading a smartphone held in one hand, neutral and curious",
+    "laptop_typing": "seated on an invisible chair facing left, hands forward as if typing on a laptop (no laptop drawn), focused",
+    "sewing": "seated on an invisible stool facing right, leaning forward, hands forward guiding fabric as if at a sewing machine (no machine drawn)",
+    "envelope": "standing three-quarter view facing right, slipping banknotes into a plain envelope, careful",
+    "arms_crossed": "standing three-quarter view facing right, arms crossed, firm determined expression",
+    "shocked": "standing, one hand over her mouth, eyes wide, shocked",
+    "defeated": "sitting slumped on an invisible stool, shoulders down, hands in her lap, looking at the floor, defeated",
+    "window_back": "standing, seen from behind, looking ahead, still and quiet",
+    "thinking": "standing three-quarter view, one hand at her chin, thinking"
+   }
+  },
+  "victor": {
+   "look": "a man aged 45, tall and lean with upright stage posture, short dark hair neatly side-parted, clean-shaven, charcoal three-piece suit, white shirt, gold tie, navy pocket square, holding a small black presentation clicker.",
+   "seed": 31,
+   "h": 0.93,
+   "poses": {
+    "front_neutral": "standing front view with a polished smile",
+    "pointing_clicker": "standing three-quarter view facing left, arm raised pointing the clicker toward something off to the left, big confident smile",
+    "arms_wide": "standing front view, both arms spread wide to an audience, beaming",
+    "sly": "standing three-quarter view facing right, a sly knowing smile, adjusting his cuff",
+    "evasive": "standing three-quarter view, palms up in a shrug, smiling but eyes looking away"
+   }
+  },
+  "dee": {
+   "look": "a woman aged 38, petite and energetic, curly black shoulder-length hair tied back with a rust-coloured scarf, navy blazer over a rust T-shirt, dark jeans, white trainers.",
+   "seed": 41,
+   "h": 0.82,
+   "poses": {
+    "front_neutral": "standing front view, bright friendly smile",
+    "talking_phone": "standing, holding a smartphone out at arm's length as if filming herself, talking excitedly",
+    "pointing": "standing three-quarter view facing left, pointing enthusiastically off to the left",
+    "worried": "standing, hugging her arms, worried",
+    "typing_phone": "standing, typing on a smartphone with both thumbs, smiling"
+   }
+  },
+  "theo": {
+   "look": "a man aged 33, average height, slim with a slight slouch, short sandy-brown hair, close-cropped beard, round wire glasses, grey hoodie over an olive shirt, charcoal trousers, a red pen tucked behind his ear.",
+   "seed": 51,
+   "h": 0.88,
+   "poses": {
+    "front_neutral": "standing front view, neutral",
+    "thinking": "standing three-quarter view facing right, tapping a red pen on his chin, thinking",
+    "typing": "seated on an invisible chair facing right, typing on a keyboard (no keyboard drawn), focused",
+    "worried": "seated facing right, rubbing his forehead, worried",
+    "pointing": "standing three-quarter view facing left, pointing with a red pen, explaining"
+   }
+  }
+ },
+ "sets": {
+  "tailor_shop": {
+   "seed": 31,
+   "base": "Wide interior of a small neighbourhood tailoring shop seen from inside: wooden front counter with one sewing machine under a hanging lamp, a dress form wearing a half-finished white wedding dress, rolls of fabric on shelves, a small old TV on a shelf, a large shop window onto a quiet street with one street lamp.",
+   "bed": "city"
+  },
+  "kitchen": {
+   "seed": 51,
+   "base": "Small modest family kitchen: a round wooden table with two chairs, an open laptop, a mug, a stack of plain envelopes, a fridge, a window over the sink showing rooftops.",
+   "bed": ""
+  },
+  "event_stage": {
+   "seed": 61,
+   "base": "Hotel ballroom event stage seen from the audience: a lectern, a huge blank glowing projection screen, gold uplights, haze, a heavy dark curtain, the edge of the stage; the audience area is empty rows of chairs.",
+   "bed": "murmur"
+  },
+  "dev_flat": {
+   "seed": 71,
+   "base": "Cluttered one-room flat of a software developer: a desk with three blank monitors, stacks of books, a whiteboard with only scribbled lines, a desk lamp, a window.",
+   "bed": ""
+  },
+  "airport_hall": {
+   "seed": 41,
+   "base": "Wide shot of an empty airport departure hall: huge windows onto a runway, rows of empty seats, a large blank departure board panel, polished reflective floor, one lonely rolling suitcase.",
+   "bed": "city"
+  },
+  "courthouse": {
+   "seed": 81,
+   "base": "Exterior of a grand stone courthouse: wide steps, tall columns, heavy doors, no flags, no seals, no carvings with words.",
+   "bed": "city"
+  },
+  "board": {
+   "code": true
+  }
+ }
+}

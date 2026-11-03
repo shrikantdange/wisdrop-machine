@@ -73,26 +73,31 @@ if stage_at_least('script_approved'):
         bw = [w for w in R['banned_words'] if w in txt]
         rule('no banned phrasing', not bw, ', '.join(bw))
 
-if stage_at_least('images_ok'):
-    imgs = [f for sub in ('img/plates', 'img/cut') for f in os.listdir(os.path.join(EP, sub))] if os.path.isdir(os.path.join(EP, 'img')) else []
-    rule('images exist', len(imgs) > 0, 'no images in img/plates or img/cut')
+SKIP_OUT = os.environ.get('WIS_SKIP_OUTPUT_CHECKS') == '1'
+OUT = os.path.join(os.path.dirname(os.path.dirname(EP)), 'out', os.path.basename(EP))   # worker outputs (not committed)
+if not SKIP_OUT and stage_at_least('images_ok'):
+    mp = os.path.join(OUT, 'img', 'asset_manifest.json')
+    man = json.load(open(mp)) if os.path.exists(mp) else {}
+    jobs = json.load(open(os.path.join(EP, 'img_jobs.json'))) if os.path.exists(os.path.join(EP, 'img_jobs.json')) else []
+    rule('every planned picture made', bool(jobs) and all(j['name'] in man for j in jobs), f'{len(man)}/{len(jobs)}')
+    rv = [n for n, m in man.items() if m.get('review')]
+    rule('no picture flagged (stray people / text)', not rv, ', '.join(rv[:8]))
 
-if stage_at_least('voice_ok'):
-    qc = json.load(open(os.path.join(EP, 'vo_qc.json'))) if os.path.exists(os.path.join(EP, 'vo_qc.json')) else {}
+if not SKIP_OUT and stage_at_least('voice_ok'):
+    qp = os.path.join(OUT, 'vo', 'vo_qc.json')
+    qc = [q for q in json.load(open(qp)) if 'id' in q] if os.path.exists(qp) else []
     n = len(json.load(open(os.path.join(EP, 'lines.json'))))
-    passed = [k for k, v in qc.items() if v.get('status') == 'pass']
-    review = [k for k, v in qc.items() if v.get('status') == 'review']
-    rule('every voice line made', len(qc) == n, f'{len(qc)}/{n}')
+    review = [q['id'] for q in qc if q.get('status') == 'review']
+    rule('every voice line made', len({q['id'] for q in qc}) == n, f'{len(qc)}/{n}')
     rule('no voice line left for human review', not review, f'lines {review[:10]}')
 
-if stage_at_least('render_ok'):
-    v = os.path.join(EP, 'out', 'video.mp4')
-    rule('final video exists', os.path.exists(v))
+if not SKIP_OUT and stage_at_least('render_ok'):
+    rule('final video exists', os.path.exists(os.path.join(OUT, 'video.mp4')))
 
-if stage_at_least('packaged'):
-    pk = os.path.join(EP, 'package')
+if not SKIP_OUT and stage_at_least('packaged'):
+    pk = os.path.join(OUT, 'package')
     have = set(os.listdir(pk)) if os.path.isdir(pk) else set()
-    for f in ['titles.md', 'description.md', 'tags.txt']:
+    for f in ['description.txt', 'meta.json']:
         rule(f'package has {f}', f in have)
     rule('package has 2+ thumbnail versions', len([f for f in have if f.startswith('thumb_')]) >= 2)
 

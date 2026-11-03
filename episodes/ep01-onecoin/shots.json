@@ -1,0 +1,263 @@
+{
+ "music": [
+  "Spy Glass",
+  "Investigations",
+  "Investigations",
+  "Hitman",
+  "Spy Glass",
+  "Investigations"
+ ],
+ "shots": [
+  {
+   "at": 0,
+   "type": "scene",
+   "set": "airport_hall",
+   "time": "dawn",
+   "move": "push",
+   "fx": [
+    "dust"
+   ],
+   "overlay": [
+    {
+     "text": "SOFIA  >  ATHENS",
+     "x": 0.6,
+     "y": 0.22,
+     "size": 34,
+     "color": "amber"
+    },
+    {
+     "text": "25 OCT 2017",
+     "x": 0.6,
+     "y": 0.27,
+     "size": 30,
+     "color": "paper"
+    }
+   ]
+  },
+  {
+   "at": 1,
+   "type": "scene",
+   "set": "airport_hall",
+   "time": "dawn",
+   "move": "hold",
+   "fx": [
+    "dim"
+   ],
+   "sfx": [
+    {
+     "n": "subdrop",
+     "off": 0.1,
+     "under": 9
+    }
+   ]
+  },
+  {
+   "at": 2,
+   "type": "stat",
+   "value": 4,
+   "prefix": "$",
+   "suffix": "B+",
+   "color": "red",
+   "label": "TAKEN IN, Q4 2014 - Q4 2016",
+   "source": "U.S. DOJ (SDNY), 12 SEP 2023 \u00b7 REUTERS"
+  },
+  {
+   "at": 3,
+   "type": "stat",
+   "value": 3.5,
+   "decimals": 1,
+   "suffix": "M",
+   "color": "red",
+   "label": "VICTIMS (AT LEAST)",
+   "source": "U.S. DOJ (SDNY)"
+  },
+  {
+   "at": 4,
+   "type": "scene",
+   "set": "tailor_shop",
+   "time": "morning",
+   "move": "push",
+   "light": [
+    [
+     0.5,
+     0.25,
+     0.12
+    ]
+   ],
+   "cast": [
+    {
+     "who": "rosa",
+     "pose": "sewing",
+     "x": 0.38
+    }
+   ]
+  },
+  {
+   "at": 5,
+   "type": "card",
+   "kind": "doc",
+   "date": "30 JUN 2022",
+   "from": "FBI TEN MOST WANTED FUGITIVES",
+   "lines": [
+    "Added to the list over the multibillion-dollar OneCoin fraud."
+   ],
+   "highlight": "Ten Most Wanted",
+   "source": "FBI.GOV, 30 JUN 2022",
+   "header": "FBI.GOV"
+  },
+  {
+   "at": 6,
+   "type": "coin",
+   "drain": true,
+   "drain_at": 0.8
+  },
+  {
+   "at": 7,
+   "type": "chapter",
+   "num": 1,
+   "title": "The Dream"
+  },
+  {
+   "at": 7,
+   "offset": 2.0,
+   "type": "scene",
+   "set": "tailor_shop",
+   "time": "morning",
+   "move": "pan_r",
+   "light": [
+    [
+     0.5,
+     0.25,
+     0.12
+    ]
+   ],
+   "cast": [
+    {
+     "who": "rosa",
+     "pose": "sewing",
+     "x": 0.35
+    }
+   ]
+  },
+  {
+   "at": 8,
+   "type": "scene",
+   "set": "tailor_shop",
+   "time": "morning",
+   "move": "push",
+   "focus": [
+    0.4,
+    0.55
+   ],
+   "cast": [
+    {
+     "who": "rosa",
+     "pose": "envelope",
+     "x": 0.4,
+     "h": 0.95
+    }
+   ],
+   "overlay": [
+    {
+     "text": "UNI",
+     "x": 0.47,
+     "y": 0.52,
+     "size": 28,
+     "color": "red",
+     "t": 0.3
+    }
+   ],
+   "sfx": [
+    {
+     "n": "paper",
+     "off": 0.3,
+     "under": 13
+    }
+   ]
+  },
+  {
+   "at": 9,
+   "type": "scene",
+   "set": "tailor_shop",
+   "time": "afternoon",
+   "move": "push",
+   "cast": [
+    {
+     "who": "rosa",
+     "pose": "three_quarter_right",
+     "x": 0.3
+    }
+   ]
+  },
+  {
+   "at": 10,
+   "type": "chart",
+   "label": "Bitcoin, from cents to hundreds of dollars"
+  },
+  {
+   "at": 11,
+   "type": "scene",
+   "set": "tailor_shop",
+   "time": "afternoon",
+   "move": "push",
+   "focus": [
+    0.35,
+    0.5
+   ],
+   "cast": [
+    {
+     "who": "rosa",
+     "pose": "thinking",
+     "x": 0.35
+    }
+   ]
+  },
+  {
+   "at": 12,
+   "type": "screen",
+   "set": "kitchen",
+   "time": "night",
+   "device": "phone",
+   "ui": "chat",
+   "messages": [
+    {
+     "text": "Rosa you HAVE to see this",
+     "meta": "Dee"
+    },
+    {
+     "text": "webinar.live/join",
+     "meta": "link"
+    }
+   ],
+   "sfx": [
+    {
+     "n": "tick",
+     "off": 0.1,
+     "under": 12
+    }
+   ]
+  },
+  {
+   "at": 13,
+   "type": "screen",
+   "device": "laptop",
+   "ui": "text",
+   "lines": [
+    "LIVE WEBINAR",
+    "Hosts on screen: bright, fast, very excited."
+   ]
+  },
+  {
+   "at": 14,
+   "type": "screen",
+   "device": "laptop",
+   "ui": "banner",
+   "text": "Bigger than Bitcoin"
+  },
+  {
+   "at": 15,
+   "type": "coin",
+   "label": "OneCoin"
+  }
+ ]
+}

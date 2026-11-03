@@ -76,3 +76,20 @@ Owner merged the final PR, the video is uploaded with title, thumbnail, descript
   never committed.
 - Workflows: images.yml (job, fetch_weights, force), voice.yml (ep, only, takes, redo),
   render.yml (ep).
+
+## ONE-COMMAND RUN (v1, 2026-11-03)
+Any AI with access to this repo can produce an episode. The whole job:
+1. `python machine/wis.py new <slug> "<title>"` -> write research.md, cast.md, script.md, lines.json
+   (rules: WISDROP_PLAYBOOK.md + playbook/rules.yaml; `wis check <ep>` must pass).
+2. Write shots.json (docs/SHOTS.md). Add any new cast/pose/set to library/library.json first.
+   `python machine/plan_images.py <ep>` must print OK.
+3. Owner gate: push branch `gate/<ep-folder>/script` with the files and open a PR. The owner
+   merging it approves cast + script (workflow gates.yml). Never self-approve.
+4. Run workflow **episode** with `ep=episodes/<ep-folder>`. It plans pictures, makes only the
+   missing ones (with a free CPU check for stray people/text), voices only new lines, assembles,
+   renders on parallel CPUs, mixes, masters, packages, and opens the FINAL REVIEW PR.
+   Test first: `test_lines=0-15` renders a short preview without touching state.
+5. Fixes cost only the fix: `redo_images=<names>`, `redo_lines=<ids>`, edit shots.json and re-run.
+6. Owner merges the FINAL REVIEW PR = final approval. Upload is manual in v1 (package has title,
+   description, tags, two thumbnails).
+Read the run log: every step prints PLAN / OK / WAIT / FAIL / QC-FAIL / REVIEW lines.

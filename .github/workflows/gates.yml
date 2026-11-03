@@ -1,0 +1,26 @@
+name: gates
+# The owner's approvals: merging a PR from branch gate/<episode>/<cast|script|final> approves that gate.
+on:
+  pull_request:
+    types: [closed]
+permissions:
+  contents: write
+jobs:
+  approve:
+    if: github.event.pull_request.merged == true && startsWith(github.event.pull_request.head.ref, 'gate/')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with: {ref: main}
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.11"}
+      - run: pip install -q pyyaml
+      - name: Record approval
+        env: {REF: "${{ github.event.pull_request.head.ref }}"}
+        run: |
+          N=$(echo "$REF" | cut -d/ -f2); G=$(echo "$REF" | cut -d/ -f3)
+          # final gate: the checker reads worker outputs that live in artifacts, so trust the packaged state the run already checked
+          WIS_OWNER_APPROVAL=1 WIS_SKIP_OUTPUT_CHECKS=$([ "$G" = final ] && echo 1 || echo 0) python machine/wis.py approve "$N" "$G"
+          git config user.name wisdrop-bot; git config user.email bot@users.noreply.github.com
+          git add episodes/"$N"/state.json episodes/"$N"/qa || true
+          git commit -qm "$N: owner approved $G (PR #${{ github.event.pull_request.number }})" && git push -q origin main

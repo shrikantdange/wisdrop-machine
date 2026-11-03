@@ -5,6 +5,7 @@
   wis status [ep]                    show state of one or all episodes
   wis check <ep>                     run the checker (rules-as-code) on the episode's current stage
   wis advance <ep> <state>           move to the next state (refused if illegal or checks fail)
+  wis reach <ep> <state>             same, but OK if already there (CI uses this)
   wis approve <ep> <gate>            owner gates only: cast | script | final  (normally done by PR merge in CI)
   wis voice <ep>                     make / resume the voiceover on this worker
   wis render <ep>                    render + mix + master (needs voice_ok)
@@ -125,6 +126,10 @@ def main(a):
     elif c == 'status': cmd_status(a[1] if len(a) > 1 else None)
     elif c == 'check': sys.exit(0 if run_checker(ep_dir(a[1]), a[2] if len(a) > 2 else STATES[STATES.index(load_state(ep_dir(a[1]))['state']) + 1]) else 1)
     elif c == 'advance': cmd_advance(a[1], a[2])
+    elif c == 'reach':     # idempotent advance: OK if already there or past it (used by CI)
+        st = load_state(ep_dir(a[1]))['state']
+        if STATES.index(st) >= STATES.index(a[2]): say('OK', f'already {st}')
+        else: cmd_advance(a[1], a[2])
     elif c == 'approve': cmd_advance(a[1], {v: k for k, v in OWNER_GATES.items()}[a[2]], owner=os.environ.get('WIS_OWNER_APPROVAL') == '1')
     elif c == 'voice': cmd_voice(a[1])
     elif c == 'render': cmd_render(a[1])

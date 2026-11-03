@@ -57,6 +57,11 @@ def vo_cache(hashes: list, want: list = None) -> dict:
     return {"have": have, "blobs": blobs}
 
 
+@app.function(image=image, volumes={"/assets": avol}, timeout=60, cpu=0.25, memory=512)
+def put_index(path: str, data: bytes):
+    p = pathlib.Path("/assets/" + path); p.parent.mkdir(parents=True, exist_ok=True); p.write_bytes(data); avol.commit()
+
+
 @app.function(image=image, gpu="T4", volumes={"/weights": vol, "/assets": avol}, timeout=1500,
               max_containers=1, scaledown_window=2)
 def run_lines(lines: list, ref_wav: bytes, takes: int = 2) -> list:
@@ -97,12 +102,14 @@ def run_lines(lines: list, ref_wav: bytes, takes: int = 2) -> list:
             with torch.inference_mode():
                 w = m.generate(L.get("say", L["text"]), exaggeration=ex, cfg_weight=cfg).cpu()
             a16 = ta.functional.resample(w, m.sr, 16000).squeeze().numpy().astype(np.float32)
-            heard = " ".join(s.text for s in wm.transcribe(a16, language="en", beam_size=1)[0]).strip()
+            segs = list(wm.transcribe(a16, language="en", beam_size=1, word_timestamps=True)[0])
+            heard = " ".join(s.text for s in segs).strip()
+            wts = [[round(w.start, 3), round(w.end, 3), w.word.strip()] for sg in segs for w in (sg.words or [])]
             e = wer(L["text"], heard); dur = w.shape[-1] / m.sr
             clip = float((w.abs() > .99).float().mean())
             issues = ([f"wer {e:.2f}"] if e > 0.12 else []) + (["clipping"] if clip > 1e-3 else [])
             r = {"id": L["id"], "take": k, "secs": round(time.time() - t, 1), "dur": round(dur, 2),
-                 "wer": round(e, 3), "heard": heard, "issues": issues}
+                 "wer": round(e, 3), "heard": heard, "issues": issues, "words": wts}
             if best is None or len(issues) < len(best[0]["issues"]) or (len(issues) == len(best[0]["issues"]) and e < best[0]["wer"]):
                 best = (r, w)
             if not issues:
@@ -154,5 +161,7 @@ def voice(ep: str, only: str = "", takes: int = 2, redo: str = ""):
             (od / f"line_{r['qc']['id']:03d}.wav").write_bytes(r["wav"])
         qc.append(r["qc"]); print("QC", json.dumps(r["qc"]))
     (od / "vo_qc.json").write_text(json.dumps(qc, indent=1))
+    index = [{"id": L["id"], "hash": L["hash"], "gap": L.get("gap", 0.3)} for L in lines]
+    put_index.remote(f"eps/{pathlib.Path(ep).name}/vo_index.json", json.dumps(index, indent=1).encode())
     bad = [q for q in qc if q.get("status") == "review"]
     print("OK voice done" if not bad else f"WAIT {len(bad)} line(s) need a listen")

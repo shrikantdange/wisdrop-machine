@@ -1,0 +1,85 @@
+name: episode
+# ONE COMMAND: runs every machine step after the owner approved the script, then stops at the
+# owner's final review (a pull request; merging it = approval). Cached steps cost nothing.
+on:
+  workflow_dispatch:
+    inputs:
+      ep: {description: "episode folder, e.g. episodes/ep01-onecoin", required: true}
+      test_lines: {description: "TEST ONLY: voice just these line ids (e.g. 0-15). Blank = whole episode", default: ""}
+      preview_seconds: {description: "TEST ONLY: render just the first N seconds (0 = all)", default: "0"}
+      redo_images: {description: "remake these pictures with a new seed (comma list)", default: ""}
+      redo_lines: {description: "re-voice these line ids (comma list)", default: ""}
+permissions:
+  contents: write
+  pull-requests: write
+concurrency: {group: heavy-worker, cancel-in-progress: false}
+defaults:
+  run:
+    shell: bash
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    env:
+      EP: ${{ inputs.ep }}
+      TEST: ${{ inputs.test_lines != '' || inputs.preview_seconds != '0' }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.11"}
+      - run: pip install -q modal pillow pyyaml
+      - name: Modal login
+        env:
+          MODAL_TOKEN_ID: ${{ secrets.MODAL_TOKEN_ID }}
+          MODAL_TOKEN_SECRET: ${{ secrets.MODAL_TOKEN_SECRET }}
+        run: |
+          echo "MODAL_TOKEN_ID=$(printf '%s' "$MODAL_TOKEN_ID" | tr -d '[:space:]')" >> "$GITHUB_ENV"
+          echo "MODAL_TOKEN_SECRET=$(printf '%s' "$MODAL_TOKEN_SECRET" | tr -d '[:space:]')" >> "$GITHUB_ENV"
+      - name: 0. Owner gate (script must be approved)
+        run: |
+          python machine/wis.py status "$EP"
+          python - <<'PY'
+          import json, os, sys
+          s = json.load(open(os.path.join(os.environ["EP"], "state.json")))["state"]
+          order = ['draft','research_ok','cast_approved','script_approved','images_ok','voice_ok','render_ok','packaged','final_approved','released']
+          if order.index(s) < order.index('script_approved'):
+              print("FAIL: owner has not approved cast + script; open the gate PR first"); sys.exit(1)
+          PY
+      - name: 1. Plan pictures from shots.json + library
+        run: python machine/plan_images.py "$EP"
+      - name: 2. Images (GPU only for missing pictures; free CPU check for stray people/text)
+        run: |
+          modal run machine/worker_images.py::images --job "$EP/img_jobs.json" --force "${{ inputs.redo_images }}" | tee /tmp/img.log
+          if [ "$TEST" != "true" ]; then python machine/wis.py reach "$EP" images_ok; fi
+      - name: 3. Voice (T4; cached lines skipped)
+        run: |
+          ONLY="${{ inputs.test_lines }}"
+          if echo "$ONLY" | grep -q -- '-'; then a=${ONLY%-*}; b=${ONLY#*-}; ONLY=$(seq -s, $a $b); fi
+          modal run machine/worker_voice.py::voice --ep "$EP" --only "$ONLY" --redo "${{ inputs.redo_lines }}" | tee /tmp/vo.log
+          if [ "$TEST" != "true" ]; then python machine/wis.py reach "$EP" voice_ok; fi
+      - name: 4. Assemble, render, mix, master, package (Modal CPUs in parallel)
+        run: |
+          modal run machine/worker_render.py::render --ep "$EP" --seconds "${{ inputs.preview_seconds }}"
+          if [ "$TEST" != "true" ]; then python machine/wis.py reach "$EP" render_ok && python machine/wis.py reach "$EP" packaged; fi
+      - name: Upload video + package (artifact, 14 days)
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ github.run_id }}-review
+          path: |
+            out/*/video.mp4
+            out/*/package/
+            out/*/img/*.jpg
+            out/*/img/asset_manifest.json
+            out/*/vo/vo_qc.json
+          retention-days: 14
+      - name: Save state + open the owner's final review PR
+        if: env.TEST != 'true'
+        env: {GH_TOKEN: "${{ github.token }}"}
+        run: |
+          N=$(basename "$EP"); B="gate/$N/final"
+          git config user.name wisdrop-bot; git config user.email bot@users.noreply.github.com
+          git add "$EP/state.json" "$EP/img_jobs.json" "$EP/qa" && git commit -qm "$N: machine run ${{ github.run_id }} -> packaged" && git push -q origin HEAD:main || true
+          git checkout -q -B "$B"; mkdir -p "$EP/review"; cp out/$N/package/* "$EP/review/"
+          git add "$EP/review" && git commit -qm "$N: final review (video in run ${{ github.run_id }} artifacts)" && git push -qf origin "$B"
+          gh pr create --base main --head "$B" --title "$N: FINAL REVIEW - merge to approve" \
+            --body "Watch the video in the artifacts of run ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}. Thumbnails, title, description and tags are in this PR. Merge = final approval. Close = rejected (say what to change)." || true

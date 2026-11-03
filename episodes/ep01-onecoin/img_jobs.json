@@ -1,0 +1,84 @@
+[
+ {
+  "name": "char_rosa__master",
+  "lib": "cast/rosa",
+  "seed": 21,
+  "w": 1328,
+  "h": 1328,
+  "people": true,
+  "cutout": true,
+  "prompt": "Character model sheet of ONE fictional person: a woman aged 54 who looks early fifties, sturdy build, medium height, dark brown hair with a few thin grey streaks in a neat low bun, tortoiseshell reading glasses worn on her face, warm kind face with light smile lines, burgundy knit cardigan over a beige blouse, olive knee-length skirt, flat brown shoes, a pale off-white cloth tape measure draped around her neck. Full body, standing, front view, arms relaxed at the sides. Background is a perfectly plain flat mid-grey with nothing on it: no wall texture, no floor line, no lamp, no cast shadow. Even soft front light, whole figure visible with margin on all sides."
+ },
+ {
+  "name": "set_airport_hall__dawn",
+  "lib": "sets/airport_hall",
+  "seed": 41,
+  "prompt": "TIME/LIGHT: pale cold dawn, navy sky warming to a thin amber horizon, long soft shadows. Wide shot of an empty airport departure hall: huge windows onto a runway, rows of empty seats, a large blank departure board panel, polished reflective floor, one lonely rolling suitcase. Clear empty floor space where a person could stand later."
+ },
+ {
+  "name": "set_kitchen__night",
+  "lib": "sets/kitchen",
+  "seed": 51,
+  "prompt": "TIME/LIGHT: late night, deep navy shadows, one warm lamp as the only strong light. Small modest family kitchen: a round wooden table with two chairs, an open laptop, a mug, a stack of plain envelopes, a fridge, a window over the sink showing rooftops. Clear empty floor space where a person could stand later."
+ },
+ {
+  "name": "set_tailor_shop__afternoon",
+  "lib": "sets/tailor_shop",
+  "seed": 31,
+  "prompt": "TIME/LIGHT: sunny late afternoon, warm amber light raking across, crisp shadows. Wide interior of a small neighbourhood tailoring shop seen from inside: wooden front counter with one sewing machine under a hanging lamp, a dress form wearing a half-finished white wedding dress, rolls of fabric on shelves, a small old TV on a shelf, a large shop window onto a quiet street with one street lamp. Clear empty floor space where a person could stand later."
+ },
+ {
+  "name": "set_tailor_shop__morning",
+  "lib": "sets/tailor_shop",
+  "seed": 31,
+  "prompt": "TIME/LIGHT: warm low morning sun through the window, soft gold light pools, cool shadows. Wide interior of a small neighbourhood tailoring shop seen from inside: wooden front counter with one sewing machine under a hanging lamp, a dress form wearing a half-finished white wedding dress, rolls of fabric on shelves, a small old TV on a shelf, a large shop window onto a quiet street with one street lamp. Clear empty floor space where a person could stand later."
+ },
+ {
+  "name": "char_rosa__envelope",
+  "lib": "cast/rosa",
+  "mode": "edit",
+  "refs_from": [
+   "char_rosa__master"
+  ],
+  "seed": 22,
+  "people": true,
+  "cutout": true,
+  "prompt": "The same person from the reference image, identical face, hair, glasses, body and identical clothes and colours. Now standing three-quarter view facing right, slipping banknotes into a plain envelope, careful. Keep exactly the same illustration style, ink outlines and colours. Plain flat mid-grey background, no floor, no cast shadow, no lamp, no props except those named, full body visible with margin."
+ },
+ {
+  "name": "char_rosa__sewing",
+  "lib": "cast/rosa",
+  "mode": "edit",
+  "refs_from": [
+   "char_rosa__master"
+  ],
+  "seed": 22,
+  "people": true,
+  "cutout": true,
+  "prompt": "The same person from the reference image, identical face, hair, glasses, body and identical clothes and colours. Now seated on an invisible stool facing right, leaning forward, hands forward guiding fabric as if at a sewing machine (no machine drawn). Keep exactly the same illustration style, ink outlines and colours. Plain flat mid-grey background, no floor, no cast shadow, no lamp, no props except those named, full body visible with margin."
+ },
+ {
+  "name": "char_rosa__thinking",
+  "lib": "cast/rosa",
+  "mode": "edit",
+  "refs_from": [
+   "char_rosa__master"
+  ],
+  "seed": 22,
+  "people": true,
+  "cutout": true,
+  "prompt": "The same person from the reference image, identical face, hair, glasses, body and identical clothes and colours. Now standing three-quarter view, one hand at her chin, thinking. Keep exactly the same illustration style, ink outlines and colours. Plain flat mid-grey background, no floor, no cast shadow, no lamp, no props except those named, full body visible with margin."
+ },
+ {
+  "name": "char_rosa__three_quarter_right",
+  "lib": "cast/rosa",
+  "mode": "edit",
+  "refs_from": [
+   "char_rosa__master"
+  ],
+  "seed": 22,
+  "people": true,
+  "cutout": true,
+  "prompt": "The same person from the reference image, identical face, hair, glasses, body and identical clothes and colours. Now standing in three-quarter view facing right, calm. Keep exactly the same illustration style, ink outlines and colours. Plain flat mid-grey background, no floor, no cast shadow, no lamp, no props except those named, full body visible with margin."
+ }
+]
