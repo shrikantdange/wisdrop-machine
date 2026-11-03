@@ -60,3 +60,7 @@ The owner merging it IS the approval. Never merge it yourself.
 
 ## 7. Done means
 Owner merged the final PR, the video is uploaded with title, thumbnail, description, tags, and state.json says `released`.
+
+## Image style (owner lock, 2026-11-03)
+- Style = kit/style_prompt.txt (technique is fixed; palette follows the scene). References: kit/style_ref/owner_ref_*.jpg.
+- Every image prompt MUST state the scene's TIME/LIGHT (e.g. "overcast morning", "night, one street lamp", "sunny afternoon"). Not every scene is night.
