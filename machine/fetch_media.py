@@ -45,7 +45,13 @@ def main(ep):
     cp = os.path.join(md, "credits.json"); cred = json.load(open(cp)) if os.path.exists(cp) else {}
     bad = 0
     items = []
+    tl = os.environ.get("WIS_TEST_LINES", "").strip(); ids = None     # test runs fetch only what the voiced lines show
+    if tl:
+        ids = set()
+        for part in tl.split(","):
+            a, _, b = part.partition("-"); ids |= set(range(int(a), int(b or a) + 1))
     for s in sh["shots"]:
+        if ids is not None and s["at"] not in ids: continue
         if s.get("type") in ("photo", "magnify", "parallax", "lineart"): items.append(s)
         elif s.get("type") in ("pair", "trio", "wall", "polaroids", "split"): items += s.get("photos", [])
     for s in items:

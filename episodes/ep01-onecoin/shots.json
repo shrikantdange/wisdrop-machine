@@ -809,7 +809,7 @@
   },
   {
    "type": "parallax",
-   "q": "Wembley Arena London exterior",
+   "q": "Wembley Arena",
    "mood": "night",
    "label": "Wembley, June 2016",
    "source": "FBI video page; BBC, 24 NOV 2019",
@@ -915,7 +915,7 @@
   },
   {
    "type": "lineart",
-   "q": "server room data center aisle",
+   "q": "server room",
    "label": "No mining pools",
    "flashback": true,
    "trace": 1.4,
@@ -1142,14 +1142,14 @@
    "at": 55
   },
   {
-   "type": "magnify",
-   "q": "Bitcoin block explorer transaction list screenshot",
-   "detail": [
-    0.5,
-    0.4
+   "type": "list",
+   "items": [
+    "Every transaction",
+    "On a public record",
+    "Anyone can check"
    ],
-   "zoom": 2.2,
-   "label": "Check it yourself",
+   "step": 0.6,
+   "source": "U.S. DOJ (SDNY) PLEA, 16 DEC 2022",
    "at": 56
   },
   {
@@ -1161,7 +1161,7 @@
      "label": "Copy"
     },
     {
-     "q": "laptop computer desk night",
+     "q": "computer keyboard close up",
      "mood": "night",
      "label": "Copy"
     },
@@ -1171,7 +1171,7 @@
      "label": "Copy"
     },
     {
-     "q": "server room lights",
+     "q": "network switch cables",
      "mood": "night",
      "label": "Copy"
     }
@@ -2113,7 +2113,7 @@
    "title": "Real vs OneCoin",
    "photos": [
     {
-     "q": "stock market chart screen",
+     "q": "candlestick chart",
      "mood": "day",
      "label": "Real: wobbles"
     },
@@ -2221,7 +2221,7 @@
   },
   {
    "type": "magnify",
-   "q": "magnifying glass on notebook",
+   "q": "magnifying glass",
    "detail": [
     0.5,
     0.5
