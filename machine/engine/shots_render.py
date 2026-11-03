@@ -457,6 +457,7 @@ def render(i):
     if LOOK == "v3": apply_theme(CUR_PART)
     fr, story = TYPES[s["type"]](s, t - st, d)
     if LOOK == "v3": fr = v3_after(fr, s, t - st, d, k)
+    if LOOK == "v3" and s.get("trans"): fr = v4_trans(fr, s, t - st, k)
     if 0 <= t - st < DIP and k > 0: fr = Image.blend(Image.new("RGB", (W, H), (0, 0, 0)), fr, .45 + .55 * ease((t - st) / DIP))
     fr = finish(fr, i, 0)
     if LOOK == "v3" and s["type"] not in ("chapter", "end"): fr = v3_counter(fr, k, t)
@@ -558,3 +559,26 @@ if LOOK == "v3":
         dr.rectangle([W - 70 - tw - 24, 40, W - 46, 128], fill=(20, 20, 22)); dr.text((W - 58 - tw, 46), txt, font=f, fill=C.YEL)
         dr.text((W - 58, 134), c.get("label", "").upper(), font=F(MONO, 18), fill=(235, 230, 220), anchor="ra", stroke_width=3, stroke_fill=(0, 0, 0))
         return fr
+
+# ---------------- v4 fx: parallax, document reveal, headlines, 3D coin/chart, line-art, transitions, beat sync ----------------
+if LOOK == "v3":
+    import v4fx as X
+    TYPES.update(parallax=lambda s, t, d: (X.s_parallax(s, t, d, CUR_PART, _m, _credit), False),
+                 lineart=lambda s, t, d: (X.s_lineart(s, t, d, CUR_PART, _m, _credit), False),
+                 docreveal=lambda s, t, d: (X.s_docreveal(s, t, d, CUR_PART), False),
+                 headlines=lambda s, t, d: (X.s_headlines(s, t, d, CUR_PART), False),
+                 coin3d=lambda s, t, d: (X.s_coin3d(s, t, d, CUR_PART), False),
+                 chart3d=lambda s, t, d: (X.s_chart3d(s, t, d, CUR_PART), False))
+    def v4_trans(fr, s, tt, k):
+        return (X.glitch if s["trans"] == "glitch" else X.leak)(fr, tt, f"{s['at']}:{k}") if s["trans"] in ("glitch", "leak") else fr
+    # beat sync (AMC): pops (marks) snap to a music beat within 2 frames; cuts only move later.
+    if SH.get("beat_sync", True) and SH.get("music") and not os.environ.get("WIS_NO_BEATS"):
+        _cuts = [0.0] + [a for a, s_ in SHOTS if s_["type"] == "chapter" and a > 0] + [DUR]
+        BEATS = X.episode_beats(V.KIT, SH["music"], _cuts)
+        for j, (a, s_) in enumerate(SHOTS):
+            a2 = X.snap(a, BEATS, forward_only=True) if j else a
+            for m in s_.get("marks", []):
+                if "t" in m: m["t"] = round(X.snap(a2 + m["t"], BEATS) - a2, 4)
+            SHOTS[j] = (a2, s_)
+        STARTS[:] = [x[0] for x in SHOTS] + [DUR]
+        print(f"OK beat sync: {len(BEATS)} beats", flush=True)

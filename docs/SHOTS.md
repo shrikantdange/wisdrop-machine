@@ -107,3 +107,13 @@ The renderer adds a small camera punch-in when a shot would otherwise hold still
 18. **Polaroid memory**: `polaroids` stack with captions.
 19. **Follow the money**: `money` nodes + flows + coins + counter.
 20. **Years fly by**: `scrub` timeline or `barrace` for rankings over time.
+
+## v4 fx (machine/engine/v4fx.py, CPU only; checks V1-V6 in craft_check)
+21. **2.5D parallax**: `parallax` {file|q, label, amp=60}. One photo split into far/mid/near layers (depth = lower + more detail), drifting 1x/1.7x/2.6x. Counts as continuous motion. Credit shown.
+22. **Document reveal**: `docreveal` {kind, title, lines[], redact[line idx], step=.45, quote, cps=26, source}. Scanned paper; redaction bars wipe off on twos; the quote types on under a highlighter. Quote must be verbatim from the source.
+23. **Headline montage**: `headlines` {items:[{outlet, head, date, source}], step=.7}. Clippings slam in (1.45x->1x in 0.12 s, small shake). REAL headlines only, verbatim, each with outlet + date + source (V4). Column texture is grey bars, never fake words.
+24. **3D coin**: `coin3d` {text, label, spins=.6, drain, drain_at}. Shaded gold coin, rim thickness, specular sweep, floor shadow; drain empties it from the top.
+25. **3D chart**: `chart3d` {title, items:[{label, value, text}], hl=index, step=.45, source}. Extruded bars, top/side shading, specular sweep. Needs a source (numbers).
+26. **Line-art flashback**: `lineart` {file|q, label "Flashback", flashback: true, trace=1.6}. Photo -> ink sketch (edge detection) traced on left to right with a red pen line.
+27. **Transitions** (any shot, field `trans`): `glitch` = 8 frames RGB split + block displace, crypto moments only (V1), max 4 per episode (V6); `leak` = 0.5 s light-leak / film-burn wipe, only on a chapter card or the shot after it (V3).
+**Beat sync** (automatic, `beat_sync: false` in shots.json turns it off): music onsets found by numpy spectral flux (same track offsets as automix); mark pops snap to a beat within 2 frames; cuts only move later (never before the voice).

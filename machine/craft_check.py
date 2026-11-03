@@ -71,7 +71,7 @@ def main(ep, tl_path=None, upto=None):
     out("No lone picture without surround motion (label, marks or stickers)", "FAIL" if lone else "OK", f"lines {lone[:8]}")
     # numbers on screen need a source
     def has_num(s):
-        if s["type"] in ("stat", "bars", "barrace"): return True
+        if s["type"] in ("stat", "bars", "barrace", "chart3d"): return True
         if s["type"] == "chart" and not s.get("illustrative", True): return True
         if s["type"] == "money" and (s.get("counter") or any(re.search(r"\d", f.get("label", "")) for f in s.get("flows", []))): return True
         if s["type"] == "phone" and s.get("app") in ("bank", "ticker") and not s.get("illustrative"): return True
@@ -91,6 +91,9 @@ def main(ep, tl_path=None, upto=None):
             if chars / 13 > d + 1.5: slow.append(s["at"])
     out("T1 cards stay long enough to read (13 chars/s)", "REVIEW" if slow else "OK", f"lines {slow[:8]}" if slow else "")
     # every line covered from its own start (visuals never before the voice)
+    # v4 fx rules (docs/SHOTS.md T21-T27)
+    import v4fx_rules as VR
+    for rule, status, detail in VR.check(sh): out(rule, status, detail)
     out("Loudness -14 LUFS / -2 dBTP, voice above music", "PLAN", "measured on the mix after render (automix prints it)")
     os.makedirs(os.path.join(ep, "qa"), exist_ok=True)
     json.dump(res, open(os.path.join(ep, "qa", "craft.json"), "w"), indent=1)

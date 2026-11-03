@@ -8,10 +8,10 @@ so no shot holds still longer than MAX_HOLD (docs/EDITING_CRAFT.md rule P1).
 MAX_HOLD = 2.5      # P1: nothing still for longer than this
 ACCENT_EVERY = 2.2  # spacing of automatic accents inside a long static stretch
 
-CONTINUOUS = {"map", "money", "magnify", "scrub", "barrace"}
-STRIKING = {"stat", "map", "phone", "stamp", "photo", "pair", "trio", "wall", "polaroids", "magnify", "split", "money", "coin"}
+CONTINUOUS = {"map", "money", "magnify", "scrub", "barrace", "parallax"}
+STRIKING = {"stat", "map", "phone", "stamp", "photo", "pair", "trio", "wall", "polaroids", "magnify", "split", "money", "coin", "parallax", "headlines", "coin3d", "docreveal", "chart3d"}
 AI_PICTURE = {"scene"}
-PHOTO_TYPES = {"photo", "pair", "trio", "wall", "polaroids", "magnify", "split"}
+PHOTO_TYPES = {"parallax", "lineart", "photo", "pair", "trio", "wall", "polaroids", "magnify", "split"}
 
 
 def _steps(n, step, t0=0.0):
@@ -32,6 +32,12 @@ def events(s, d):
     elif t == "timeline": ev += _steps(len(s.get("events", [])), .45, .3)
     elif t == "chart": ev += [s.get("draw", 1.6)] + [s.get("draw", 1.6) * n.get("i", 0) / max(1, len(s.get("points", [1] * 10)) - 1) for n in s.get("notes", [])]
     elif t == "coin": ev += [s.get("drain_at", .6), s.get("drain_at", .6) + 1.6] if s.get("drain") else [.5]
+    elif t in ("parallax", "lineart"): ev += [.5, s.get("trace", 1.6)]
+    elif t == "docreveal":
+        n = len(s.get("redact", [])); ev += [.5] + _steps(n, s.get("step", .45), .5) + ([.9 + n * s.get("step", .45)] if s.get("quote") else [])
+    elif t == "headlines": ev += _steps(len(s.get("items", [])), s.get("step", .7), .15)
+    elif t == "coin3d": ev += [.45, .6] + ([s.get("drain_at", 1.4), s.get("drain_at", 1.4) + 1.6] if s.get("drain") else [])
+    elif t == "chart3d": ev += _steps(len(s.get("items", [])), s.get("step", .45), .3)
     elif t == "phone":
         n = len(s.get("messages", [])) or len(s.get("notes", [])) or len(s.get("rows", [])) or 1
         ev += _steps(n, s.get("step", .9), s.get("first", .5))
@@ -72,7 +78,7 @@ def max_gap(s, d):
 def media_keys(s):
     """Every photo/AI picture a shot shows (for the no-repeat check)."""
     t = s["type"]; out = []
-    if t == "photo": out.append(s.get("file") or s.get("commons") or s.get("q"))
+    if t in ("photo", "parallax", "lineart"): out.append(s.get("file") or s.get("commons") or s.get("q"))
     if t in ("pair", "trio", "wall", "polaroids", "split", "magnify"):
         for p in s.get("photos", [s] if t == "magnify" else []):
             out.append(p.get("file") or p.get("commons") or p.get("q"))

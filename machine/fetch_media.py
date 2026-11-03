@@ -46,7 +46,7 @@ def main(ep):
     bad = 0
     items = []
     for s in sh["shots"]:
-        if s.get("type") in ("photo", "magnify"): items.append(s)
+        if s.get("type") in ("photo", "magnify", "parallax", "lineart"): items.append(s)
         elif s.get("type") in ("pair", "trio", "wall", "polaroids", "split"): items += s.get("photos", [])
     for s in items:
         if s.get("file") and os.path.exists(os.path.join(md, s["file"])): continue

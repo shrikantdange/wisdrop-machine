@@ -63,7 +63,7 @@ def plan(ep: str, seconds: float = 0) -> list:
             if s.get("cast"): names.append(f"shot_{s['set']}__{tm}__" + "+".join(f"{c['who']}-{c.get('pose', 'front_neutral')}" for c in s["cast"][:2]))
         pics = [m.MAN.get(x, {}).get("hash", "") for x in names]
         files = [p.get("file") or m._re2.sub(r"[^a-z0-9]+", "-", (p.get("commons") or p.get("q", "")).lower()).strip("-")[:60] + ".jpg"
-                 for p in (s.get("photos", []) + ([s] if s["type"] in ("photo", "magnify") else []))] if hasattr(m, "_re2") else []
+                 for p in (s.get("photos", []) + ([s] if s["type"] in ("photo", "magnify", "parallax", "lineart") else []))] if hasattr(m, "_re2") else []
         media = [f"/repo/{ep}/media/{f}" for f in files if os.path.exists(f"/repo/{ep}/media/{f}")]
         h = hashlib.sha256(json.dumps([eng.hexdigest(), s, a, b, k > 0, m.PART[k], caps, pics, m.SH.get("counter"),
                                        [x for x in m.SHOTS if "counter_to" in x[1] and x[0] <= m.STARTS[k + 1]].__repr__(),

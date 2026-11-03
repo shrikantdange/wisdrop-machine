@@ -37,7 +37,7 @@
  {
   "rule": "AI pictures <= 6 per episode",
   "status": "OK",
-  "detail": "4 distinct"
+  "detail": "0 distinct"
  },
  {
   "rule": "No lone picture without surround motion (label, marks or stickers)",
@@ -61,6 +61,31 @@
  },
  {
   "rule": "T1 cards stay long enough to read (13 chars/s)",
+  "status": "OK",
+  "detail": ""
+ },
+ {
+  "rule": "V1 glitch transition only on crypto moments",
+  "status": "OK",
+  "detail": ""
+ },
+ {
+  "rule": "V2 glitch lasts 6-10 frames",
+  "status": "OK",
+  "detail": ""
+ },
+ {
+  "rule": "V3 light-leak wipe only between parts (chapter card or the shot after it)",
+  "status": "OK",
+  "detail": ""
+ },
+ {
+  "rule": "V4 headline montage: real sourced headlines only (outlet, date, source)",
+  "status": "OK",
+  "detail": ""
+ },
+ {
+  "rule": "V6 at most 4 glitch transitions per episode",
   "status": "OK",
   "detail": ""
  },
