@@ -77,7 +77,7 @@ Owner merged the final PR, the video is uploaded with title, thumbnail, descript
 - Workflows: images.yml (job, fetch_weights, force), voice.yml (ep, only, takes, redo),
   render.yml (ep).
 
-## ONE-COMMAND RUN (v1, 2026-11-03)
+## ONE-COMMAND RUN (v1.1) - full guide: docs/OPERATOR_GUIDE.md
 Any AI with access to this repo can produce an episode. The whole job:
 1. `python machine/wis.py new <slug> "<title>"` -> write research.md, cast.md, script.md, lines.json
    (rules: WISDROP_PLAYBOOK.md + playbook/rules.yaml; `wis check <ep>` must pass).
