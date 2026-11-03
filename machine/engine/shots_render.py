@@ -410,7 +410,9 @@ if LOOK in ("collage", "v3"):
 
 SHOTS = []
 for s in SH["shots"]:
-    at = s["at"]; t0 = (ST[at] + LEAD if at in ST else 0) + s.get("offset", 0)
+    at = s["at"]
+    if at not in ST: continue          # line not voiced in this run (test_lines): its shots are left out
+    t0 = ST[at] + LEAD + s.get("offset", 0)
     SHOTS.append((0.0 if not SHOTS else t0, s))
 SHOTS.sort(key=lambda x: x[0])
 STARTS = [x[0] for x in SHOTS] + [DUR]

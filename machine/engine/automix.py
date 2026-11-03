@@ -44,8 +44,8 @@ def main(ep, work):
     def put(buf, t, a):
         i = int(t * SR); m = min(len(a), N - i)
         if m > 0 and i >= 0: buf[i:i + m] += a[:m]
-    def t_of(s): return (ST.get(s["at"], 0) + .04 + s.get("offset", 0)) if s is not SH["shots"][0] else 0.0
-    shots = SH["shots"]
+    shots = [s for s in SH["shots"] if s["at"] in ST]      # test runs voice only some lines
+    def t_of(s): return (ST[s["at"]] + .04 + s.get("offset", 0)) if s is not shots[0] else 0.0
     # music: one track per part, parts split at chapter cards, 1.5 s crossfades
     cuts = [0.0] + [t_of(s) for s in shots if s["type"] == "chapter"] + [DUR]
     for k in range(len(cuts) - 1):
