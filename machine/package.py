@@ -71,12 +71,15 @@ def main(ep, tl_p, assets, out):
     tags = [case, f"{case} scam", f"{case} explained", "financial fraud", "crypto scam", "ponzi scheme", "pyramid scheme", "true crime", "money crimes", "documentary", "Wisdrop"]
     json.dump({"title": pick, "alternates": [o for o in opts if o != pick], "tags": tags, "chapters": ch}, open(os.path.join(out, "meta.json"), "w"), indent=1)
     # thumbnails: A = first story set + main character cutout; B = board with big text
-    scene = next((s for s in shots if s["type"] == "scene" and s.get("set") not in (None, "board")), None)
+    # thumbs come from shots.json "thumb": {"set", "time", "who", "pose"}; else the first scene that has a character
+    th = json.load(open(os.path.join(ep, "shots.json"))).get("thumb")
+    scene = th or next((s for s in shots if s["type"] == "scene" and s.get("cast")), None) or next((s for s in shots if s["type"] == "scene" and s.get("set") not in (None, "board")), None)
     def load(rel, rgba=False):
         p = os.path.join(assets, rel) if rel else ""
         return Image.open(p).convert("RGBA" if rgba else "RGB") if p and os.path.exists(p) else None
     bg = load(man.get(f"set_{scene['set']}__{scene.get('time', 'night')}", {}).get("asset")) if scene else None
-    who = next((c for s in shots if s["type"] == "scene" for c in s.get("cast", [])), None)
+    who = ({"who": th["who"], "pose": th.get("pose", "front_neutral")} if th and th.get("who") else
+           (scene.get("cast") or [None])[0] if scene else None)
     cut = load(man.get(f"char_{who['who']}__{who.get('pose', 'front_neutral')}", {}).get("cut"), True) if who else None
     tA = (thumbs[0] if thumbs else pick.split()[1] if pick else "").split() or ["WISDROP"]
     tB = (thumbs[1] if len(thumbs) > 1 else "NO COIN").split()
