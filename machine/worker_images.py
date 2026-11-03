@@ -140,7 +140,7 @@ def run_images(jobs: list, style: str) -> list:
             img.save(p, "PNG")
             out.append({"name": j["name"], "out": j["out"], "secs": round(time.time() - t, 1)})
             avol.commit()                    # keep every finished picture even if a later step fails
-        del pipe; torch.cuda.empty_cache()
+        del pipe; import gc; gc.collect(); torch.cuda.empty_cache()
     avol.commit()
     meta["total_s"] = round(time.time() - t0, 1)
     out.append({"name": "_meta", **meta})
@@ -236,8 +236,11 @@ def images(job: str, force: str = ""):
     meta = []; flagged = {}
     for rnd in range(MAX_QC_ROUNDS + 1):
         if todo:
-            for r in run_images.remote(todo, style):
-                meta.append(r); print("IMG", json.dumps(r))
+            for mode in ("t2i", "edit"):      # one model per call: both together do not fit in 80 GB
+                part = [j for j in todo if j.get("mode", "t2i") == mode]
+                if part:
+                    for r in run_images.remote(part, style):
+                        meta.append(r); print("IMG", json.dumps(r))
         checks = [j for j in ordered if not j.get("people") and j.get("mode", "t2i") == "t2i"]
         res = qc.remote([j["out"] for j in checks]) if checks else {}
         bad = [j for j in checks if not res[j["out"]]["pass"]]
