@@ -1,0 +1,13 @@
+{
+ "steps": [
+  {
+   "step": "images_t2i",
+   "secs": 93.9,
+   "gpu": "A100-80GB",
+   "calls": 1,
+   "usd": 0.06514
+  }
+ ],
+ "total_usd": 0.0651,
+ "gpu_secs": 93.9
+}

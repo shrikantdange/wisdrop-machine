@@ -1,0 +1,29 @@
+{
+ "A_4B_GONE": {
+  "score": 100,
+  "contrast_rms_168": 0.289,
+  "text_cap_px_168": 24.7,
+  "focal_share": 0.85,
+  "verdict": "OK",
+  "words": "$4B GONE",
+  "source": "$4B: U.S. DOJ (SDNY) 12 Sep 2023 + Reuters 12 Sep 2023 (research F04)"
+ },
+ "B_1C_BACK": {
+  "score": 100,
+  "contrast_rms_168": 0.278,
+  "text_cap_px_168": 24.7,
+  "focal_share": 0.85,
+  "verdict": "OK",
+  "words": "1\u00a2 BACK",
+  "source": "DERIVED, owner to approve: more than $40M remission pool (DOJ 13 Apr 2026, F29) vs more than $4B taken (F04) = about 1 cent per dollar"
+ },
+ "C_VANISHED": {
+  "score": 94,
+  "contrast_rms_168": 0.234,
+  "text_cap_px_168": 16.0,
+  "focal_share": 0.72,
+  "verdict": "OK",
+  "words": "VANISHED",
+  "source": "no number; FBI Ten Most Wanted (F01/F03)"
+ }
+}
