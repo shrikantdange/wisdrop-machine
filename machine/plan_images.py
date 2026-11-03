@@ -14,6 +14,12 @@ REPO = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 def plan(ep_dir):
     lib = json.load(open(os.path.join(REPO, "library", "library.json")))
     shots = json.load(open(os.path.join(ep_dir, "shots.json")))["shots"]
+    tl = os.environ.get("WIS_TEST_LINES", "").strip()     # test runs: plan only pictures the voiced lines show
+    if tl:
+        ids = set()
+        for part in tl.split(","):
+            a, _, b = part.partition("-"); ids |= set(range(int(a), int(b or a) + 1))
+        shots = [x for x in shots if x["at"] in ids]
     T = lib["templates"]; jobs = {}; errs = []
     for s in shots:
         if s["type"] not in ("scene", "screen"):
