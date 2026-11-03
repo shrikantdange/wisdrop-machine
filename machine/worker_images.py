@@ -26,7 +26,7 @@ STYLE = ("Editorial flat-vector illustration for a serious finance documentary. 
          "crisp hard-edged shadows, soft cinematic lighting from a window or lamp, subtle paper grain texture. "
          "Muted palette of deep navy, charcoal, warm amber and off-white, with small accents only. "
          "Low or eye-level cinematic camera, 16:9 composition. No text, no letters, no logos, no watermarks.")
-NEG = "text, letters, words, logo, watermark, signature, photo, 3d render, anime, cartoon big eyes, extra fingers, deformed hands"
+NEG = "text, letters, words, numbers, signage, logo, watermark, signature, photo, photorealistic, 3d render, anime, chibi, cartoon big eyes, bright daylight colours, extra fingers, deformed hands, extra people"
 
 
 @app.function(image=image, volumes={"/weights": vol}, timeout=3600, cpu=2, memory=4096, max_containers=1)
@@ -39,7 +39,7 @@ def download_weights() -> str:
 
 @app.function(image=image, gpu="A100-80GB", volumes={"/weights": vol}, timeout=1200,
               max_containers=1, scaledown_window=2, memory=32768)
-def run_images(jobs: list) -> list:
+def run_images(jobs: list, style: str = "") -> list:
     import io, time, torch
     from diffusers import DiffusionPipeline
     t0 = time.time()
@@ -48,7 +48,7 @@ def run_images(jobs: list) -> list:
     out = []
     for j in jobs:
         t = time.time()
-        img = pipe(prompt=STYLE + " " + j["prompt"], negative_prompt=NEG, width=j.get("w", 1664), height=j.get("h", 928),
+        img = pipe(prompt=(style or STYLE) + " " + j["prompt"], negative_prompt=NEG, width=j.get("w", 1664), height=j.get("h", 928),
                    num_inference_steps=j.get("steps", 30), true_cfg_scale=4.0,
                    generator=torch.Generator("cuda").manual_seed(j.get("seed", 7))).images[0]
         b = io.BytesIO(); img.save(b, "PNG")
@@ -68,7 +68,9 @@ def images(job: str):
     jp = root / job; jobs = json.loads(jp.read_text())
     od = root / "out" / jp.parent.name / "img"; od.mkdir(parents=True, exist_ok=True)
     meta = []
-    for r in run_images.remote(jobs):
+    sp = root / "kit" / "style_prompt.txt"
+    style = sp.read_text().strip() if sp.exists() else ""
+    for r in run_images.remote(jobs, style):
         if "png" in r:
             (od / f"{r['name']}.png").write_bytes(r["png"]); meta.append({"name": r["name"], "secs": r["secs"]})
         else:
