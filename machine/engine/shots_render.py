@@ -568,7 +568,8 @@ if LOOK == "v3":
                  docreveal=lambda s, t, d: (X.s_docreveal(s, t, d, CUR_PART), False),
                  headlines=lambda s, t, d: (X.s_headlines(s, t, d, CUR_PART), False),
                  coin3d=lambda s, t, d: (X.s_coin3d(s, t, d, CUR_PART), False),
-                 chart3d=lambda s, t, d: (X.s_chart3d(s, t, d, CUR_PART), False))
+                 chart3d=lambda s, t, d: (X.s_chart3d(s, t, d, CUR_PART), False),
+                 endscreen=lambda s, t, d: (X.s_endscreen(s, t, d, CUR_PART), False))
     def v4_trans(fr, s, tt, k):
         return (X.glitch if s["trans"] == "glitch" else X.leak)(fr, tt, f"{s['at']}:{k}") if s["trans"] in ("glitch", "leak") else fr
     # beat sync (AMC): pops (marks) snap to a music beat within 2 frames; cuts only move later.

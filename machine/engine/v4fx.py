@@ -338,3 +338,21 @@ def snap(t, bt, forward_only=False, tol=SNAP_TOL):
     if not bt: return t
     i = int(np.searchsorted(bt, t)); cands = [b for b in bt[max(0, i - 1):i + 1] if abs(b - t) <= tol + 1e-6 and (b >= t or not forward_only)]
     return min(cands, key=lambda b: abs(b - t)) if cands else t
+
+
+# ---------------- end screen (last 5-20 s; YouTube places its own clickable elements on top) ----------------
+def s_endscreen(s, t, d, part):
+    """Code-drawn slots where YouTube's end-screen elements go: a 16:9 video slot left, a round
+    subscribe slot right, heading on top. Slots breathe slowly so the frame is never still."""
+    th = V.theme(part); fr = V.board(part); dr = ImageDraw.Draw(fr); a = eout(min(1, t / .8))
+    dr.text((W / 2, 150 - 30 * (1 - a)), s.get("text", "Next case").upper(), font=F(ANTON, 110), fill=th["ink"], anchor="mm")
+    if s.get("sub"): dr.text((W / 2, 250), s["sub"].upper(), font=F(ANTON, 44), fill=th["sub"], anchor="mm")
+    pulse = .5 + .5 * math.sin(t * 1.6)
+    vx0, vy0, vw = 250, 340, 820; vh = int(vw * 9 / 16)
+    col = tuple(int(c * (.75 + .25 * pulse)) for c in th["acc"])
+    dr.rounded_rectangle([vx0, vy0, vx0 + vw, vy0 + vh], 18, outline=col, width=8)
+    dr.text((vx0 + vw / 2, vy0 + vh / 2), "WATCH NEXT", font=F(ANTON, 76), fill=th["ink"], anchor="mm")
+    cx, cy, r = 1430, vy0 + vh / 2, 190 + 6 * pulse
+    dr.ellipse([cx - r, cy - r, cx + r, cy + r], outline=col, width=8)
+    dr.text((cx, cy), "SUBSCRIBE", font=F(ANTON, 56), fill=th["ink"], anchor="mm")
+    return zoom(fr, 1 + .01 * math.sin(t * .5))

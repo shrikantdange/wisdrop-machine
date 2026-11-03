@@ -2374,40 +2374,9 @@
    "at": 138
   },
   {
-   "type": "end",
+   "type": "endscreen",
    "text": "Next case",
    "sub": "Another money crime behind the hype",
-   "marks": [
-    {
-     "k": "sticker",
-     "text": "Subscribe",
-     "x": 0.5,
-     "y": 0.3,
-     "t": 1.2
-    },
-    {
-     "k": "emoji",
-     "code": "1F50D",
-     "x": 0.5,
-     "y": 0.66,
-     "t": 2.4,
-     "size": 130
-    },
-    {
-     "k": "sticker",
-     "text": "Wisdrop",
-     "x": 0.2,
-     "y": 0.2,
-     "t": 3.6
-    },
-    {
-     "k": "sticker",
-     "text": "New case soon",
-     "x": 0.8,
-     "y": 0.2,
-     "t": 4.6
-    }
-   ],
    "at": 139
   }
  ],

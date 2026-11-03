@@ -139,7 +139,7 @@ S = {
 136: [sc(SHOP_SEW, move="pan_r", label="One hem at a time")],
 137: [{"type": "card", "kind": "post", "header": "PINNED TO THE WALL", "lines": ["WHERE IS THE LEDGER?"], "highlight": "LEDGER", "marks": [st("Rosa's rule", .8, .25, 1.2)]}],
 138: [{"type": "kinetic", "text": "Will you ask to see it?", "hl": "see", "step": .3}],
-139: [{"type": "end", "text": "Next case", "sub": "Another money crime behind the hype", "marks": [st("Subscribe", .5, .3, 1.2), em("1F50D", .5, .66, 2.4), st("Wisdrop", .2, .2, 3.6), st("New case soon", .8, .2, 4.6)]}],
+139: [{"type": "endscreen", "text": "Next case", "sub": "Another money crime behind the hype"}],
 }
 
 p = os.path.join(EP, "shots.json"); D = json.load(open(p))
