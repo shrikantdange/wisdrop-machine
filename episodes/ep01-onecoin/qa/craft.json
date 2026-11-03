@@ -1,0 +1,72 @@
+[
+ {
+  "rule": "P1 nothing holds still > 2.5 s",
+  "status": "FAIL",
+  "detail": "shots at lines [(5, 2.58), (6, 2.6)]"
+ },
+ {
+  "rule": "P2 first minute changes every <= 3 s",
+  "status": "FAIL",
+  "detail": "gaps at [(0.6, 5.4), (9.1, 3.4), (13.7, 3.4), (17.6, 4.0), (22.5, 4.8)]"
+ },
+ {
+  "rule": "T1 every shot >= 0.8 s",
+  "status": "OK",
+  "detail": ""
+ },
+ {
+  "rule": "H1 shock fact or striking visual inside 5 s",
+  "status": "OK",
+  "detail": "first at 0.0 s"
+ },
+ {
+  "rule": "H2 question by 8 s",
+  "status": "REVIEW",
+  "detail": "first question at 27.3 s; script change needs owner approval, see hooks.md"
+ },
+ {
+  "rule": "P4 never the same shot type 3 times in a row",
+  "status": "OK",
+  "detail": ""
+ },
+ {
+  "rule": "No photo repeated in an episode",
+  "status": "OK",
+  "detail": ""
+ },
+ {
+  "rule": "AI pictures <= 6 per episode",
+  "status": "OK",
+  "detail": "3 distinct"
+ },
+ {
+  "rule": "No lone picture without surround motion (label, marks or stickers)",
+  "status": "FAIL",
+  "detail": "lines [7, 8, 11]"
+ },
+ {
+  "rule": "Every number on screen has a source",
+  "status": "OK",
+  "detail": "lines []"
+ },
+ {
+  "rule": "T6 nothing placed in the caption band",
+  "status": "OK",
+  "detail": "lines []"
+ },
+ {
+  "rule": "T2 kinetic text short (<= 90 characters)",
+  "status": "OK",
+  "detail": "lines []"
+ },
+ {
+  "rule": "T1 cards stay long enough to read (13 chars/s)",
+  "status": "OK",
+  "detail": ""
+ },
+ {
+  "rule": "Loudness -14 LUFS / -2 dBTP, voice above music",
+  "status": "PLAN",
+  "detail": "measured on the mix after render (automix prints it)"
+ }
+]
