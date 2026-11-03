@@ -242,15 +242,20 @@ def images(job: str, force: str = ""):
     have = set(which_exist.remote([j["out"] for j in ordered]))
     todo = [j for j in ordered if j["out"] not in have]
     print(f"PLAN {len(ordered)} pictures, {len(have)} cached, {len(todo)} to make")
-    meta = []; flagged = {}
+    meta = []; flagged = {}; made = set()
+    import sys as _s; _s.path.insert(0, str(root / "machine")); import cost
+    ep_name = str(jp.parent.relative_to(root))
+    if todo: cost.guard(ep_name, 70 * len({j.get("mode", "t2i") for j in todo}) + 50 * len(todo), f"images {len(todo)} pictures")
     for rnd in range(MAX_QC_ROUNDS + 1):
         if todo:
             for mode in ("t2i", "edit"):      # one model per call: both together do not fit in 80 GB
                 part = [j for j in todo if j.get("mode", "t2i") == mode]
                 if part:
-                    for r in run_images.remote(part, style):
-                        meta.append(r); print("OK img", json.dumps(r))
-        checks = [j for j in ordered if not j.get("people") and j.get("mode", "t2i") == "t2i"]
+                    with cost.timer() as tm:
+                        for r in run_images.remote(part, style):
+                            meta.append(r); print("OK img", json.dumps(r))
+                    cost.add(ep_name, f"images_{mode}", tm.secs, gpu="A100-80GB"); made |= {j["name"] for j in part}
+        checks = [j for j in ordered if not j.get("people") and j.get("mode", "t2i") == "t2i" and j["name"] in made]   # cached pictures passed QC when made
         res = qc.remote([j["out"] for j in checks]) if checks else {}
         bad = [j for j in checks if not res[j["out"]]["pass"]]
         for j in bad:

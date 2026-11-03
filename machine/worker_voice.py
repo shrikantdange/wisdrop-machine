@@ -153,7 +153,12 @@ def voice(ep: str, only: str = "", takes: int = 2, redo: str = ""):
     have = set(vo_cache.remote([L["hash"] for L in lines])["have"])
     todo = [L for L in lines if L["hash"] not in have]
     print(f"PLAN {len(lines)} lines, {len(have)} cached, {len(todo)} to voice")
-    res = run_lines.remote(todo, ref, takes) if todo else []
+    import sys as _s; _s.path.insert(0, str(root / "machine")); import cost
+    res = []
+    if todo:
+        cost.guard(ep, 45 + 4 * len(todo) * takes, f"voice {len(todo)} lines")
+        with cost.timer() as tm: res = run_lines.remote(todo, ref, takes)
+        cost.add(ep, "voice", tm.secs, gpu="T4")
     cached = vo_cache.remote([], [L["hash"] for L in lines if L["hash"] in have])["blobs"]
     idmap = {L["hash"]: L["id"] for L in lines}
     res = list(res) + [{"qc": dict(v["qc"], cached=True, id=idmap[h]), "wav": v["wav"]} for h, v in cached.items()]

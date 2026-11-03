@@ -9,6 +9,7 @@ on:
       preview_seconds: {description: "TEST ONLY: render just the first N seconds (0 = all)", default: "0"}
       redo_images: {description: "remake these pictures with a new seed (comma list)", default: ""}
       redo_lines: {description: "re-voice these line ids (comma list)", default: ""}
+      max_gpu_seconds: {description: "SPEND GUARD: stop before any GPU call that would pass this many GPU seconds in this run", default: "600"}
 permissions:
   contents: write
   pull-requests: write
@@ -22,6 +23,7 @@ jobs:
     timeout-minutes: 120
     env:
       EP: ${{ inputs.ep }}
+      WIS_MAX_GPU_S: ${{ inputs.max_gpu_seconds }}
       TEST: ${{ inputs.test_lines != '' || inputs.preview_seconds != '0' }}
     steps:
       - uses: actions/checkout@v4
@@ -45,6 +47,11 @@ jobs:
           if order.index(s) < order.index('script_approved'):
               print("FAIL: owner has not approved cast + script; open the gate PR first"); sys.exit(1)
           PY
+      - name: 0b. Free craft checks (dead frames, hook, repeats, sources, caption band) - FAIL stops before any spend
+        run: |
+          UPTO=""; if [ "${{ inputs.preview_seconds }}" != "0" ]; then UPTO="--upto ${{ inputs.preview_seconds }}"; fi
+          python machine/craft_check.py "$EP" $UPTO
+          python machine/score_script.py "$EP" || true
       - name: 1. Plan pictures from shots.json + library
         run: python machine/plan_images.py "$EP"
       - name: 1b. Real photos (Wikimedia Commons, commercial-safe licences only; free)
@@ -73,6 +80,8 @@ jobs:
             out/*/img/*.jpg
             out/*/img/asset_manifest.json
             out/*/vo/vo_qc.json
+            out/*/cost.json
+            out/*/audio_qc.json
           retention-days: 14
       - name: Save state + open the owner's final review PR
         if: env.TEST != 'true'
