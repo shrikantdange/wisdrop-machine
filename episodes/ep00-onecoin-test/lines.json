@@ -1,0 +1,8 @@
+[
+ {"id":0,"text":"On October twenty-fifth, twenty seventeen, a woman flew from Sofia to Athens.","preset":"facts","gap":0.15},
+ {"id":1,"text":"Then she vanished.","preset":"beat","gap":0.9},
+ {"id":2,"text":"Her company, OneCoin, had taken in more than four billion dollars.","preset":"facts","gap":0.3},
+ {"id":3,"text":"For a crypto coin with no real blockchain.","preset":"dry","gap":0.35,"say":"For a crypto coin with no real block chain."},
+ {"id":4,"text":"Today, she's on the F.B.I.'s Ten Most Wanted list.","preset":"tension","gap":0.4},
+ {"id":5,"text":"So who was left holding the coins?","preset":"question","gap":1.0}
+]

@@ -1,0 +1,23 @@
+MUSIC (CC BY 4.0, credit in description):
+"Investigations" Kevin MacLeod (incompetech.com) Licensed under Creative Commons: By Attribution 4.0 License http://creativecommons.org/licenses/by/4.0/
+"Spy Glass" Kevin MacLeod (incompetech.com) Licensed under Creative Commons: By Attribution 4.0 License http://creativecommons.org/licenses/by/4.0/
+"Hitman" Kevin MacLeod (incompetech.com) Licensed under Creative Commons: By Attribution 4.0 License http://creativecommons.org/licenses/by/4.0/
+
+SFX (CC0 Freesound, no attribution required):
+crowd: Freesound "cheering and clapping crowd 1" by AlaskaRobotics https://freesound.org/people/AlaskaRobotics/sounds/221568/
+murmur: Freesound "R08-48-Crowd in Reverberant Space.wav" by craigsmith https://freesound.org/people/craigsmith/sounds/480728/
+coins: Freesound "Coins Falling Into Pile" by AKkingStudio https://freesound.org/people/AKkingStudio/sounds/684167/
+register: Freesound "Cha Ching.wav" by deleted_user_96253 https://freesound.org/people/deleted_user_96253/sounds/351304/
+keys: Freesound "Fast keyboard typing" by Spacekittycat https://freesound.org/people/Spacekittycat/sounds/754201/
+paper: Freesound "Scroll.wav" by justeluis https://freesound.org/people/justeluis/sounds/185051/
+tick: Freesound "Soft UI Button Click" by Jummit https://freesound.org/people/Jummit/sounds/528561/
+swoosh: Freesound "Whoosh stereo light (transition)" by xkeril https://freesound.org/people/xkeril/sounds/701104/
+swish: Freesound "Swishes_4_strong_fast.wav" by videofueralle https://freesound.org/people/videofueralle/sounds/614170/
+conveyor: Freesound "Industrial Conveyor Belt" by Kinoton https://freesound.org/people/Kinoton/sounds/519027/
+lever: Freesound "Mechanical2.wav" by BMacZero https://freesound.org/people/BMacZero/sounds/94121/
+clank: Freesound "Big robot footstep 005" by AudioPapkin https://freesound.org/people/AudioPapkin/sounds/815039/
+sparkle: Freesound "Shimmer" by adh.dreaming https://freesound.org/people/adh.dreaming/sounds/632344/
+gulp: Freesound "Cartoon - Gulp!" by Breviceps https://freesound.org/people/Breviceps/sounds/450624/
+tension: Freesound "Mechanical Synth Swell.wav" by Stereo Surgeon https://freesound.org/people/Stereo Surgeon/sounds/261210/
+city: Freesound "city ambience, pedestrian subway, inside, 20m from entrance, night, distant traffic, trains and railway station announcements, distant pedestrian crossing beeps - Stereo preview.wav" by be_a_hero_not_a_patriot https://freesound.org/people/be_a_hero_not_a_patriot/sounds/332784/
+whoosh, riser, boom, subdrop, darkhit: CC0 Freesound, reused from parchhai s03 licences.csv

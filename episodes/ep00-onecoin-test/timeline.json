@@ -1,0 +1,42 @@
+{
+ "dur": 21.745,
+ "chaps": [],
+ "segs": [
+  {
+   "i": 0,
+   "start": 0.4,
+   "end": 5.273,
+   "text": "On October twenty-fifth, twenty seventeen, a woman flew from Sofia to Athens."
+  },
+  {
+   "i": 1,
+   "start": 5.423,
+   "end": 6.577,
+   "text": "Then she vanished."
+  },
+  {
+   "i": 2,
+   "start": 7.477,
+   "end": 12.046,
+   "text": "Her company, OneCoin, had taken in more than four billion dollars."
+  },
+  {
+   "i": 3,
+   "start": 12.346,
+   "end": 15.004,
+   "text": "For a crypto coin with no real blockchain."
+  },
+  {
+   "i": 4,
+   "start": 15.354,
+   "end": 18.383,
+   "text": "Today, she's on the F.B.I.'s Ten Most Wanted list."
+  },
+  {
+   "i": 5,
+   "start": 18.783,
+   "end": 20.745,
+   "text": "So who was left holding the coins?"
+  }
+ ]
+}

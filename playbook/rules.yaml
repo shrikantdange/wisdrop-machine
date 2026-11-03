@@ -1,0 +1,20 @@
+# Wisdrop rules the checker enforces. Owner changes rules here (via PR), never in code.
+min_minutes: 6          # owner: minimum 6 min (2026-11-03)
+max_minutes: 20         # owner: up to 20 min allowed
+wpm: 165
+presets: [facts, dry, tension, question, beat]
+min_research_sources: 8
+banned_words:
+  - guaranteed returns
+  - allegedly proven
+# Real people named in the case. Checker refuses them in cast.md (they are never drawn).
+real_people: []
+# Owner overrides to the playbook (2026-11-03)
+timing:
+  visual_lead_s: -0.04      # visuals never before the voice: cut at line start + 0.04 s
+  stat_countup_s: 1.1
+  card_slide_s: 0.75
+  cross_dip_s: 0.22
+loudness:
+  lufs: -14
+  true_peak_db: -1.5

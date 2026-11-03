@@ -1,0 +1,12 @@
+# heavy or regenerable outputs never go in git (they live on the worker / release assets)
+episodes/*/vo/*.wav
+episodes/*/vo.wav
+episodes/*/vo_raw.wav
+episodes/*/mix*.wav
+episodes/*/out/
+episodes/*/*.mp4
+episodes/*/chk_*.jpg
+*.tmp
+__pycache__/
+.heavy.lock
+.env
