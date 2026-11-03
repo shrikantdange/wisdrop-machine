@@ -1,0 +1,17 @@
+[
+ {
+  "rule": "research has enough distinct sources",
+  "ok": true,
+  "detail": "24 < 8"
+ },
+ {
+  "rule": "every KEY number has two sources",
+  "ok": true,
+  "detail": ""
+ },
+ {
+  "rule": "every number row has a source",
+  "ok": true,
+  "detail": ""
+ }
+]

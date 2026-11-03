@@ -8,7 +8,7 @@ banned_words:
   - guaranteed returns
   - allegedly proven
 # Real people named in the case. Checker refuses them in cast.md (they are never drawn).
-real_people: []
+real_people: [Ruja Ignatova, Ignatova, Sebastian Greenwood, Greenwood, Konstantin Ignatov, Irina Dilkinska, Dilkinska, Mark Scott, Jen McAdam]
 # Owner overrides to the playbook (2026-11-03)
 timing:
   visual_lead_s: -0.04      # visuals never before the voice: cut at line start + 0.04 s

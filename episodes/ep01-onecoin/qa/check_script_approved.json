@@ -1,0 +1,52 @@
+[
+ {
+  "rule": "research has enough distinct sources",
+  "ok": true,
+  "detail": "24 < 8"
+ },
+ {
+  "rule": "every KEY number has two sources",
+  "ok": true,
+  "detail": ""
+ },
+ {
+  "rule": "every number row has a source",
+  "ok": true,
+  "detail": ""
+ },
+ {
+  "rule": "no real person in cast (never drawn)",
+  "ok": true,
+  "detail": ""
+ },
+ {
+  "rule": "length within 6-20 min",
+  "ok": true,
+  "detail": "10.4 min"
+ },
+ {
+  "rule": "ids are 0..n-1 in order",
+  "ok": true,
+  "detail": ""
+ },
+ {
+  "rule": "every line has a valid preset",
+  "ok": true,
+  "detail": "[]"
+ },
+ {
+  "rule": "Rule 1: every line names its visual",
+  "ok": true,
+  "detail": "lines []"
+ },
+ {
+  "rule": "every number line cites a research source",
+  "ok": true,
+  "detail": "lines []"
+ },
+ {
+  "rule": "no banned phrasing",
+  "ok": true,
+  "detail": ""
+ }
+]
