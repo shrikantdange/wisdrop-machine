@@ -67,6 +67,14 @@ def main(ep, work):
         if not bed or times[k + 1] - times[k] < .5: continue
         a = load(os.path.join(KIT, "sfx", bed + ".mp3"), (k * 7.3) % 20, times[k + 1] - times[k], loop=True)
         if len(a) > 10: put(fx, times[k], fade(norm(a, -44), .4, .5))
+    # v5: per-scene ambience made by code (tools/synth_amb.py); "amb" on a shot overrides the type default
+    AMB = {"map3d": "amb_airport", "flapboard": "amb_airport", "boardingpass": "amb_airport", "cctv": "amb_room", "stage": "amb_crowd",
+           "fogwalk": "amb_wind", "redstring": "amb_room", "ticker": "amb_room", "cashdrain": "amb_room", "wanted": "amb_wind"}
+    for k, s in enumerate(shots):
+        bed = s.get("amb") or AMB.get(s["type"])
+        if not bed or s["type"] == "scene" or times[k + 1] - times[k] < .5: continue
+        a = load(os.path.join(KIT, "sfx", bed + ".mp3"), (k * 3.1) % 6, times[k + 1] - times[k], loop=True)
+        if len(a) > 10: put(fx, times[k], fade(norm(a, -40 if bed != "amb_crowd" else -36), .3, .4))
     # hits: by shot type, plus any explicit "sfx": [{"n": "coins", "off": 0.3}]
     def hit(n, t, under, dur):
         if n in MO.BANNED_SFX: print(f"REVIEW: sound '{n}' is banned (AMC-S2), skipped"); return
@@ -118,6 +126,16 @@ def main(ep, work):
                 if tw >= times[k + 1] - .05: break
                 b = w.upper().strip(".,!?")
                 hit2("stamp" if b in stp or w.upper() in stp else "marker" if b in hl else "pop", tw, 10 if b in stp else 12 if b in hl else 17, .4)
+        if typ == "flapboard": hit2("amb_flaps", t0 + .2, 16, 1.6)
+        if typ == "boardingpass": hit2("amb_printer", t0 + .15, 14, 1.6)
+        if typ == "cctv": hit2("amb_click", t0 + s.get("lock_at", .8) + .7, 12, .25)
+        if typ == "cashdrain" and s.get("drain_at", 99) < times[k + 1] - t0: hit2("swish", t0 + s["drain_at"], 15, .6)
+        if typ == "ticker": hit2("buzz", t0 + s.get("freeze_at", 2.4), 12, .8)
+        if typ == "redstring":
+            for j, _ in enumerate(s.get("cards", [])): hit2("tape", t0 + .1 + j * s.get("step", .4), 17, .3)
+        if typ in ("map3d", "stamps"):
+            for j, p in enumerate(s.get("pins", [])): hit2("pop", t0 + p.get("t", .2), 15, .2)
+            for st_ in s.get("stamps", []): hit2("stamp", t0 + st_.get("t", 1.0), 10, .4)
         for x in s.get("sfx", []): hit(x["n"], times[k] + x.get("off", 0), x.get("under", 10), x.get("dur", 1.2))
     # QC (S4/S7): voice must sit above music while speaking
     def rms(a): return 20 * np.log10(np.sqrt(np.mean(a ** 2)) + 1e-9)

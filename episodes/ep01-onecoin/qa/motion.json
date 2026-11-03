@@ -42,7 +42,7 @@
  {
   "rule": "AMC-E8 snap beats (stamps) <= 3 per episode",
   "status": "OK",
-  "detail": "2 stamps"
+  "detail": "1 stamps"
  },
  {
   "rule": "AMC-H3 no signpost phrases",

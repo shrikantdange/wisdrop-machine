@@ -120,7 +120,7 @@ def s_docreveal(s, t, d, part):
                 wq = dr.textlength(row, font=qf); dr.rectangle([66, yq + 4, 82 + wq, yq + 56], fill=YEL)
                 dr.text((74, yq), row, font=qf, fill=INK); yq += 64
     pg = pg.rotate(s.get("rot", -1.2), expand=True, resample=Image.BICUBIC, fillcolor=th["bg"])
-    e = back(min(1, t / .5)); sc = 1.0 + .03 * ease(t / max(d, .1))
+    e = back(min(1, t / .5)); sc = s.get("scale", 1.0) * (1.0 + .03 * ease(t / max(d, .1)))   # v5: scale fills the board
     pg2 = pg.resize((int(pg.size[0] * sc), int(pg.size[1] * sc)), Image.BILINEAR)
     V.shadow_paste(fr, pg2.convert("RGBA"), (W - pg2.size[0]) / 2, H * .40 - pg2.size[1] / 2 + 140 * (1 - e), 22, (12, 18), .45)
     if s.get("source"): V.source_line(ImageDraw.Draw(fr), s["source"], th)

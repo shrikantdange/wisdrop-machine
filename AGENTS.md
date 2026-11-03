@@ -20,6 +20,7 @@
 9. Every random thing is seeded by crc32(episode, element, frame). Never random(), time() or hash() in render code.
 10. Pause 0.5 s after a question. No "let's get into it". Over 20 words = two pictures.
 11. When two rules conflict, the simpler option wins.
+12. v5: flat empty area <= 35 % of the frame (`machine/frame_fill.py`); captions = keywords, never repeat on-screen words; people only as faceless code silhouettes tagged ILLUSTRATION.
 Check: `python machine/motion_check.py <ep>` (before spend) and `--video <mp4>` (after render).
 
 Faceless YouTube channel "Money crimes behind the hype": one real financial fraud per episode, 5 parts,

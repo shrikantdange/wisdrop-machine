@@ -34,6 +34,8 @@ Outputs: artifact `<run_id>-review` (video.mp4, package/, cost.json, audio_qc.js
 - `package.py` - titles, description, chapters, sources, thumbnails -> `package/`.
 - `thumbnail.py` - designed thumbnails 1280x720 (cut-out subject + code text + rim light + brand frame), phone mock, auto score. `python machine/thumbnail.py <ep> [--gpu]`.
 - `shorts_cut.py` - vertical 1080x1920 Shorts from a rendered video + timeline (see QUEUED Part B).
+- `frame_fill.py` - F1 check: flat empty area <= 35 % on a video or frames dir.
+- `photo_score.py` - free photo picker score (signage / empty middle / blur); used by fetch_media.
 - `cost.py` - `add/guard/timer`; writes `out/<ep>/cost.json` (total_usd, gpu_secs).
 - `cost_report.py` - one-line cost per run/episode from cost.json files.
 - `paths.py` - shared paths.
@@ -45,6 +47,7 @@ Outputs: artifact `<run_id>-review` (video.mp4, package/, cost.json, audio_qc.js
 - `shotspec.py` - timing model shared with checks: `events, accents, max_gap, media_keys`; CONTINUOUS/STRIKING sets.
 - `v3kit.py` - v3 look: boards/themes, phones (`s_phone`), photo layouts (`s_photos`), `s_map`, `s_money`, `s_stamp`, `s_scrub`, `s_barrace`, `marks`.
 - `v4fx.py` - v4 modern fx (CPU): `s_parallax`, `s_docreveal`, `s_headlines`, `s_coin3d`, `s_chart3d`, `s_lineart`, transitions `glitch`/`leak`, `beats()` + `snap()`.
+- `v5fx.py` - v5 look: `archive` (depth board), `floaters`, `glide` (evidence wall), `normalize`/`keywords` (captions), templates T29-T39 (`TYPES5`). Wired at the bottom of shots_render.py.
 - `collage.py` - paper/sticker/highlighter/framed card helpers (C.*).
 - `edhelpers.py` - W,H,FPS=1920x1080@30, fonts F(), ease/eout/back, zoom, finish, bug.
 - `motion.py` - crc32 `seed/rng`, easing tokens, `on_twos`, `hold_push`, `punch`, contrast maths.
@@ -59,7 +62,7 @@ research.md (sources), cast.md, script.md, lines.json (id,text,preset,gap,visual
 - `playbook/` - rules.yaml (checker), WISDROP_PLAYBOOK.md (creative), WISDROP_AI_INSTRUCTIONS.md.
 - `library/` - library.json (cast, sets, look "v3"), LIBRARY.md.
 - `kit/` - fonts (Anton, DejaVu), music (+ATTRIBUTION), sfx (synth, +ATTRIBUTION), voice ref (never change), style_prompt.txt, style_ref/, vectors/.
-- `tools/synth_sfx.py` - makes the synth SFX.
+- `tools/synth_sfx.py` - makes the synth SFX. `tools/synth_amb.py` - v5 ambience (amb_*). `tools/v5_local_frames.py` - free local sample frames for any lines (estimated timeline).
 
 ## Where to look for X
 - A run's result: `summary.json` (preview branch or artifact). Cost: `cost.json`. Failed check detail: `<ep>/qa/craft.json`, `motion.json`.

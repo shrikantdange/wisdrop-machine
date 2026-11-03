@@ -8,8 +8,9 @@ so no shot holds still longer than MAX_HOLD (docs/EDITING_CRAFT.md rule P1).
 MAX_HOLD = 2.5      # P1: nothing still for longer than this
 ACCENT_EVERY = 2.2  # spacing of automatic accents inside a long static stretch
 
-CONTINUOUS = {"map", "money", "magnify", "scrub", "barrace", "parallax", "endscreen"}
-STRIKING = {"stat", "map", "phone", "stamp", "photo", "pair", "trio", "wall", "polaroids", "magnify", "split", "money", "coin", "parallax", "headlines", "coin3d", "docreveal", "chart3d"}
+CONTINUOUS = {"map", "money", "magnify", "scrub", "barrace", "parallax", "endscreen",
+              "flapboard", "boardingpass", "fogwalk", "cctv", "map3d", "stamps", "cashdrain", "redstring", "wanted", "stage", "ticker"}   # v5: always moving
+STRIKING = {"stat", "map", "phone", "stamp", "photo", "pair", "trio", "wall", "polaroids", "magnify", "split", "money", "coin", "parallax", "headlines", "coin3d", "docreveal", "chart3d", "flapboard", "boardingpass", "fogwalk", "cctv", "map3d", "stamps", "cashdrain", "redstring", "wanted", "stage", "ticker"}
 AI_PICTURE = {"scene"}
 PHOTO_TYPES = {"parallax", "lineart", "photo", "pair", "trio", "wall", "polaroids", "magnify", "split"}
 

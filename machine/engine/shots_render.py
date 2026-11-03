@@ -394,8 +394,14 @@ if LOOK in ("collage", "v3"):
             y += lh
         if s.get("source"): source(dr, s["source"])
         return fr, False
+    _scr = {}
     def _c_caption(fr, t):
         ch = next((c for c in chunks if c[0][0] <= t < c[-1][1] + 0.12), None)
+        if not ch: return fr
+        import v5fx as _X5c                     # v5: keywords only, never a word the shot already shows
+        k_ = shot_at(t)
+        if k_ not in _scr: _scr[k_] = _X5c.screen_words(SHOTS[k_][1])
+        ch = _X5c.keywords(ch, _scr[k_])
         if not ch: return fr
         dr = ImageDraw.Draw(fr); f = F(ANTON, 58); toks = [w.upper() for _, _, w in ch]
         sp = dr.textlength(" ", font=f); wd = [dr.textlength(x, font=f) for x in toks]; x = (W - sum(wd) - sp * (len(toks) - 1)) / 2
@@ -425,6 +431,8 @@ for sg in SEGS:
         ws = sg["text"].split(); tot = sum(len(w) + 2 for w in ws) or 1; cur = sg["start"]; dd0 = sg["end"] - sg["start"]
         for w in ws: dd = dd0 * (len(w) + 2) / tot; lw.append((cur, cur + dd, w)); cur += dd
     c = []
+    if LOOK in ("collage", "v3"):
+        import v5fx as _X5n; lw = _X5n.normalize(lw)     # v5: numbers and dates as digits ('25 OCT 2017', '$4B')
     for w in lw:
         c.append(w)
         if len(c) == 4 or w[2].endswith((".", ",", "?", "!", ":")): chunks.append(c); c = []
@@ -457,8 +465,11 @@ def render(i):
     if LOOK == "v3": apply_theme(CUR_PART)
     fr, story = TYPES[s["type"]](s, t - st, d)
     if LOOK == "v3": fr = v3_after(fr, s, t - st, d, k)
-    if LOOK == "v3" and s.get("trans"): fr = v4_trans(fr, s, t - st, k)
-    if 0 <= t - st < DIP and k > 0: fr = Image.blend(Image.new("RGB", (W, H), (0, 0, 0)), fr, .45 + .55 * ease((t - st) / DIP))
+    if LOOK == "v3" and s["type"] not in X5.TYPES5 and s["type"] not in ("chapter", "end", "endscreen"): fr = X5.floaters(fr, ("shot", k), t - st, 10)
+    glide_in = LOOK == "v3" and s.get("glide") and k > 0 and SHOTS[k - 1][1].get("glide") and t - st < X5.GLIDE
+    if glide_in: fr = v5_glide(fr, k, (t - st) / X5.GLIDE)
+    if LOOK == "v3" and s.get("trans") and not glide_in: fr = v4_trans(fr, s, t - st, k)
+    if 0 <= t - st < DIP and k > 0 and not s.get("glide"): fr = Image.blend(Image.new("RGB", (W, H), (0, 0, 0)), fr, .45 + .55 * ease((t - st) / DIP))
     fr = finish(fr, i, 0)
     if LOOK == "v3" and s["type"] not in ("chapter", "end"): fr = v3_counter(fr, k, t)
     if story and s["type"] == "scene": fr = tag(fr)
@@ -583,3 +594,26 @@ if LOOK == "v3":
             SHOTS[j] = (a2, s_)
         STARTS[:] = [x[0] for x in SHOTS] + [DUR]
         print(f"OK beat sync: {len(BEATS)} beats", flush=True)
+
+# ---------------- v5: depth layers, evidence-wall glide, 11 new templates (docs/SHOTS.md T29-T39) ----------------
+if LOOK == "v3":
+    import v5fx as X5
+    V.board = X5.archive          # every board gets the blurred archive layer behind it (far depth layer)
+    board = lambda: V.board(CUR_PART)
+    TYPES.update({k_: (lambda f: (lambda s, t, d: (f(s, t, d, CUR_PART), False)))(f_) for k_, f_ in X5.TYPES5.items()})
+    _fin = {}
+    def _final(j):
+        """last frame of shot j (before finish/captions), pinned on the wall while the camera glides on."""
+        if j not in _fin:
+            global CUR_PART
+            keep = CUR_PART; st_, s_ = SHOTS[j]; d_ = STARTS[j + 1] - st_; tt = max(0.0, d_ - 1.0 / FPS)
+            CUR_PART = PART[j]; apply_theme(CUR_PART)
+            f_, _ = TYPES[s_["type"]](s_, tt, d_); f_ = v3_after(f_, s_, tt, d_, j)
+            if s_["type"] not in X5.TYPES5: f_ = X5.floaters(f_, ("shot", j), tt, 10)
+            _fin[j] = f_; CUR_PART = keep; apply_theme(CUR_PART)
+        return _fin[j]
+    def v5_glide(fr, k, u):
+        tiles = []
+        j = k - 1
+        while j >= 0 and SHOTS[j][1].get("glide") and k - j <= 3: tiles.insert(0, (_final(j), j)); j -= 1
+        return X5.glide(tiles + [(fr, k)], k, k - 1, u, CUR_PART)

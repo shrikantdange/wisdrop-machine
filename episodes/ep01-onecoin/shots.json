@@ -10,7 +10,8 @@
  "shots": [
   {
    "at": 0,
-   "type": "map",
+   "type": "map3d",
+   "glide": true,
    "bbox": [
     17,
     34.6,
@@ -20,11 +21,6 @@
    "highlight": [
     "BGR",
     "GRC"
-   ],
-   "flight": true,
-   "focus": [
-    0.55,
-    0.55
    ],
    "pins": [
     {
@@ -44,41 +40,53 @@
    "route_at": 0.6,
    "route_s": 2.0,
    "label": "25 Oct 2017",
-   "source": "FBI.GOV TEN MOST WANTED; US STATE DEPT"
+   "source": "FBI.GOV TEN MOST WANTED; US STATE DEPT",
+   "amb": "amb_airport"
   },
   {
    "at": 0,
    "offset": 3.1,
-   "type": "parallax",
-   "q": "Sofia Airport terminal 2",
-   "file": "sofia-airport-terminal-2.jpg",
-   "mood": "dawn",
-   "label": "Sofia Airport",
-   "w": 0.7,
-   "marks": [
-    {
-     "k": "arrow",
-     "x0": 0.82,
-     "y0": 0.72,
-     "x1": 0.66,
-     "y1": 0.52,
-     "t": 0.9
-    }
+   "type": "flapboard",
+   "glide": true,
+   "title": "DEPARTURES",
+   "from": "Sofia",
+   "rows": [
+    [
+     "--:--",
+     "Frankfurt",
+     "Boarding"
+    ],
+    [
+     "--:--",
+     "Athens",
+     "Departed"
+    ],
+    [
+     "--:--",
+     "Vienna",
+     "On time"
+    ],
+    [
+     "--:--",
+     "London",
+     "On time"
+    ]
    ],
-   "amp": 70
+   "hl": 1,
+   "source": "FBI.GOV TEN MOST WANTED; US STATE DEPT",
+   "amb": "amb_airport"
   },
   {
    "at": 1,
-   "type": "stamp",
-   "text": "VANISHED",
-   "sub": "NOT SEEN PUBLICLY SINCE",
-   "pre": "Then she",
+   "type": "fogwalk",
+   "text": "Vanished",
+   "sub": "Not seen publicly since",
    "source": "FBI.GOV TEN MOST WANTED",
    "sfx": [
     {
      "n": "impact",
-     "off": 0.3,
-     "under": 8
+     "off": 0.6,
+     "under": 10
     }
    ]
   },
@@ -94,28 +102,24 @@
   },
   {
    "at": 2,
-   "type": "stat",
+   "offset": 1.3,
+   "type": "cashdrain",
+   "glide": true,
    "value": 4,
    "prefix": "$",
    "suffix": "B+",
-   "color": "red",
-   "label": "TAKEN IN, Q4 2014 - Q4 2016",
+   "label": "Taken in, Q4 2014 - Q4 2016",
+   "build_at": 0.1,
+   "build_s": 1.3,
+   "drain_at": 99,
    "source": "U.S. DOJ (SDNY), 12 SEP 2023 · REUTERS",
-   "counter_to": 4,
-   "marks": [
-    {
-     "k": "underline",
-     "x0": 0.33,
-     "x1": 0.67,
-     "y": 0.62,
-     "t": 1.6
-    }
-   ],
-   "offset": 1.3
+   "counter_to": 4
   },
   {
    "at": 3,
    "type": "docreveal",
+   "glide": true,
+   "scale": 1.22,
    "kind": "U.S. Dept. of Justice - press release",
    "title": "OneCoin co-founder sentenced",
    "lines": [
@@ -136,8 +140,8 @@
     {
      "k": "emoji",
      "code": "1F4B8",
-     "x": 0.86,
-     "y": 0.66,
+     "x": 0.9,
+     "y": 0.62,
      "t": 3.0,
      "size": 130
     }
@@ -1496,12 +1500,74 @@
    "at": 77
   },
   {
-   "type": "headline",
-   "outlet": "U.S. DOJ (RECREATED)",
-   "date": "12 SEP 2023",
-   "title": "A fraud from day one",
-   "source": "U.S. DOJ (SDNY), 12 SEP 2023",
-   "at": 78
+   "at": 78,
+   "type": "redstring",
+   "glide": true,
+   "title": "Built as a fraud",
+   "step": 0.28,
+   "cards": [
+    {
+     "text": "OneCoin",
+     "kind": "dark",
+     "icon": "currency-bitcoin",
+     "x": 0.5,
+     "y": 0.48,
+     "w": 380,
+     "h": 250
+    },
+    {
+     "text": "Exit strategy",
+     "sub": "9 Aug 2014 · DOJ",
+     "icon": "door-exit",
+     "x": 0.2,
+     "y": 0.3
+    },
+    {
+     "text": "No blockchain",
+     "sub": "BBC 2019",
+     "icon": "database-off",
+     "x": 0.8,
+     "y": 0.3,
+     "kind": "sticky"
+    },
+    {
+     "text": "Price set by company",
+     "sub": "DOJ 2023",
+     "icon": "chart-line",
+     "x": 0.22,
+     "y": 0.7,
+     "size": 42,
+     "h": 280
+    },
+    {
+     "text": "Fake coins",
+     "sub": "DOJ 2023",
+     "icon": "coin-off",
+     "x": 0.79,
+     "y": 0.7,
+     "kind": "sticky"
+    }
+   ],
+   "links": [
+    [
+     0,
+     1
+    ],
+    [
+     0,
+     2
+    ],
+    [
+     0,
+     3
+    ],
+    [
+     0,
+     4
+    ]
+   ],
+   "source": "U.S. DOJ (SDNY), 12 SEP 2023 · BBC, 24 NOV 2019",
+   "amb": "amb_room"
   },
   {
    "type": "scene",
@@ -1591,19 +1657,24 @@
    "at": 84
   },
   {
-   "type": "screen",
-   "device": "phone",
-   "ui": {
-    "balance": {
-     "title": "CASH OUT",
-     "value": 0,
-     "prefix": "",
-     "sub": "COMING SOON"
-    }
-   },
-   "label": "Still waiting",
-   "source": "BBC, 24 NOV 2019",
-   "at": 85
+   "at": 85,
+   "type": "ticker",
+   "glide": true,
+   "v0": 0.5,
+   "v1": 29.95,
+   "cur": "€",
+   "app": "OneCoin balance",
+   "freeze_at": 2.4,
+   "headline": [
+    "Exchange:",
+    "coming soon"
+   ],
+   "stickers5": [
+    "Delayed",
+    "Delayed again"
+   ],
+   "sticker_at": 1.2,
+   "source": "PRICES: U.S. DOJ (SDNY) 12 SEP 2023 · DELAYS: BBC 24 NOV 2019"
   },
   {
    "type": "phone",
@@ -1803,12 +1874,15 @@
    "at": 99
   },
   {
-   "type": "parallax",
-   "q": "Las Vegas Strip night",
-   "mood": "night",
+   "at": 100,
+   "type": "stage",
+   "screen": [
+    "OneCoin"
+   ],
+   "hands_at": 1.6,
    "label": "Las Vegas",
    "source": "U.S. DOJ (SDNY), 8 MAR 2019",
-   "at": 100
+   "amb": "amb_crowd"
   },
   {
    "type": "card",
@@ -2281,23 +2355,27 @@
    "at": 132
   },
   {
-   "type": "chart3d",
-   "title": "Back vs taken",
-   "items": [
-    {
-     "label": "Fund",
-     "value": 0.04,
-     "text": "$40M+"
-    },
-    {
-     "label": "Taken",
-     "value": 4,
-     "text": "$4B+"
-    }
+   "at": 133,
+   "type": "cashdrain",
+   "value": 4,
+   "prefix": "$",
+   "suffix": "B+",
+   "label": "Taken",
+   "left": {
+    "text": "$40M+",
+    "label": "Victim fund",
+    "t": 0.3
+   },
+   "build_at": 1.3,
+   "build_s": 1.4,
+   "drain_at": 3.1,
+   "drain_s": 1.3,
+   "boxes": [
+    "Shell co.",
+    "Shell co.",
+    "?"
    ],
-   "hl": 1,
-   "source": "U.S. DOJ 13 APR 2026; U.S. DOJ (SDNY), 12 SEP 2023",
-   "at": 133
+   "source": "U.S. DOJ 13 APR 2026 · U.S. DOJ (SDNY) 12 SEP 2023"
   },
   {
    "type": "stat",
@@ -2397,5 +2475,10 @@
   "money": "$4 Billion",
   "people": "3.5 Million",
   "_sources": "F04 DOJ SDNY 2023-09-12 + Reuters; 'Cryptoqueen' as used by CNBC 2022-06-30 (F03)"
+ },
+ "thumb_pick": {
+  "concept": "A",
+  "text": "$4B GONE",
+  "approved": "owner 2026-11-03 22:24 IST"
  }
 }

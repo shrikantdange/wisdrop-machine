@@ -118,3 +118,29 @@ The renderer adds a small camera punch-in when a shot would otherwise hold still
 27. **Transitions** (any shot, field `trans`): `glitch` = 8 frames RGB split + block displace, crypto moments only (V1), max 4 per episode (V6); `leak` = 0.5 s light-leak / film-burn wipe, only on a chapter card or the shot after it (V3).
 **Beat sync** (automatic, `beat_sync: false` in shots.json turns it off): music onsets found by numpy spectral flux (same track offsets as automix); mark pops snap to a beat within 2 frames; cuts only move later (never before the voice).
 28. **End screen**: `endscreen` {text, sub}. Last line of every episode; that line gets `gap` 16 in lines.json so the board runs ~20 s (YouTube end screens use the last 5-20 s, video must be >= 25 s; up to 4 elements on 16:9). Code-drawn slots: 16:9 "WATCH NEXT" box left (x 250-1070, y 340-801 at 1920x1080), round SUBSCRIBE slot right (centre 1430, r 190). In Studio: Editor -> End screen -> place the Video element on the box and Subscribe on the circle. Slots breathe, so it is never a still frame.
+
+## v5 look (machine/engine/v5fx.py) - depth, wall glide, keyword captions, T29-T39
+Always on (no shots.json change needed):
+- **Depth layers**: every board = blurred archive layer (far) + main element + drifting out-of-focus scraps/dust/tape (near, `X5.floaters`). Templates T29-T39 draw their own near layer.
+- **Captions**: keywords only (max 3 per chunk, no stop words) and never a word the current shot already shows; numbers/dates as digits via `X5.normalize` ("25 OCT 2017", "$4B", "3.5M", "€29.95").
+- **Frame fill**: `python machine/frame_fill.py <mp4|frames_dir>` -> flat empty area must stay <= 35 % (F1, REVIEW).
+- **Photo picker**: fetch_media scores up to 4 Commons candidates with `machine/photo_score.py` (rejects signage panels, empty middle, blur); REVIEW if best < 0.45.
+- **Ambience**: per-type beds made by code (`tools/synth_amb.py`: amb_airport/room/crowd/wind + printer/click/flaps hits); `"amb": "amb_crowd"` overrides.
+Opt-in per shot:
+- `"glide": true` on consecutive shots = **evidence wall**: shots sit on one big canvas, camera pulls back and glides to the next (0.7 s, `camera` ease); earlier shots stay pinned (up to 3). Replaces the dip-to-black.
+- `"scale": 1.22` on docreveal = bigger page (fills the board).
+
+| # | type | fields | notes |
+|---|---|---|---|
+| T29 | `flapboard` | title, from, rows [[time, dest, status]], hl | split-flap departures board; use "--:--" when the real time is not sourced. Tag ILLUSTRATION |
+| T30 | `boardingpass` | from, to, from_city, to_city, fields [[label, value]] | prints out of a slot, then tilts onto the desk (printer whirr) |
+| T31 | `fogwalk` | text, sub | faceless fictional silhouette walks into fog. Tag "ILLUSTRATION · NOT A REAL PERSON" |
+| T32 | `cctv` | cam, date, sign, lock_at, label (LAST SEEN), sub, t0 | REC dot, running counter (never an invented clock time), lock box closes on the figure |
+| T33 | `map3d` | bbox, highlight, pins, route_at, route_s, label, scale | tilted map, terrain shading, haze; camera follows the plane and its glowing trail |
+| T34 | `stamps` (= map3d) | + stamps [{text, sub, t, x, y, rot}], stub {from, to, date, t} | passport stamps slam in, ticket stub slides on |
+| T35 | `cashdrain` | value, prefix, suffix, label, build_at, build_s, drain_at, drain_s, boxes, left {text, label, t} | stacks build into the sourced number, then drain along arrows into boxes. Tag ILLUSTRATIVE FLOW. drain_at > shot length = build only, centred |
+| T36 | `redstring` | cards [{text, sub, icon, kind card/sticky/dark, x, y, w, h, size}], links [[i, j]], title, step, focus | investigation wall, cards pinned on twos, red string sags between pins |
+| T37 | `wanted` | title, lines | aged poster, faceless silhouette only (never a real face) |
+| T38 | `stage` | screen [lines], speaker, hands_at, label | seminar hall: glowing screen, sweeping spotlights, haze, crowd silhouettes (hands rise at hands_at) |
+| T39 | `ticker` | v0, v1, cur, app, unit, freeze_at, frozen_text, headline, stickers5 | phone price climbs (values from research only) then freezes at WITHDRAWALS DISABLED. Tag ILLUSTRATIVE APP SCREEN |
+Free local preview of any lines (no voice, no Modal): `T=1.2,3.4 python tools/v5_local_frames.py <ep> 0-3 /tmp/out`.
