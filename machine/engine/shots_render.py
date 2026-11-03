@@ -359,7 +359,7 @@ if LOOK in ("collage", "v3"):
             C.drop_card(fr, card, cx, cy, rot, a=min(1, t / .25), scale=1 + .035 * u)
         dr = ImageDraw.Draw(fr)
         if s.get("label") and t > .5: C.sticker(fr, s["label"].upper(), int(W * .1), int(H * .1), F(ANTON, 46))
-        if credit: dr.text((W - 60 - dr.textlength(credit, font=F(MONO, 16)), 44), credit, font=F(MONO, 16), fill=(150, 145, 134))
+        if credit: dr.text((40, 1046), credit, font=F(MONO, 16), fill=(150, 145, 134), anchor="lm")
         return fr
     def s_scene(s, t, d):
         img, key, tm = _pic(s); fr = board()

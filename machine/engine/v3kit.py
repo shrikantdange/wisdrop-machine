@@ -93,10 +93,11 @@ def pop_sticker(fr, text, x, y, t, font=None, bg=YEL, fg=INK, rot=-4):
 
 def stamp_img(text, col=RED, size=150, sub=""):
     f = F(ANTON, size); d0 = ImageDraw.Draw(Image.new("RGB", (8, 8))); tw = d0.textlength(text, font=f)
-    w, h = int(tw) + 90, size + (110 if sub else 70); im = Image.new("RGBA", (w, h), (0, 0, 0, 0)); d = ImageDraw.Draw(im)
+    bb = d0.textbbox((0, 0), text, font=f); th_ = bb[3] - bb[1]
+    w, h = int(tw) + 90, th_ + (120 if sub else 70); im = Image.new("RGBA", (w, h), (0, 0, 0, 0)); d = ImageDraw.Draw(im)
     d.rounded_rectangle([6, 6, w - 7, h - 7], 18, outline=col + (255,), width=12)
-    d.text((45, 20), text, font=f, fill=col + (255,))
-    if sub: d.text((w / 2, h - 52), sub, font=F(MONO, 30), fill=col + (255,), anchor="mm")
+    d.text((45, 35 - bb[1]), text, font=f, fill=col + (255,))
+    if sub: d.line([(30, th_ + 58), (w - 30, th_ + 58)], fill=col + (255,), width=5); d.text((w / 2, th_ + 88), sub, font=F(MONO, 30), fill=col + (255,), anchor="mm")
     noise = Image.fromarray((np.random.default_rng(len(text)).random((h, w)) > .18).astype(np.uint8) * 255)
     im.putalpha(ImageChops.multiply(im.split()[3], noise.filter(ImageFilter.GaussianBlur(.7))))
     return im
@@ -364,7 +365,7 @@ def s_photos(s, t, d, part, media, credit_of):
             x, y, _ = lay[s["circle"]]; C.marker_circle(dr, [W * x - wd * .4, H * y - wd * .3, W * x + wd * .4, H * y + wd * .3], (t - n * step - .2) / .5)
     if s.get("title"): pop_sticker(fr, s["title"].upper(), 360, 80, t - .2, F(ANTON, 46), YEL, INK, -2)
     creds = [c for c in (credit_of(p) for p in ph) if c]
-    if creds: dr = ImageDraw.Draw(fr); dr.text((W - 40, 1040), " · ".join(creds)[:180], font=F(MONO, 15), fill=th["sub"], anchor="rm")
+    if creds: dr = ImageDraw.Draw(fr); dr.text((40, 1046), " · ".join(creds)[:180], font=F(MONO, 15), fill=th["sub"], anchor="lm")
     return zoom(fr, 1 + .025 * u)
 
 def s_magnify(s, t, d, part, media, credit_of):
@@ -382,7 +383,7 @@ def s_magnify(s, t, d, part, media, credit_of):
         fr.paste(lens, (int(lx - r), int(ly - r)), m); dr.ellipse([lx - r, ly - r, lx + r, ly + r], outline=(40, 34, 30), width=14)
         if s.get("label") and t > 2.0: pop_sticker(fr, s["label"].upper(), int(lx + r + 160), int(ly - r), t - 2.0)
     c = credit_of(s)
-    if c: ImageDraw.Draw(fr).text((W - 40, 1040), c[:120], font=F(MONO, 15), fill=th["sub"], anchor="rm")
+    if c: ImageDraw.Draw(fr).text((40, 1046), c[:120], font=F(MONO, 15), fill=th["sub"], anchor="lm")
     return zoom(fr, 1 + .02 * u)
 
 # ---------------- maps ----------------
@@ -393,7 +394,7 @@ def _countries():
     return _MAPS
 def _proj(bbox, size):
     lon0, lat0, lon1, lat1 = bbox; k = math.cos(math.radians((lat0 + lat1) / 2)); w, h = size
-    sx = w / ((lon1 - lon0) * k); sy = h / (lat1 - lat0); sc = max(sx, sy)
+    sx = w / ((lon1 - lon0) * k); sy = h / (lat1 - lat0); sc = min(sx, sy)
     cxl, cyl = (lon0 + lon1) / 2, (lat0 + lat1) / 2
     return lambda lon, lat: (w / 2 + (lon - cxl) * k * sc, h / 2 - (lat - cyl) * sc)
 def map_base(bbox, hl, part):
@@ -446,8 +447,8 @@ def s_map(s, t, d, part):
         if tp < 1.2: dr.ellipse([x - 20 - 60 * tp, y - 20 - 60 * tp, x + 20 + 60 * tp, y + 20 + 60 * tp], outline=RED, width=max(1, int(6 * (1 - tp / 1.2))))
         if p.get("name"): pop_sticker(fr, p["name"].upper(), int(x + p.get("dx", 0)), int(y - 70 + p.get("dy", 0)), tp - .1, F(ANTON, 42), INK, CREAM, -2); dr = ImageDraw.Draw(fr)
     if s.get("label"): pop_sticker(fr, s["label"].upper(), 380, 90, t - .3, F(ANTON, 48))
-    if s.get("source"): dr.text((W - 40, 1040), "MAP: NATURAL EARTH (PUBLIC DOMAIN) · " + s["source"].upper(), font=F(MONO, 16), fill=(70, 70, 70), anchor="rm")
-    else: dr.text((W - 40, 1040), "MAP: NATURAL EARTH (PUBLIC DOMAIN)", font=F(MONO, 16), fill=(70, 70, 70), anchor="rm")
+    if s.get("source"): dr.text((40, 1046), "MAP: NATURAL EARTH (PUBLIC DOMAIN) · SOURCE: " + s["source"].upper(), font=F(MONO, 16), fill=(70, 70, 70), anchor="lm")
+    else: dr.text((40, 1046), "MAP: NATURAL EARTH (PUBLIC DOMAIN)", font=F(MONO, 16), fill=(70, 70, 70), anchor="lm")
     return fr
 
 # ---------------- money flow ----------------
