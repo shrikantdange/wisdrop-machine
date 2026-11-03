@@ -1,0 +1,32 @@
+name: images
+on:
+  workflow_dispatch:
+    inputs:
+      job: {description: "image job file", default: "episodes/ep01-onecoin/img_jobs_test.json"}
+      fetch_weights: {description: "download weights to volume first (once)", type: boolean, default: false}
+permissions:
+  contents: write
+concurrency: {group: heavy-worker, cancel-in-progress: false}
+jobs:
+  images:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.11"}
+      - run: pip install -q modal
+      - name: Run on Modal
+        env:
+          MODAL_TOKEN_ID: ${{ secrets.MODAL_TOKEN_ID }}
+          MODAL_TOKEN_SECRET: ${{ secrets.MODAL_TOKEN_SECRET }}
+        run: |
+          export MODAL_TOKEN_ID="$(printf '%s' "$MODAL_TOKEN_ID" | tr -d '[:space:]')"
+          export MODAL_TOKEN_SECRET="$(printf '%s' "$MODAL_TOKEN_SECRET" | tr -d '[:space:]')"
+          if [ "${{ inputs.fetch_weights }}" = "true" ]; then modal run machine/worker_images.py::fetch_weights; fi
+          modal run machine/worker_images.py::images --job "${{ inputs.job }}"
+      - name: Publish output to worker-out branch (overwritten each run)
+        run: |
+          cd out && git init -q -b worker-out && git add -A
+          git -c user.name=wisdrop-bot -c user.email=bot@users.noreply.github.com commit -qm "images ${{ inputs.job }} ${{ github.run_id }}"
+          git push -qf "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" worker-out

@@ -1,0 +1,6 @@
+[
+ {"name": "s1_shop_day", "seed": 11,
+  "prompt": "Wide establishing shot of a small neighbourhood tailoring shop interior: a wooden front counter, one sewing machine, a dress form wearing a half-finished white wedding dress, a shop window to the street, a small old TV on a shelf. Leave clear empty floor space left of centre for a character to stand. Warm morning window light. No people."},
+ {"name": "rosa_master_front", "seed": 21, "w": 1328, "h": 1328,
+  "prompt": "Full-body portrait of ONE fictional woman, age 54, medium height, sturdy, slightly rounded shoulders, dark brown hair with grey streaks pinned up in a low bun, reading glasses pushed into her hair, wearing a beige blouse, a burgundy cardigan, an olive knee-length skirt, flat brown shoes and a half-apron with pins, an off-white cloth tape measure around her neck. Standing calmly, front view, warm careful expression. Plain flat light-grey background, even lighting, whole figure visible with margin around it, about 7 heads tall."}
+]
