@@ -56,11 +56,19 @@ def job_hash(j: dict, style: str, ref_hashes: list) -> str:
     return hashlib.sha256(key.encode()).hexdigest()[:16]
 
 
+EMPTY_STYLE = (("clean inked outlines on people and objects, realistic adult proportions and believable faces,", "clean inked outlines on every object,"),
+               (" No text, no letters, no numbers, no signs with writing, no logos, no watermarks.", ""))
+EMPTY = " Deserted and unoccupied, a still place after hours, every seat vacant. All surfaces plain and unmarked, blank walls, blank screens."
+
+
 def full_prompt(j: dict, style: str) -> str:
-    p = style + " " + j["prompt"]
-    if not j.get("people", False):
-        p += NO_PEOPLE
-    return p + NO_TEXT
+    """Sets: with guidance off (Lightning), naming what to avoid draws it. So the style is stripped of
+    people words and 'no text' lists, and the prompt says positively that the place is deserted and blank."""
+    if j.get("people", False):
+        return style + " " + j["prompt"] + NO_TEXT
+    for a, b in EMPTY_STYLE:
+        style = style.replace(a, b)
+    return style + " " + j["prompt"] + EMPTY
 
 
 @app.function(image=image, volumes={"/weights": wvol}, timeout=3600, cpu=2, memory=4096, max_containers=1)
