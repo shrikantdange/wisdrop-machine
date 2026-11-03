@@ -1,0 +1,9 @@
+{"title": "The $4 Billion Coin That Never Existed",
+ "concepts": [
+  {"id": "A_4B_GONE", "words": ["$4B", "GONE"], "accent": 1, "subject": "cut:thumb_briefcase_empty_cut", "side": "right", "glow": [247, 209, 58], "h": 0.9,
+   "source": "$4B: U.S. DOJ (SDNY) 12 Sep 2023 + Reuters 12 Sep 2023 (research F04)"},
+  {"id": "B_1C_BACK", "words": ["1¢", "BACK"], "accent": 1, "subject": "cut:thumb_man_shock_cut", "side": "right", "glow": [226, 90, 60], "h": 1.0,
+   "source": "DERIVED, owner to approve: more than $40M remission pool (DOJ 13 Apr 2026, F29) vs more than $4B taken (F04) = about 1 cent per dollar"},
+  {"id": "C_VANISHED", "words": ["VANISHED"], "accent": -1, "subject": "coin_vanish", "side": "right", "glow": [120, 170, 255], "h": 0.62, "ground": false,
+   "source": "no number; FBI Ten Most Wanted (F01/F03)"}
+ ]}

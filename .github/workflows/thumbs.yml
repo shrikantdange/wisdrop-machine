@@ -1,0 +1,38 @@
+name: thumbs
+# Designed thumbnails (docs/THUMBNAILS.md): at most 2 GPU pictures (cached), then CPU compose,
+# phone mock and auto score. Result pushed to branch `thumbs`. Owner approves before upload.
+on:
+  workflow_dispatch:
+    inputs:
+      ep: {description: "episode folder", required: true, default: "episodes/ep01-onecoin"}
+      redo: {description: "remake these subject pictures (comma list of job names)", default: ""}
+      max_gpu_seconds: {description: "SPEND GUARD", default: "240"}
+permissions: {contents: write}
+concurrency: {group: heavy-worker, cancel-in-progress: false}
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    env: {EP: "${{ inputs.ep }}", WIS_MAX_GPU_S: "${{ inputs.max_gpu_seconds }}"}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.11"}
+      - run: pip install -q modal pillow numpy
+      - name: Modal login
+        env: {MODAL_TOKEN_ID: "${{ secrets.MODAL_TOKEN_ID }}", MODAL_TOKEN_SECRET: "${{ secrets.MODAL_TOKEN_SECRET }}"}
+        run: |
+          echo "MODAL_TOKEN_ID=$(printf '%s' "$MODAL_TOKEN_ID" | tr -d '[:space:]')" >> "$GITHUB_ENV"
+          echo "MODAL_TOKEN_SECRET=$(printf '%s' "$MODAL_TOKEN_SECRET" | tr -d '[:space:]')" >> "$GITHUB_ENV"
+      - name: Subject pictures (GPU only if not cached; max 2)
+        run: |
+          N=$(python -c "import json;print(len(json.load(open('$EP/thumbs/thumb_jobs.json'))))"); [ "$N" -le 2 ] || { echo "FAIL: max 2 thumbnail pictures"; exit 1; }
+          modal run machine/worker_images.py::images --job "$EP/thumbs/thumb_jobs.json" --force "${{ inputs.redo }}" | tail -20
+          mkdir -p "$EP/thumbs/cuts" && cp out/thumbs/img/*_cut.png "$EP/thumbs/cuts/" 2>/dev/null || true
+      - name: Compose + phone mock + score (CPU)
+        run: python machine/thumbnail.py "$EP"
+      - name: Push to branch thumbs
+        run: |
+          mkdir -p /tmp/t && cp $EP/thumbs/*.jpg $EP/thumbs/*.png $EP/thumbs/score.json /tmp/t/ && cp out/thumbs/cost.json /tmp/t/ 2>/dev/null || true
+          cd /tmp/t && git init -q -b thumbs && git add -A && git -c user.name=wisdrop-bot -c user.email=bot@users.noreply.github.com commit -qm "thumbs run ${{ github.run_id }}"
+          git push -qf "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" thumbs

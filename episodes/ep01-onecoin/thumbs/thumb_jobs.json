@@ -1,0 +1,6 @@
+[
+ {"name": "thumb_man_shock", "lib": "thumbs/ep01", "seed": 41, "w": 1328, "h": 1328, "people": true, "cutout": true,
+  "prompt": "Waist-up portrait of ONE fictional ordinary man aged about 45, short dark hair, stubble, plain grey work shirt, both hands gripping his head in disbelief, mouth open, eyes wide staring at a single small copper coin held between two fingers of his raised right hand. Strong emotion: shock and betrayal. Lit by one hard warm key light from the left and a cool rim light from behind. Plain flat dark-teal studio backdrop, nothing else in the frame. Centered subject with space around the head and hands."},
+ {"name": "thumb_briefcase_empty", "lib": "thumbs/ep01", "seed": 43, "w": 1328, "h": 1328, "people": false, "cutout": true,
+  "prompt": "A single open black leather briefcase standing upright and seen from the front at a slight angle, completely empty inside with its lining exposed, brass clasps open, dramatic hard spotlight from above, crisp shadow under it. Plain flat dark-navy studio backdrop, nothing else in the frame. Centered object filling most of the picture."}
+]
