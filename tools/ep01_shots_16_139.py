@@ -1,0 +1,153 @@
+"""One-off: writes ep01 shots for lines 16-139 into episodes/ep01-onecoin/shots.json (keeps 0-15).
+AI picture keys stay <= 6: the 4 tailor_shop keys from lines 4-11 are reused, plus
+event_stage/night/victor-pointing_clicker and kitchen/night/rosa-laptop_typing. Everything else is
+code graphics or real Commons photos (places, no people). Sources are research.md F-ids."""
+import json, os
+EP = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "episodes", "ep01-onecoin")
+DOJ23 = "U.S. DOJ (SDNY), 12 SEP 2023"; DOJ22 = "U.S. DOJ (SDNY) PLEA, 16 DEC 2022"; BBC19 = "BBC, 24 NOV 2019"
+BBC20 = "BBC, 11 AUG 2020"; BBC19b = "BBC, 25 SEP 2019"; FBI = "FBI.GOV TEN MOST WANTED"; SPF = "SINGAPORE POLICE FORCE, 20 JAN 2021"
+VIC = {"set": "event_stage", "time": "night", "cast": [{"who": "victor", "pose": "pointing_clicker", "x": .42}]}
+ROSA_K = {"set": "kitchen", "time": "night", "cast": [{"who": "rosa", "pose": "laptop_typing", "x": .4}]}
+SHOP_SEW = {"set": "tailor_shop", "time": "morning", "cast": [{"who": "rosa", "pose": "sewing", "x": .38}]}
+SHOP_THINK = {"set": "tailor_shop", "time": "afternoon", "cast": [{"who": "rosa", "pose": "thinking", "x": .35}]}
+SHOP_ENV = {"set": "tailor_shop", "time": "morning", "cast": [{"who": "rosa", "pose": "envelope", "x": .4, "h": .95}]}
+def sc(base, **k): d = {"type": "scene", "move": "push"}; d.update(json.loads(json.dumps(base))); d.update(k); return d
+def em(code, x, y, t, size=130): return {"k": "emoji", "code": code, "x": x, "y": y, "t": t, "size": size}
+def st(text, x, y, t): return {"k": "sticker", "text": text, "x": x, "y": y, "t": t}
+
+S = {
+16: [{"type": "parallax", "q": "Sofia Bulgaria city centre", "mood": "day", "label": "Sofia: founded 2014", "source": DOJ23}],
+17: [{"type": "phone", "app": "live", "title": "Live webinar", "banner": "MEET THE FOUNDER", "messages": [{"from": "maria", "text": "a real genius"}, {"from": "k_ben", "text": "Oxford!!"}, {"from": "dee", "text": "see Rosa?"}], "source": BBC19}],
+18: [{"type": "card", "kind": "doc", "header": "MAGAZINE 'COVER'", "lines": ["Shown as a cover story.", "Really a paid-for advert inside."], "highlight": "paid-for advert", "source": BBC19, "recreated": True, "marks": [st("Paid ad", .78, .26, 1.8)]}],
+19: [sc(ROSA_K, label="Where do I buy?", marks=[em("1F914", .8, .3, 1.0)])],
+20: [{"type": "docreveal", "kind": "Police statement (recreated)", "title": "What OneCoin sold", "lines": ["Packages, sold to members,", "which contained online", "educational courses", "and promotional tokens."], "redact": [1, 3], "step": .3, "quote": "education packages", "cps": 30, "source": SPF}],
+21: [{"type": "flow", "title": "As promoters told it", "boxes": ["Tokens", "Mining", "New coins"], "step": .6, "source": SPF}],
+22: [{"type": "chart3d", "title": "Package prices", "items": [{"label": "Smallest", "value": 140, "text": "€140"}, {"label": "Largest", "value": 118000, "text": "€118,000"}], "hl": 1, "step": .6, "source": BBC19}],
+23: [{"type": "screen", "device": "laptop", "set": "kitchen", "time": "night", "ui": {"banner": {"text": "BUY STARTER PACKAGE"}}, "label": "Just to see", "marks": [em("1F4B6", .8, .32, 1.2)]}],
+24: [{"type": "phone", "app": "bank", "title": "OneCoin account", "value": 9.0, "from": 4.0, "prefix": "€", "decimals": 2, "sub": "BALANCE (ILLUSTRATIVE)", "illustrative": True, "rows": [{"name": "Tokens converted", "when": "today", "amount": "+", "icon": "coin"}]}],
+25: [{"type": "kinetic", "text": "And up.", "hl": "up.", "step": .25, "marks": [em("1F4C8", .5, .7, .5, 140)]}],
+26: [sc(SHOP_ENV, label="The uni fund", marks=[{"k": "arrow", "x0": .78, "y0": .3, "x1": .55, "y1": .5, "t": 1.0}])],
+27: [sc(VIC, label="Victor (composite)", stickers=["Upline", "Seminars"])],
+28: [{"type": "tree", "levels": 3, "branch": 3, "label": "Bring people in", "source": DOJ23}],
+29: [{"type": "money", "nodes": [{"label": "New friend", "x": .2, "y": .55}, {"label": "You", "x": .5, "y": .35}, {"label": "Upline", "x": .8, "y": .55}], "flows": [{"from": 0, "to": 1, "label": "commission", "t": .4}, {"from": 1, "to": 2, "label": "a cut", "t": 1.4}], "source": DOJ23}],
+30: [{"type": "kinetic", "text": "Black Friday queue. Nobody asks what's on sale.", "hl": "nobody", "step": .26}],
+31: [{"type": "phone", "app": "group", "title": "Rosa's circle", "sub": "3 members", "messages": [{"from": "sister", "text": "ok I'm in"}, {"from": "mrs_h", "text": "sign me up too"}, {"text": "welcome!!", "me": True}]}],
+32: [{"type": "parallax", "q": "Wembley Arena London exterior", "mood": "night", "label": "Wembley, June 2016", "source": "FBI video page; " + BBC19}],
+33: [{"type": "card", "kind": "quote", "header": "ON STAGE, WEMBLEY", "date": "11 JUN 2016", "lines": ["\"...supposed to be the bitcoin killer.\""], "highlight": "bitcoin killer", "source": "FBI.GOV VIDEO, RUJA-CUT", "recreated": True}],
+34: [sc(ROSA_K, move="pull", label="She believes it", marks=[em("1F64F", .8, .3, 1.1)])],
+35: [{"type": "coin3d", "text": "ONE", "label": "What is it buying?", "spins": .8, "crypto": True, "trans": "glitch"}],
+36: [{"type": "chapter", "num": 2, "title": "The Machine", "trans": "leak"}, {"type": "list", "offset": 2.0, "items": ["Package", "Tokens", "Coins"], "step": .5}],
+37: [{"type": "flow", "title": "Step one", "boxes": ["Package", "Tokens"], "step": .7, "source": SPF}],
+38: [{"type": "flow", "title": "Step two", "boxes": ["Tokens", {"label": "OneCoins", "color": "gold"}], "step": .7, "source": SPF}],
+39: [{"type": "parallax", "q": "data center server racks", "mood": "night", "label": "'Mining pools' (as sold)", "source": DOJ23}],
+40: [{"type": "lineart", "q": "server room data center aisle", "label": "No mining pools", "flashback": True, "trace": 1.4, "source": DOJ23}],
+41: [{"type": "card", "kind": "email", "from": "FOUNDER", "header": "TO: CO-FOUNDER", "lines": ["...we are not mining actually..."], "highlight": "not mining", "source": DOJ23, "recreated": True}],
+42: [{"type": "name", "name": "Sebastian Greenwood", "role": "Co-founder, ran global sales", "source": DOJ23}],
+43: [{"type": "map", "bbox": [-20, 25, 60, 62], "pins": [{"name": "Sales worldwide", "lat": 51.5, "lon": -0.1, "t": .3}, {"name": "Sofia", "lat": 42.7, "lon": 23.3, "t": 1.0}], "route": [[51.5, -0.1], [42.7, 23.3]], "route_at": .5, "label": "A cut of every month", "source": DOJ23}],
+44: [{"type": "stat", "value": 300, "prefix": "$", "suffix": "M+", "color": "red", "label": "CO-FOUNDER'S CUT", "source": DOJ23}],
+45: [{"type": "tree", "levels": 4, "branch": 2, "label": "Next wave pays", "source": DOJ23}],
+46: [sc(SHOP_THINK, label="Who sets the price?", marks=[em("2753", .8, .3, 1.0)])],
+47: [{"type": "kinetic", "text": "The company did.", "hl": "company", "step": .28}],
+48: [{"type": "chart", "points": [.2, .35, .3, .5, .42, .6], "label": "Supply and demand (as claimed)", "illustrative": True}],
+49: [{"type": "docreveal", "kind": "Prosecutors (recreated)", "title": "How the price was set", "lines": ["OneCoin's price was", "not set by the market.", "The company set it", "itself."], "redact": [0, 2], "step": .3, "quote": "set the price itself", "cps": 30, "source": DOJ23}],
+50: [{"type": "chart3d", "title": "OneCoin 'price'", "items": [{"label": "Start", "value": .5, "text": "€0.50"}, {"label": "Peak", "value": 29.95, "text": "€29.95"}], "hl": 1, "source": DOJ23}],
+51: [{"type": "kinetic", "text": "And it never fell.", "hl": "never", "step": .28, "source": DOJ23}],
+52: [{"type": "card", "kind": "doc", "header": "SPREADSHEET (RECREATED)", "date": "MAR 2015", "lines": ["MINED COINS", "FAKE COINS"], "highlight": "FAKE COINS", "source": DOJ23, "recreated": True}],
+53: [{"type": "bars", "items": [{"label": "Mined coins", "value": 1, "text": "row 1"}, {"label": "Fake coins", "value": 1, "text": "row 2", "color": "red"}], "source": DOJ23}],
+54: [{"type": "kinetic", "text": "Not a market. A price tag with a progress bar.", "hl": "progress", "step": .26}],
+55: [{"type": "flow", "title": "A real blockchain", "boxes": ["Block", "Block", "Block"], "step": .5, "source": DOJ22}],
+56: [{"type": "magnify", "q": "Bitcoin block explorer transaction list screenshot", "detail": [.5, .4], "zoom": 2.2, "label": "Check it yourself"}],
+57: [{"type": "wall", "photos": [{"q": "computer servers rack blue", "mood": "night", "label": "Copy"}, {"q": "laptop computer desk night", "mood": "night", "label": "Copy"}, {"q": "home computer desk", "mood": "day", "label": "Copy"}, {"q": "server room lights", "mood": "night", "label": "Copy"}], "title": "Thousands of copies"}],
+58: [{"type": "flow", "title": "OneCoin's 'blockchain'", "boxes": [{"label": "Private", "color": "red"}, {"label": "Locked", "color": "red"}], "step": .6, "source": DOJ22}],
+59: [sc(VIC, move="pull", label="'Trust us'", marks=[em("1F91D", .82, .3, 1.0)], source="FBI (BBC, 24 NOV 2019)")],
+60: [{"type": "screen", "device": "laptop", "set": "dev_flat", "time": "night", "ui": {"text": {"lines": ["> git log", "> where is the ledger?"]}}, "label": "Theo (composite)"}],
+61: [{"type": "phone", "app": "inbox", "title": "Forum", "rows": [{"from": "theo_dev", "subject": "WHERE IS THE LEDGER?"}, {"from": "theo_dev", "subject": "Still no ledger"}, {"from": "theo_dev", "subject": "Show the chain"}]}],
+62: [{"type": "card", "kind": "email", "from": "THEO", "header": "TO: ONECOIN", "lines": ["Happy to audit your ledger, no charge."], "highlight": "no charge", "recreated": True, "marks": [st("No reply", .8, .26, 2.0)]}],
+63: [{"type": "phone", "app": "group", "title": "OneCoin family", "messages": [{"from": "victor", "text": "Ignore the haters!!"}, {"from": "dee", "text": "haters gonna hate"}, {"from": "maria", "text": "so true"}], "source": BBC19}],
+64: [{"type": "headline", "outlet": "BBC (RECREATED)", "date": "OCT 2016", "title": "Crypto start-up seeks chief technical officer", "source": BBC19}],
+65: [{"type": "card", "kind": "post", "header": "JOB OFFER", "lines": ["CTO wanted", "Sofia, Bulgaria"], "highlight": "CTO", "source": BBC19, "recreated": True}],
+66: [{"type": "kinetic", "text": "Job one: build a blockchain.", "hl": "build", "step": .28, "source": BBC19}],
+67: [{"type": "docreveal", "kind": "Interview (BBC)", "title": "What the recruiter said", "lines": ["The start-up runs", "a cryptocurrency."], "redact": [1], "step": .3, "quote": "They don't have a blockchain today", "cps": 30, "source": BBC19}],
+68: [{"type": "list", "items": ["Company: OneCoin", {"text": "Job accepted", "strike": True}], "step": .7, "source": BBC19}],
+69: [sc(SHOP_SEW, label="Climbing", marks=[em("1F4C8", .82, .3, 1.0)])],
+70: [{"type": "phone", "app": "ticker", "title": "OneCoin", "sym": "ONE", "values": [5, 29.95], "points": [.1, .2, .35, .5, .7, .9], "change": "only up", "illustrative": True, "source": DOJ22}],
+71: [sc(VIC, move="hold", label="Exchange: coming soon", source=BBC19)],
+72: [{"type": "kinetic", "text": "It works until someone pulls the curtain.", "hl": "curtain", "step": .26}],
+73: [{"type": "docreveal", "kind": "Court exhibit", "title": "Prosecutors' files", "lines": ["U.S. v. Greenwood", "Plea and exhibits", "Southern District of New York"], "redact": [1], "step": .3, "source": DOJ22}],
+74: [{"type": "card", "kind": "email", "date": "9 AUG 2014", "from": "FOUNDER", "header": "SUBJECT: EXIT STRATEGY", "lines": ["Options..."], "highlight": "exit strategy", "source": DOJ22, "recreated": True}],
+75: [{"type": "timeline", "events": [{"date": "9 AUG 2014", "label": "Exit email", "color": "red"}, {"date": "JAN 2015", "label": "'First coin mined'"}], "source": DOJ22 + "; FBI VIDEO"}],
+76: [{"type": "card", "kind": "quote", "header": "OPTION ONE", "lines": ["\"Take the money and run...\""], "highlight": "Take the money and run", "source": DOJ22, "recreated": True}],
+77: [{"type": "kinetic", "text": "And blame someone else.", "hl": "blame", "step": .28, "source": DOJ22}],
+78: [{"type": "headline", "outlet": "U.S. DOJ (RECREATED)", "date": "12 SEP 2023", "title": "A fraud from day one", "source": DOJ23}],
+79: [sc(VIC, move="pull", time="night", label="Who gets out first?", fx=["dim"])],
+80: [{"type": "chapter", "num": 3, "title": "The Fall", "trans": "leak"}, {"type": "headline", "offset": 2.0, "outlet": "UK FCA (RECREATED)", "date": "SEP 2016", "title": "Beware trading virtual currencies with OneCoin", "source": BBC20}],
+81: [{"type": "kinetic", "text": "September 2016: be wary of OneCoin.", "hl": "wary", "step": .26, "source": BBC20}],
+82: [{"type": "list", "items": ["Warning", {"text": "Fine", "strike": True}], "step": .6, "source": BBC20}],
+83: [{"type": "timeline", "events": [{"date": "SEP 2016", "label": "Warning posted"}, {"date": "1 AUG 2017", "label": "Quietly removed", "color": "red"}], "source": BBC20}],
+84: [sc(VIC, move="push", label="'Clean bill of health'", source=BBC20)],
+85: [{"type": "screen", "device": "phone", "ui": {"balance": {"title": "CASH OUT", "value": 0, "prefix": "", "sub": "COMING SOON"}}, "label": "Still waiting", "source": BBC19}],
+86: [{"type": "phone", "app": "sms", "title": "Dee", "messages": [{"text": "When can I withdraw?", "me": True}, {"text": "Soon!!"}, {"text": "soon, promise"}]}],
+87: [{"type": "phone", "app": "notify", "notes": [{"app": "Messages", "title": "Theo", "text": "Please read this first", "when": "now"}, {"app": "Messages", "title": "Theo", "text": "Ask them for the ledger", "when": "now"}]}],
+88: [{"type": "parallax", "q": "Glasgow city centre", "mood": "dusk", "label": "Glasgow", "source": BBC19}],
+89: [{"type": "chart3d", "title": "Jen McAdam's family", "items": [{"label": "Her own", "value": 10000, "text": "€10,000"}, {"label": "Family", "value": 250000, "text": "€250,000"}], "hl": 1, "source": BBC19b}],
+90: [{"type": "card", "kind": "doc", "header": "VOICEMAIL", "date": "APR 2017", "lines": ["From her group leaders."], "source": BBC19, "recreated": True, "marks": [em("1F4DE", .8, .3, 1.0)]}],
+91: [{"type": "docreveal", "kind": "Voicemail (recreated)", "title": "The 'blockchain'", "lines": ["It was explained", "to investors as..."], "redact": [1], "step": .3, "quote": "a SQL server with a database", "cps": 28, "source": BBC19}],
+92: [{"type": "kinetic", "text": "A record they could change whenever they liked.", "hl": "change", "step": .26}],
+93: [{"type": "parallax", "q": "Lisbon Portugal city view", "mood": "dusk", "label": "Lisbon, Oct 2017: no-show", "source": BBC19}],
+94: [{"type": "card", "kind": "filing", "header": "UNITED STATES v. IGNATOVA", "date": "12 OCT 2017", "lines": ["Charged: wire fraud conspiracy."], "highlight": "Charged", "source": FBI, "recreated": True}],
+95: [{"type": "map", "bbox": [17, 34.6, 30, 45.2], "highlight": ["BGR", "GRC"], "flight": True, "pins": [{"name": "Sofia", "lat": 42.6977, "lon": 23.3219, "t": .3}, {"name": "Athens", "lat": 37.9838, "lon": 23.7275, "t": 1.6}], "label": "25 Oct 2017", "source": FBI}],
+96: [{"type": "lineart", "q": "Athens International Airport terminal", "label": "Flashback", "flashback": True, "source": FBI}],
+97: [{"type": "kinetic", "text": "Gone.", "hl": "gone.", "step": .3}],
+98: [{"type": "card", "kind": "filing", "header": "FBI TEN MOST WANTED", "lines": ["May travel with armed guards.", "May have altered her appearance."], "highlight": "armed guards", "source": FBI, "recreated": True}],
+99: [{"type": "name", "name": "Konstantin Ignatov", "role": "Rose to lead OneCoin", "source": "COURT LETTER, US v. MORRO, 10 OCT 2024"}],
+100: [{"type": "parallax", "q": "Las Vegas Strip night", "mood": "night", "label": "Las Vegas", "source": "U.S. DOJ (SDNY), 8 MAR 2019"}],
+101: [{"type": "card", "kind": "quote", "header": "TO MEMBERS (RECREATED)", "lines": ["\"If you are here to cash out, leave this room now.\""], "highlight": "leave this room", "source": "U.S. DOJ (SDNY), 8 MAR 2019", "recreated": True}],
+102: [{"type": "photo", "q": "Los Angeles International Airport Theme Building", "mood": "day", "label": "LAX, Mar 2019", "source": BBC19 + "; COURT LETTER", "marks": [{"k": "circle", "x0": .4, "y0": .3, "x1": .6, "y1": .55, "t": 1.0}]}],
+103: [sc(SHOP_THINK, time="afternoon", move="pull", label="The news", marks=[em("1F4F1", .8, .3, .9)])],
+104: [{"type": "phone", "app": "bank", "title": "OneCoin account", "value": 12000, "from": 11900, "prefix": "€", "decimals": 0, "sub": "BALANCE (ILLUSTRATIVE)", "illustrative": True, "rows": [{"name": "Still 'growing'", "when": "today", "amount": "+", "icon": "coin"}]}],
+105: [{"type": "kinetic", "text": "Like the band on the Titanic.", "hl": "titanic.", "step": .28, "marks": [em("1F3BB", .5, .7, 1.4, 140)]}],
+106: [sc(SHOP_ENV, move="hold", label="Calling her sister")],
+107: [{"type": "phone", "app": "notify", "notes": [{"app": "Messages", "title": "Neighbour", "text": "Dee, where's my money?", "when": "now"}, {"app": "Missed call", "title": "Neighbour", "text": "2 missed calls", "when": "now"}]}],
+108: [{"type": "stat", "value": 175, "color": "red", "label": "COUNTRIES", "source": BBC19b}],
+109: [{"type": "photo", "q": "goats Uganda", "mood": "dusk", "label": "Uganda: three goats sold", "source": BBC19, "marks": [st("3 goats", .8, .25, 1.4)]}],
+110: [{"type": "headline", "outlet": "BBC (RECREATED)", "date": "24 NOV 2019", "title": "Family savings went into OneCoin", "source": BBC19}],
+111: [{"type": "parallax", "q": "Thurgood Marshall United States Courthouse", "mood": "day", "label": "New York", "amp": 50}],
+112: [{"type": "stat", "value": 20, "suffix": " YEARS", "color": "red", "label": "SEBASTIAN GREENWOOD, CO-FOUNDER", "source": DOJ23}],
+113: [{"type": "name", "name": "Mark Scott", "role": "Lawyer: 10 years", "source": "U.S. DOJ (SDNY), 25 JAN 2024"}],
+114: [{"type": "chart3d", "title": "Sentences", "items": [{"label": "Greenwood", "value": 20, "text": "20 yrs"}, {"label": "Scott", "value": 10, "text": "10 yrs"}, {"label": "Dilkinska", "value": 4, "text": "4 yrs"}], "hl": 2, "source": DOJ23 + "; DOJ 25 JAN + 3 APR 2024"}],
+115: [{"type": "name", "name": "Konstantin Ignatov", "role": "Cooperated: time served", "source": "COURT LETTER, US v. MORRO, 10 OCT 2024"}],
+116: [{"type": "docreveal", "kind": "City of London Police (recreated)", "title": "UK investors", "lines": ["Police said they were", "unable to find assets."], "redact": [1], "step": .3, "quote": "unable to identify UK-based assets", "cps": 30, "source": BBC19}],
+117: [sc(SHOP_THINK, move="push", label="Could you?", marks=[em("1F50E", .82, .3, 1.2)])],
+118: [{"type": "chapter", "num": 4, "title": "The Lesson", "trans": "leak"}, {"type": "list", "offset": 2.0, "items": ["Price only goes up", "You can't check it", "Paid to recruit"], "step": .6}],
+119: [{"type": "chart", "points": [.1, .25, .4, .55, .7, .85], "label": "Red flag 1: only goes up", "illustrative": True, "marks": [st("Red flag 1", .8, .24, 1.4)]}],
+120: [{"type": "pair", "title": "Real vs OneCoin", "photos": [{"q": "stock market chart screen", "mood": "day", "label": "Real: wobbles"}, {"q": "staircase steps", "mood": "day", "label": "OneCoin: only up"}], "source": DOJ23}],
+121: [{"type": "kinetic", "text": "Red flag two: you can't check it.", "hl": "check", "step": .26, "marks": [em("1F512", .5, .7, 1.8, 140)]}],
+122: [{"type": "flow", "title": "Public ledger", "boxes": ["Block", "Block", "Anyone checks"], "step": .5, "source": DOJ22}],
+123: [sc(VIC, move="hold", label="'Trust us' = answer", marks=[st("Red flag", .8, .24, 1.2)])],
+124: [{"type": "tree", "levels": 3, "branch": 3, "label": "Red flag 3: paid to recruit", "source": DOJ23}],
+125: [{"type": "phone", "app": "sms", "title": "Sister", "messages": [{"text": "Should I sign up?"}, {"text": "Step back first.", "me": True}]}],
+126: [{"type": "stat", "value": 6, "suffix": " MONTHS", "color": "red", "label": "ONECOIN PROMOTER, SINGAPORE", "source": SPF}],
+127: [{"type": "tree", "levels": 4, "branch": 2, "label": "Victim and recruiter", "source": BBC19}],
+128: [{"type": "magnify", "q": "magnifying glass on notebook", "detail": [.5, .5], "zoom": 2.0, "label": "Where is the ledger?"}],
+129: [{"type": "coin3d", "text": "ONE", "drain": True, "drain_at": .8, "label": "Remember?", "spins": .5, "crypto": True}],
+130: [{"type": "kinetic", "text": "A feeling. A family. A number that only goes up.", "hl": "feeling. family.", "step": .3}],
+131: [{"type": "flow", "title": "And nobody may check", "boxes": [{"label": "Ledger", "color": "red"}, {"label": "Locked", "color": "red", "strike": False}], "step": .5}],
+132: [{"type": "docreveal", "kind": "U.S. DOJ (paraphrased)", "title": "Victim remission opens", "lines": ["13 April 2026", "Remission process", "for OneCoin victims"], "redact": [1], "step": .3, "source": "U.S. DOJ, 13 APR 2026"}],
+133: [{"type": "chart3d", "title": "Back vs taken", "items": [{"label": "Fund", "value": .04, "text": "$40M+"}, {"label": "Taken", "value": 4, "text": "$4B+"}], "hl": 1, "source": "U.S. DOJ 13 APR 2026; " + DOJ23}],
+134: [{"type": "stat", "text": "1¢", "label": "BACK PER DOLLAR (ABOUT)", "color": "red", "source": "DERIVED: $40M+ / $4B+ (DOJ 2026, 2023)"}],
+135: [sc(ROSA_K, move="push", label="Claim filed", marks=[em("1F4DD", .8, .3, 1.0)])],
+136: [sc(SHOP_SEW, move="pan_r", label="One hem at a time")],
+137: [{"type": "card", "kind": "post", "header": "PINNED TO THE WALL", "lines": ["WHERE IS THE LEDGER?"], "highlight": "LEDGER", "marks": [st("Rosa's rule", .8, .25, 1.2)]}],
+138: [{"type": "kinetic", "text": "Will you ask to see it?", "hl": "see", "step": .3}],
+139: [{"type": "end", "text": "Next case", "sub": "Another money crime behind the hype", "marks": [st("Subscribe", .5, .3, 1.2), em("1F50D", .5, .66, 2.4), st("Wisdrop", .2, .2, 3.6), st("New case soon", .8, .2, 4.6)]}],
+}
+
+p = os.path.join(EP, "shots.json"); D = json.load(open(p))
+keep = [s for s in D["shots"] if s["at"] < 16]
+new = []
+for at in sorted(S):
+    for s in S[at]: s = dict(s); s["at"] = at; new.append(s)
+D["shots"] = keep + new
+D["music"] = ["Spy Glass", "Investigations", "Investigations", "Hitman", "Spy Glass", "Investigations"]
+json.dump(D, open(p, "w"), indent=1, ensure_ascii=False)
+print("OK", len(D["shots"]), "shots")

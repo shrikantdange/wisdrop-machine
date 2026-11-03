@@ -10,6 +10,28 @@
   "prompt": "Character model sheet of ONE fictional person: a woman aged 54 who looks early fifties, sturdy build, medium height, dark brown hair with a few thin grey streaks in a neat low bun, tortoiseshell reading glasses worn on her face, warm kind face with light smile lines, burgundy knit cardigan over a beige blouse, olive knee-length skirt, flat brown shoes, a pale off-white cloth tape measure draped around her neck. Full body, standing, front view, arms relaxed at the sides. Background is a perfectly plain flat mid-grey with nothing on it: no wall texture, no floor line, no lamp, no cast shadow. Even soft front light, whole figure visible with margin on all sides."
  },
  {
+  "name": "char_victor__master",
+  "lib": "cast/victor",
+  "seed": 31,
+  "w": 1328,
+  "h": 1328,
+  "people": true,
+  "cutout": true,
+  "prompt": "Character model sheet of ONE fictional person: a man aged 45, tall and lean with upright stage posture, short dark hair neatly side-parted, clean-shaven, charcoal three-piece suit, white shirt, gold tie, navy pocket square, holding a small black presentation clicker. Full body, standing, front view, arms relaxed at the sides. Background is a perfectly plain flat mid-grey with nothing on it: no wall texture, no floor line, no lamp, no cast shadow. Even soft front light, whole figure visible with margin on all sides."
+ },
+ {
+  "name": "set_dev_flat__night",
+  "lib": "sets/dev_flat",
+  "seed": 71,
+  "prompt": "Lit by late night, deep navy shadows, one warm lamp as the only strong light. Cluttered one-room flat of a software developer: a desk with three blank monitors, stacks of books, a whiteboard with only scribbled lines, a desk lamp, a window. Open clear floor area in the foreground."
+ },
+ {
+  "name": "set_event_stage__night",
+  "lib": "sets/event_stage",
+  "seed": 61,
+  "prompt": "Lit by late night, deep navy shadows, one warm lamp as the only strong light. Hotel ballroom event stage seen from the audience: a lectern, a huge blank glowing projection screen, gold uplights, haze, a heavy dark curtain, the edge of the stage; the audience area is empty rows of chairs. Open clear floor area in the foreground."
+ },
+ {
   "name": "set_kitchen__night",
   "lib": "sets/kitchen",
   "seed": 51,
@@ -26,6 +48,34 @@
   "lib": "sets/tailor_shop",
   "seed": 31,
   "prompt": "Lit by warm low morning sun through the window, soft gold light pools, cool shadows. Wide interior of a small neighbourhood tailoring shop seen from inside: wooden front counter with one sewing machine under a hanging lamp, a dress form wearing a half-finished white wedding dress, rolls of fabric on shelves, a small old TV on a shelf, a large shop window onto a quiet street with one street lamp. Open clear floor area in the foreground."
+ },
+ {
+  "name": "shot_event_stage__night__victor-pointing_clicker",
+  "lib": "shots/event_stage",
+  "mode": "edit",
+  "seed": 68,
+  "people": true,
+  "w": 1664,
+  "h": 928,
+  "refs_from": [
+   "set_event_stage__night",
+   "char_victor__master"
+  ],
+  "prompt": "Image 1 is the scene. Paint into it the person from image 2 in the middle of the frame, standing three-quarter view facing left, arm raised pointing the clicker toward something off to the left, big confident smile. Keep image 1's room, camera, composition, colours, grain and illustration style exactly. Each person keeps the identical face, hair, glasses, clothes and colours from their reference image, at realistic scale for the room, lit by the scene's own light with matching shadows on the floor. No extra people, no text."
+ },
+ {
+  "name": "shot_kitchen__night__rosa-laptop_typing",
+  "lib": "shots/kitchen",
+  "mode": "edit",
+  "seed": 58,
+  "people": true,
+  "w": 1664,
+  "h": 928,
+  "refs_from": [
+   "set_kitchen__night",
+   "char_rosa__master"
+  ],
+  "prompt": "Image 1 is the scene. Paint into it the person from image 2 in the middle of the frame, seated on a chair facing left, hands forward as if typing on a laptop at the laptop, focused. Keep image 1's room, camera, composition, colours, grain and illustration style exactly. Each person keeps the identical face, hair, glasses, clothes and colours from their reference image, at realistic scale for the room, lit by the scene's own light with matching shadows on the floor. No extra people, no text."
  },
  {
   "name": "shot_tailor_shop__afternoon__rosa-thinking",

@@ -37,7 +37,7 @@
  {
   "rule": "AI pictures <= 6 per episode",
   "status": "OK",
-  "detail": "0 distinct"
+  "detail": "6 distinct"
  },
  {
   "rule": "No lone picture without surround motion (label, marks or stickers)",

@@ -500,6 +500,1915 @@
    "type": "stamp",
    "text": "ONECOIN",
    "pre": "It's called"
+  },
+  {
+   "type": "parallax",
+   "q": "Sofia Bulgaria city centre",
+   "mood": "day",
+   "label": "Sofia: founded 2014",
+   "source": "U.S. DOJ (SDNY), 12 SEP 2023",
+   "at": 16
+  },
+  {
+   "type": "phone",
+   "app": "live",
+   "title": "Live webinar",
+   "banner": "MEET THE FOUNDER",
+   "messages": [
+    {
+     "from": "maria",
+     "text": "a real genius"
+    },
+    {
+     "from": "k_ben",
+     "text": "Oxford!!"
+    },
+    {
+     "from": "dee",
+     "text": "see Rosa?"
+    }
+   ],
+   "source": "BBC, 24 NOV 2019",
+   "at": 17
+  },
+  {
+   "type": "card",
+   "kind": "doc",
+   "header": "MAGAZINE 'COVER'",
+   "lines": [
+    "Shown as a cover story.",
+    "Really a paid-for advert inside."
+   ],
+   "highlight": "paid-for advert",
+   "source": "BBC, 24 NOV 2019",
+   "recreated": true,
+   "marks": [
+    {
+     "k": "sticker",
+     "text": "Paid ad",
+     "x": 0.78,
+     "y": 0.26,
+     "t": 1.8
+    }
+   ],
+   "at": 18
+  },
+  {
+   "type": "scene",
+   "move": "push",
+   "set": "kitchen",
+   "time": "night",
+   "cast": [
+    {
+     "who": "rosa",
+     "pose": "laptop_typing",
+     "x": 0.4
+    }
+   ],
+   "label": "Where do I buy?",
+   "marks": [
+    {
+     "k": "emoji",
+     "code": "1F914",
+     "x": 0.8,
+     "y": 0.3,
+     "t": 1.0,
+     "size": 130
+    }
+   ],
+   "at": 19
+  },
+  {
+   "type": "docreveal",
+   "kind": "Police statement (recreated)",
+   "title": "What OneCoin sold",
+   "lines": [
+    "Packages, sold to members,",
+    "which contained online",
+    "educational courses",
+    "and promotional tokens."
+   ],
+   "redact": [
+    1,
+    3
+   ],
+   "step": 0.3,
+   "quote": "education packages",
+   "cps": 30,
+   "source": "SINGAPORE POLICE FORCE, 20 JAN 2021",
+   "at": 20
+  },
+  {
+   "type": "flow",
+   "title": "As promoters told it",
+   "boxes": [
+    "Tokens",
+    "Mining",
+    "New coins"
+   ],
+   "step": 0.6,
+   "source": "SINGAPORE POLICE FORCE, 20 JAN 2021",
+   "at": 21
+  },
+  {
+   "type": "chart3d",
+   "title": "Package prices",
+   "items": [
+    {
+     "label": "Smallest",
+     "value": 140,
+     "text": "€140"
+    },
+    {
+     "label": "Largest",
+     "value": 118000,
+     "text": "€118,000"
+    }
+   ],
+   "hl": 1,
+   "step": 0.6,
+   "source": "BBC, 24 NOV 2019",
+   "at": 22
+  },
+  {
+   "type": "screen",
+   "device": "laptop",
+   "set": "kitchen",
+   "time": "night",
+   "ui": {
+    "banner": {
+     "text": "BUY STARTER PACKAGE"
+    }
+   },
+   "label": "Just to see",
+   "marks": [
+    {
+     "k": "emoji",
+     "code": "1F4B6",
+     "x": 0.8,
+     "y": 0.32,
+     "t": 1.2,
+     "size": 130
+    }
+   ],
+   "at": 23
+  },
+  {
+   "type": "phone",
+   "app": "bank",
+   "title": "OneCoin account",
+   "value": 9.0,
+   "from": 4.0,
+   "prefix": "€",
+   "decimals": 2,
+   "sub": "BALANCE (ILLUSTRATIVE)",
+   "illustrative": true,
+   "rows": [
+    {
+     "name": "Tokens converted",
+     "when": "today",
+     "amount": "+",
+     "icon": "coin"
+    }
+   ],
+   "at": 24
+  },
+  {
+   "type": "kinetic",
+   "text": "And up.",
+   "hl": "up.",
+   "step": 0.25,
+   "marks": [
+    {
+     "k": "emoji",
+     "code": "1F4C8",
+     "x": 0.5,
+     "y": 0.7,
+     "t": 0.5,
+     "size": 140
+    }
+   ],
+   "at": 25
+  },
+  {
+   "type": "scene",
+   "move": "push",
+   "set": "tailor_shop",
+   "time": "morning",
+   "cast": [
+    {
+     "who": "rosa",
+     "pose": "envelope",
+     "x": 0.4,
+     "h": 0.95
+    }
+   ],
+   "label": "The uni fund",
+   "marks": [
+    {
+     "k": "arrow",
+     "x0": 0.78,
+     "y0": 0.3,
+     "x1": 0.55,
+     "y1": 0.5,
+     "t": 1.0
+    }
+   ],
+   "at": 26
+  },
+  {
+   "type": "scene",
+   "move": "push",
+   "set": "event_stage",
+   "time": "night",
+   "cast": [
+    {
+     "who": "victor",
+     "pose": "pointing_clicker",
+     "x": 0.42
+    }
+   ],
+   "label": "Victor (composite)",
+   "stickers": [
+    "Upline",
+    "Seminars"
+   ],
+   "at": 27
+  },
+  {
+   "type": "tree",
+   "levels": 3,
+   "branch": 3,
+   "label": "Bring people in",
+   "source": "U.S. DOJ (SDNY), 12 SEP 2023",
+   "at": 28
+  },
+  {
+   "type": "money",
+   "nodes": [
+    {
+     "label": "New friend",
+     "x": 0.2,
+     "y": 0.55
+    },
+    {
+     "label": "You",
+     "x": 0.5,
+     "y": 0.35
+    },
+    {
+     "label": "Upline",
+     "x": 0.8,
+     "y": 0.55
+    }
+   ],
+   "flows": [
+    {
+     "from": 0,
+     "to": 1,
+     "label": "commission",
+     "t": 0.4
+    },
+    {
+     "from": 1,
+     "to": 2,
+     "label": "a cut",
+     "t": 1.4
+    }
+   ],
+   "source": "U.S. DOJ (SDNY), 12 SEP 2023",
+   "at": 29
+  },
+  {
+   "type": "kinetic",
+   "text": "Black Friday queue. Nobody asks what's on sale.",
+   "hl": "nobody",
+   "step": 0.26,
+   "at": 30
+  },
+  {
+   "type": "phone",
+   "app": "group",
+   "title": "Rosa's circle",
+   "sub": "3 members",
+   "messages": [
+    {
+     "from": "sister",
+     "text": "ok I'm in"
+    },
+    {
+     "from": "mrs_h",
+     "text": "sign me up too"
+    },
+    {
+     "text": "welcome!!",
+     "me": true
+    }
+   ],
+   "at": 31
+  },
+  {
+   "type": "parallax",
+   "q": "Wembley Arena London exterior",
+   "mood": "night",
+   "label": "Wembley, June 2016",
+   "source": "FBI video page; BBC, 24 NOV 2019",
+   "at": 32
+  },
+  {
+   "type": "card",
+   "kind": "quote",
+   "header": "ON STAGE, WEMBLEY",
+   "date": "11 JUN 2016",
+   "lines": [
+    "\"...supposed to be the bitcoin killer.\""
+   ],
+   "highlight": "bitcoin killer",
+   "source": "FBI.GOV VIDEO, RUJA-CUT",
+   "recreated": true,
+   "at": 33
+  },
+  {
+   "type": "scene",
+   "move": "pull",
+   "set": "kitchen",
+   "time": "night",
+   "cast": [
+    {
+     "who": "rosa",
+     "pose": "laptop_typing",
+     "x": 0.4
+    }
+   ],
+   "label": "She believes it",
+   "marks": [
+    {
+     "k": "emoji",
+     "code": "1F64F",
+     "x": 0.8,
+     "y": 0.3,
+     "t": 1.1,
+     "size": 130
+    }
+   ],
+   "at": 34
+  },
+  {
+   "type": "coin3d",
+   "text": "ONE",
+   "label": "What is it buying?",
+   "spins": 0.8,
+   "crypto": true,
+   "trans": "glitch",
+   "at": 35
+  },
+  {
+   "type": "chapter",
+   "num": 2,
+   "title": "The Machine",
+   "trans": "leak",
+   "at": 36
+  },
+  {
+   "type": "list",
+   "offset": 2.0,
+   "items": [
+    "Package",
+    "Tokens",
+    "Coins"
+   ],
+   "step": 0.5,
+   "at": 36
+  },
+  {
+   "type": "flow",
+   "title": "Step one",
+   "boxes": [
+    "Package",
+    "Tokens"
+   ],
+   "step": 0.7,
+   "source": "SINGAPORE POLICE FORCE, 20 JAN 2021",
+   "at": 37
+  },
+  {
+   "type": "flow",
+   "title": "Step two",
+   "boxes": [
+    "Tokens",
+    {
+     "label": "OneCoins",
+     "color": "gold"
+    }
+   ],
+   "step": 0.7,
+   "source": "SINGAPORE POLICE FORCE, 20 JAN 2021",
+   "at": 38
+  },
+  {
+   "type": "parallax",
+   "q": "data center server racks",
+   "mood": "night",
+   "label": "'Mining pools' (as sold)",
+   "source": "U.S. DOJ (SDNY), 12 SEP 2023",
+   "at": 39
+  },
+  {
+   "type": "lineart",
+   "q": "server room data center aisle",
+   "label": "No mining pools",
+   "flashback": true,
+   "trace": 1.4,
+   "source": "U.S. DOJ (SDNY), 12 SEP 2023",
+   "at": 40
+  },
+  {
+   "type": "card",
+   "kind": "email",
+   "from": "FOUNDER",
+   "header": "TO: CO-FOUNDER",
+   "lines": [
+    "...we are not mining actually..."
+   ],
+   "highlight": "not mining",
+   "source": "U.S. DOJ (SDNY), 12 SEP 2023",
+   "recreated": true,
+   "at": 41
+  },
+  {
+   "type": "name",
+   "name": "Sebastian Greenwood",
+   "role": "Co-founder, ran global sales",
+   "source": "U.S. DOJ (SDNY), 12 SEP 2023",
+   "at": 42
+  },
+  {
+   "type": "map",
+   "bbox": [
+    -20,
+    25,
+    60,
+    62
+   ],
+   "pins": [
+    {
+     "name": "Sales worldwide",
+     "lat": 51.5,
+     "lon": -0.1,
+     "t": 0.3
+    },
+    {
+     "name": "Sofia",
+     "lat": 42.7,
+     "lon": 23.3,
+     "t": 1.0
+    }
+   ],
+   "route": [
+    [
+     51.5,
+     -0.1
+    ],
+    [
+     42.7,
+     23.3
+    ]
+   ],
+   "route_at": 0.5,
+   "label": "A cut of every month",
+   "source": "U.S. DOJ (SDNY), 12 SEP 2023",
+   "at": 43
+  },
+  {
+   "type": "stat",
+   "value": 300,
+   "prefix": "$",
+   "suffix": "M+",
+   "color": "red",
+   "label": "CO-FOUNDER'S CUT",
+   "source": "U.S. DOJ (SDNY), 12 SEP 2023",
+   "at": 44
+  },
+  {
+   "type": "tree",
+   "levels": 4,
+   "branch": 2,
+   "label": "Next wave pays",
+   "source": "U.S. DOJ (SDNY), 12 SEP 2023",
+   "at": 45
+  },
+  {
+   "type": "scene",
+   "move": "push",
+   "set": "tailor_shop",
+   "time": "afternoon",
+   "cast": [
+    {
+     "who": "rosa",
+     "pose": "thinking",
+     "x": 0.35
+    }
+   ],
+   "label": "Who sets the price?",
+   "marks": [
+    {
+     "k": "emoji",
+     "code": "2753",
+     "x": 0.8,
+     "y": 0.3,
+     "t": 1.0,
+     "size": 130
+    }
+   ],
+   "at": 46
+  },
+  {
+   "type": "kinetic",
+   "text": "The company did.",
+   "hl": "company",
+   "step": 0.28,
+   "at": 47
+  },
+  {
+   "type": "chart",
+   "points": [
+    0.2,
+    0.35,
+    0.3,
+    0.5,
+    0.42,
+    0.6
+   ],
+   "label": "Supply and demand (as claimed)",
+   "illustrative": true,
+   "at": 48
+  },
+  {
+   "type": "docreveal",
+   "kind": "Prosecutors (recreated)",
+   "title": "How the price was set",
+   "lines": [
+    "OneCoin's price was",
+    "not set by the market.",
+    "The company set it",
+    "itself."
+   ],
+   "redact": [
+    0,
+    2
+   ],
+   "step": 0.3,
+   "quote": "set the price itself",
+   "cps": 30,
+   "source": "U.S. DOJ (SDNY), 12 SEP 2023",
+   "at": 49
+  },
+  {
+   "type": "chart3d",
+   "title": "OneCoin 'price'",
+   "items": [
+    {
+     "label": "Start",
+     "value": 0.5,
+     "text": "€0.50"
+    },
+    {
+     "label": "Peak",
+     "value": 29.95,
+     "text": "€29.95"
+    }
+   ],
+   "hl": 1,
+   "source": "U.S. DOJ (SDNY), 12 SEP 2023",
+   "at": 50
+  },
+  {
+   "type": "kinetic",
+   "text": "And it never fell.",
+   "hl": "never",
+   "step": 0.28,
+   "source": "U.S. DOJ (SDNY), 12 SEP 2023",
+   "at": 51
+  },
+  {
+   "type": "card",
+   "kind": "doc",
+   "header": "SPREADSHEET (RECREATED)",
+   "date": "MAR 2015",
+   "lines": [
+    "MINED COINS",
+    "FAKE COINS"
+   ],
+   "highlight": "FAKE COINS",
+   "source": "U.S. DOJ (SDNY), 12 SEP 2023",
+   "recreated": true,
+   "at": 52
+  },
+  {
+   "type": "bars",
+   "items": [
+    {
+     "label": "Mined coins",
+     "value": 1,
+     "text": "row 1"
+    },
+    {
+     "label": "Fake coins",
+     "value": 1,
+     "text": "row 2",
+     "color": "red"
+    }
+   ],
+   "source": "U.S. DOJ (SDNY), 12 SEP 2023",
+   "at": 53
+  },
+  {
+   "type": "kinetic",
+   "text": "Not a market. A price tag with a progress bar.",
+   "hl": "progress",
+   "step": 0.26,
+   "at": 54
+  },
+  {
+   "type": "flow",
+   "title": "A real blockchain",
+   "boxes": [
+    "Block",
+    "Block",
+    "Block"
+   ],
+   "step": 0.5,
+   "source": "U.S. DOJ (SDNY) PLEA, 16 DEC 2022",
+   "at": 55
+  },
+  {
+   "type": "magnify",
+   "q": "Bitcoin block explorer transaction list screenshot",
+   "detail": [
+    0.5,
+    0.4
+   ],
+   "zoom": 2.2,
+   "label": "Check it yourself",
+   "at": 56
+  },
+  {
+   "type": "wall",
+   "photos": [
+    {
+     "q": "computer servers rack blue",
+     "mood": "night",
+     "label": "Copy"
+    },
+    {
+     "q": "laptop computer desk night",
+     "mood": "night",
+     "label": "Copy"
+    },
+    {
+     "q": "home computer desk",
+     "mood": "day",
+     "label": "Copy"
+    },
+    {
+     "q": "server room lights",
+     "mood": "night",
+     "label": "Copy"
+    }
+   ],
+   "title": "Thousands of copies",
+   "at": 57
+  },
+  {
+   "type": "flow",
+   "title": "OneCoin's 'blockchain'",
+   "boxes": [
+    {
+     "label": "Private",
+     "color": "red"
+    },
+    {
+     "label": "Locked",
+     "color": "red"
+    }
+   ],
+   "step": 0.6,
+   "source": "U.S. DOJ (SDNY) PLEA, 16 DEC 2022",
+   "at": 58
+  },
+  {
+   "type": "scene",
+   "move": "pull",
+   "set": "event_stage",
+   "time": "night",
+   "cast": [
+    {
+     "who": "victor",
+     "pose": "pointing_clicker",
+     "x": 0.42
+    }
+   ],
+   "label": "'Trust us'",
+   "marks": [
+    {
+     "k": "emoji",
+     "code": "1F91D",
+     "x": 0.82,
+     "y": 0.3,
+     "t": 1.0,
+     "size": 130
+    }
+   ],
+   "source": "FBI (BBC, 24 NOV 2019)",
+   "at": 59
+  },
+  {
+   "type": "screen",
+   "device": "laptop",
+   "set": "dev_flat",
+   "time": "night",
+   "ui": {
+    "text": {
+     "lines": [
+      "> git log",
+      "> where is the ledger?"
+     ]
+    }
+   },
+   "label": "Theo (composite)",
+   "at": 60
+  },
+  {
+   "type": "phone",
+   "app": "inbox",
+   "title": "Forum",
+   "rows": [
+    {
+     "from": "theo_dev",
+     "subject": "WHERE IS THE LEDGER?"
+    },
+    {
+     "from": "theo_dev",
+     "subject": "Still no ledger"
+    },
+    {
+     "from": "theo_dev",
+     "subject": "Show the chain"
+    }
+   ],
+   "at": 61
+  },
+  {
+   "type": "card",
+   "kind": "email",
+   "from": "THEO",
+   "header": "TO: ONECOIN",
+   "lines": [
+    "Happy to audit your ledger, no charge."
+   ],
+   "highlight": "no charge",
+   "recreated": true,
+   "marks": [
+    {
+     "k": "sticker",
+     "text": "No reply",
+     "x": 0.8,
+     "y": 0.26,
+     "t": 2.0
+    }
+   ],
+   "at": 62
+  },
+  {
+   "type": "phone",
+   "app": "group",
+   "title": "OneCoin family",
+   "messages": [
+    {
+     "from": "victor",
+     "text": "Ignore the haters!!"
+    },
+    {
+     "from": "dee",
+     "text": "haters gonna hate"
+    },
+    {
+     "from": "maria",
+     "text": "so true"
+    }
+   ],
+   "source": "BBC, 24 NOV 2019",
+   "at": 63
+  },
+  {
+   "type": "headline",
+   "outlet": "BBC (RECREATED)",
+   "date": "OCT 2016",
+   "title": "Crypto start-up seeks chief technical officer",
+   "source": "BBC, 24 NOV 2019",
+   "at": 64
+  },
+  {
+   "type": "card",
+   "kind": "post",
+   "header": "JOB OFFER",
+   "lines": [
+    "CTO wanted",
+    "Sofia, Bulgaria"
+   ],
+   "highlight": "CTO",
+   "source": "BBC, 24 NOV 2019",
+   "recreated": true,
+   "at": 65
+  },
+  {
+   "type": "kinetic",
+   "text": "Job one: build a blockchain.",
+   "hl": "build",
+   "step": 0.28,
+   "source": "BBC, 24 NOV 2019",
+   "at": 66
+  },
+  {
+   "type": "docreveal",
+   "kind": "Interview (BBC)",
+   "title": "What the recruiter said",
+   "lines": [
+    "The start-up runs",
+    "a cryptocurrency."
+   ],
+   "redact": [
+    1
+   ],
+   "step": 0.3,
+   "quote": "They don't have a blockchain today",
+   "cps": 30,
+   "source": "BBC, 24 NOV 2019",
+   "at": 67
+  },
+  {
+   "type": "list",
+   "items": [
+    "Company: OneCoin",
+    {
+     "text": "Job accepted",
+     "strike": true
+    }
+   ],
+   "step": 0.7,
+   "source": "BBC, 24 NOV 2019",
+   "at": 68
+  },
+  {
+   "type": "scene",
+   "move": "push",
+   "set": "tailor_shop",
+   "time": "morning",
+   "cast": [
+    {
+     "who": "rosa",
+     "pose": "sewing",
+     "x": 0.38
+    }
+   ],
+   "label": "Climbing",
+   "marks": [
+    {
+     "k": "emoji",
+     "code": "1F4C8",
+     "x": 0.82,
+     "y": 0.3,
+     "t": 1.0,
+     "size": 130
+    }
+   ],
+   "at": 69
+  },
+  {
+   "type": "phone",
+   "app": "ticker",
+   "title": "OneCoin",
+   "sym": "ONE",
+   "values": [
+    5,
+    29.95
+   ],
+   "points": [
+    0.1,
+    0.2,
+    0.35,
+    0.5,
+    0.7,
+    0.9
+   ],
+   "change": "only up",
+   "illustrative": true,
+   "source": "U.S. DOJ (SDNY) PLEA, 16 DEC 2022",
+   "at": 70
+  },
+  {
+   "type": "scene",
+   "move": "hold",
+   "set": "event_stage",
+   "time": "night",
+   "cast": [
+    {
+     "who": "victor",
+     "pose": "pointing_clicker",
+     "x": 0.42
+    }
+   ],
+   "label": "Exchange: coming soon",
+   "source": "BBC, 24 NOV 2019",
+   "at": 71
+  },
+  {
+   "type": "kinetic",
+   "text": "It works until someone pulls the curtain.",
+   "hl": "curtain",
+   "step": 0.26,
+   "at": 72
+  },
+  {
+   "type": "docreveal",
+   "kind": "Court exhibit",
+   "title": "Prosecutors' files",
+   "lines": [
+    "U.S. v. Greenwood",
+    "Plea and exhibits",
+    "Southern District of New York"
+   ],
+   "redact": [
+    1
+   ],
+   "step": 0.3,
+   "source": "U.S. DOJ (SDNY) PLEA, 16 DEC 2022",
+   "at": 73
+  },
+  {
+   "type": "card",
+   "kind": "email",
+   "date": "9 AUG 2014",
+   "from": "FOUNDER",
+   "header": "SUBJECT: EXIT STRATEGY",
+   "lines": [
+    "Options..."
+   ],
+   "highlight": "exit strategy",
+   "source": "U.S. DOJ (SDNY) PLEA, 16 DEC 2022",
+   "recreated": true,
+   "at": 74
+  },
+  {
+   "type": "timeline",
+   "events": [
+    {
+     "date": "9 AUG 2014",
+     "label": "Exit email",
+     "color": "red"
+    },
+    {
+     "date": "JAN 2015",
+     "label": "'First coin mined'"
+    }
+   ],
+   "source": "U.S. DOJ (SDNY) PLEA, 16 DEC 2022; FBI VIDEO",
+   "at": 75
+  },
+  {
+   "type": "card",
+   "kind": "quote",
+   "header": "OPTION ONE",
+   "lines": [
+    "\"Take the money and run...\""
+   ],
+   "highlight": "Take the money and run",
+   "source": "U.S. DOJ (SDNY) PLEA, 16 DEC 2022",
+   "recreated": true,
+   "at": 76
+  },
+  {
+   "type": "kinetic",
+   "text": "And blame someone else.",
+   "hl": "blame",
+   "step": 0.28,
+   "source": "U.S. DOJ (SDNY) PLEA, 16 DEC 2022",
+   "at": 77
+  },
+  {
+   "type": "headline",
+   "outlet": "U.S. DOJ (RECREATED)",
+   "date": "12 SEP 2023",
+   "title": "A fraud from day one",
+   "source": "U.S. DOJ (SDNY), 12 SEP 2023",
+   "at": 78
+  },
+  {
+   "type": "scene",
+   "move": "pull",
+   "set": "event_stage",
+   "time": "night",
+   "cast": [
+    {
+     "who": "victor",
+     "pose": "pointing_clicker",
+     "x": 0.42
+    }
+   ],
+   "label": "Who gets out first?",
+   "fx": [
+    "dim"
+   ],
+   "at": 79
+  },
+  {
+   "type": "chapter",
+   "num": 3,
+   "title": "The Fall",
+   "trans": "leak",
+   "at": 80
+  },
+  {
+   "type": "headline",
+   "offset": 2.0,
+   "outlet": "UK FCA (RECREATED)",
+   "date": "SEP 2016",
+   "title": "Beware trading virtual currencies with OneCoin",
+   "source": "BBC, 11 AUG 2020",
+   "at": 80
+  },
+  {
+   "type": "kinetic",
+   "text": "September 2016: be wary of OneCoin.",
+   "hl": "wary",
+   "step": 0.26,
+   "source": "BBC, 11 AUG 2020",
+   "at": 81
+  },
+  {
+   "type": "list",
+   "items": [
+    "Warning",
+    {
+     "text": "Fine",
+     "strike": true
+    }
+   ],
+   "step": 0.6,
+   "source": "BBC, 11 AUG 2020",
+   "at": 82
+  },
+  {
+   "type": "timeline",
+   "events": [
+    {
+     "date": "SEP 2016",
+     "label": "Warning posted"
+    },
+    {
+     "date": "1 AUG 2017",
+     "label": "Quietly removed",
+     "color": "red"
+    }
+   ],
+   "source": "BBC, 11 AUG 2020",
+   "at": 83
+  },
+  {
+   "type": "scene",
+   "move": "push",
+   "set": "event_stage",
+   "time": "night",
+   "cast": [
+    {
+     "who": "victor",
+     "pose": "pointing_clicker",
+     "x": 0.42
+    }
+   ],
+   "label": "'Clean bill of health'",
+   "source": "BBC, 11 AUG 2020",
+   "at": 84
+  },
+  {
+   "type": "screen",
+   "device": "phone",
+   "ui": {
+    "balance": {
+     "title": "CASH OUT",
+     "value": 0,
+     "prefix": "",
+     "sub": "COMING SOON"
+    }
+   },
+   "label": "Still waiting",
+   "source": "BBC, 24 NOV 2019",
+   "at": 85
+  },
+  {
+   "type": "phone",
+   "app": "sms",
+   "title": "Dee",
+   "messages": [
+    {
+     "text": "When can I withdraw?",
+     "me": true
+    },
+    {
+     "text": "Soon!!"
+    },
+    {
+     "text": "soon, promise"
+    }
+   ],
+   "at": 86
+  },
+  {
+   "type": "phone",
+   "app": "notify",
+   "notes": [
+    {
+     "app": "Messages",
+     "title": "Theo",
+     "text": "Please read this first",
+     "when": "now"
+    },
+    {
+     "app": "Messages",
+     "title": "Theo",
+     "text": "Ask them for the ledger",
+     "when": "now"
+    }
+   ],
+   "at": 87
+  },
+  {
+   "type": "parallax",
+   "q": "Glasgow city centre",
+   "mood": "dusk",
+   "label": "Glasgow",
+   "source": "BBC, 24 NOV 2019",
+   "at": 88
+  },
+  {
+   "type": "chart3d",
+   "title": "Jen McAdam's family",
+   "items": [
+    {
+     "label": "Her own",
+     "value": 10000,
+     "text": "€10,000"
+    },
+    {
+     "label": "Family",
+     "value": 250000,
+     "text": "€250,000"
+    }
+   ],
+   "hl": 1,
+   "source": "BBC, 25 SEP 2019",
+   "at": 89
+  },
+  {
+   "type": "card",
+   "kind": "doc",
+   "header": "VOICEMAIL",
+   "date": "APR 2017",
+   "lines": [
+    "From her group leaders."
+   ],
+   "source": "BBC, 24 NOV 2019",
+   "recreated": true,
+   "marks": [
+    {
+     "k": "emoji",
+     "code": "1F4DE",
+     "x": 0.8,
+     "y": 0.3,
+     "t": 1.0,
+     "size": 130
+    }
+   ],
+   "at": 90
+  },
+  {
+   "type": "docreveal",
+   "kind": "Voicemail (recreated)",
+   "title": "The 'blockchain'",
+   "lines": [
+    "It was explained",
+    "to investors as..."
+   ],
+   "redact": [
+    1
+   ],
+   "step": 0.3,
+   "quote": "a SQL server with a database",
+   "cps": 28,
+   "source": "BBC, 24 NOV 2019",
+   "at": 91
+  },
+  {
+   "type": "kinetic",
+   "text": "A record they could change whenever they liked.",
+   "hl": "change",
+   "step": 0.26,
+   "at": 92
+  },
+  {
+   "type": "parallax",
+   "q": "Lisbon Portugal city view",
+   "mood": "dusk",
+   "label": "Lisbon, Oct 2017: no-show",
+   "source": "BBC, 24 NOV 2019",
+   "at": 93
+  },
+  {
+   "type": "card",
+   "kind": "filing",
+   "header": "UNITED STATES v. IGNATOVA",
+   "date": "12 OCT 2017",
+   "lines": [
+    "Charged: wire fraud conspiracy."
+   ],
+   "highlight": "Charged",
+   "source": "FBI.GOV TEN MOST WANTED",
+   "recreated": true,
+   "at": 94
+  },
+  {
+   "type": "map",
+   "bbox": [
+    17,
+    34.6,
+    30,
+    45.2
+   ],
+   "highlight": [
+    "BGR",
+    "GRC"
+   ],
+   "flight": true,
+   "pins": [
+    {
+     "name": "Sofia",
+     "lat": 42.6977,
+     "lon": 23.3219,
+     "t": 0.3
+    },
+    {
+     "name": "Athens",
+     "lat": 37.9838,
+     "lon": 23.7275,
+     "t": 1.6
+    }
+   ],
+   "label": "25 Oct 2017",
+   "source": "FBI.GOV TEN MOST WANTED",
+   "at": 95
+  },
+  {
+   "type": "lineart",
+   "q": "Athens International Airport terminal",
+   "label": "Flashback",
+   "flashback": true,
+   "source": "FBI.GOV TEN MOST WANTED",
+   "at": 96
+  },
+  {
+   "type": "kinetic",
+   "text": "Gone.",
+   "hl": "gone.",
+   "step": 0.3,
+   "at": 97
+  },
+  {
+   "type": "card",
+   "kind": "filing",
+   "header": "FBI TEN MOST WANTED",
+   "lines": [
+    "May travel with armed guards.",
+    "May have altered her appearance."
+   ],
+   "highlight": "armed guards",
+   "source": "FBI.GOV TEN MOST WANTED",
+   "recreated": true,
+   "at": 98
+  },
+  {
+   "type": "name",
+   "name": "Konstantin Ignatov",
+   "role": "Rose to lead OneCoin",
+   "source": "COURT LETTER, US v. MORRO, 10 OCT 2024",
+   "at": 99
+  },
+  {
+   "type": "parallax",
+   "q": "Las Vegas Strip night",
+   "mood": "night",
+   "label": "Las Vegas",
+   "source": "U.S. DOJ (SDNY), 8 MAR 2019",
+   "at": 100
+  },
+  {
+   "type": "card",
+   "kind": "quote",
+   "header": "TO MEMBERS (RECREATED)",
+   "lines": [
+    "\"If you are here to cash out, leave this room now.\""
+   ],
+   "highlight": "leave this room",
+   "source": "U.S. DOJ (SDNY), 8 MAR 2019",
+   "recreated": true,
+   "at": 101
+  },
+  {
+   "type": "photo",
+   "q": "Los Angeles International Airport Theme Building",
+   "mood": "day",
+   "label": "LAX, Mar 2019",
+   "source": "BBC, 24 NOV 2019; COURT LETTER",
+   "marks": [
+    {
+     "k": "circle",
+     "x0": 0.4,
+     "y0": 0.3,
+     "x1": 0.6,
+     "y1": 0.55,
+     "t": 1.0
+    }
+   ],
+   "at": 102
+  },
+  {
+   "type": "scene",
+   "move": "pull",
+   "set": "tailor_shop",
+   "time": "afternoon",
+   "cast": [
+    {
+     "who": "rosa",
+     "pose": "thinking",
+     "x": 0.35
+    }
+   ],
+   "label": "The news",
+   "marks": [
+    {
+     "k": "emoji",
+     "code": "1F4F1",
+     "x": 0.8,
+     "y": 0.3,
+     "t": 0.9,
+     "size": 130
+    }
+   ],
+   "at": 103
+  },
+  {
+   "type": "phone",
+   "app": "bank",
+   "title": "OneCoin account",
+   "value": 12000,
+   "from": 11900,
+   "prefix": "€",
+   "decimals": 0,
+   "sub": "BALANCE (ILLUSTRATIVE)",
+   "illustrative": true,
+   "rows": [
+    {
+     "name": "Still 'growing'",
+     "when": "today",
+     "amount": "+",
+     "icon": "coin"
+    }
+   ],
+   "at": 104
+  },
+  {
+   "type": "kinetic",
+   "text": "Like the band on the Titanic.",
+   "hl": "titanic.",
+   "step": 0.28,
+   "marks": [
+    {
+     "k": "emoji",
+     "code": "1F3BB",
+     "x": 0.5,
+     "y": 0.7,
+     "t": 1.4,
+     "size": 140
+    }
+   ],
+   "at": 105
+  },
+  {
+   "type": "scene",
+   "move": "hold",
+   "set": "tailor_shop",
+   "time": "morning",
+   "cast": [
+    {
+     "who": "rosa",
+     "pose": "envelope",
+     "x": 0.4,
+     "h": 0.95
+    }
+   ],
+   "label": "Calling her sister",
+   "at": 106
+  },
+  {
+   "type": "phone",
+   "app": "notify",
+   "notes": [
+    {
+     "app": "Messages",
+     "title": "Neighbour",
+     "text": "Dee, where's my money?",
+     "when": "now"
+    },
+    {
+     "app": "Missed call",
+     "title": "Neighbour",
+     "text": "2 missed calls",
+     "when": "now"
+    }
+   ],
+   "at": 107
+  },
+  {
+   "type": "stat",
+   "value": 175,
+   "color": "red",
+   "label": "COUNTRIES",
+   "source": "BBC, 25 SEP 2019",
+   "at": 108
+  },
+  {
+   "type": "photo",
+   "q": "goats Uganda",
+   "mood": "dusk",
+   "label": "Uganda: three goats sold",
+   "source": "BBC, 24 NOV 2019",
+   "marks": [
+    {
+     "k": "sticker",
+     "text": "3 goats",
+     "x": 0.8,
+     "y": 0.25,
+     "t": 1.4
+    }
+   ],
+   "at": 109
+  },
+  {
+   "type": "headline",
+   "outlet": "BBC (RECREATED)",
+   "date": "24 NOV 2019",
+   "title": "Family savings went into OneCoin",
+   "source": "BBC, 24 NOV 2019",
+   "at": 110
+  },
+  {
+   "type": "parallax",
+   "q": "Thurgood Marshall United States Courthouse",
+   "mood": "day",
+   "label": "New York",
+   "amp": 50,
+   "at": 111
+  },
+  {
+   "type": "stat",
+   "value": 20,
+   "suffix": " YEARS",
+   "color": "red",
+   "label": "SEBASTIAN GREENWOOD, CO-FOUNDER",
+   "source": "U.S. DOJ (SDNY), 12 SEP 2023",
+   "at": 112
+  },
+  {
+   "type": "name",
+   "name": "Mark Scott",
+   "role": "Lawyer: 10 years",
+   "source": "U.S. DOJ (SDNY), 25 JAN 2024",
+   "at": 113
+  },
+  {
+   "type": "chart3d",
+   "title": "Sentences",
+   "items": [
+    {
+     "label": "Greenwood",
+     "value": 20,
+     "text": "20 yrs"
+    },
+    {
+     "label": "Scott",
+     "value": 10,
+     "text": "10 yrs"
+    },
+    {
+     "label": "Dilkinska",
+     "value": 4,
+     "text": "4 yrs"
+    }
+   ],
+   "hl": 2,
+   "source": "U.S. DOJ (SDNY), 12 SEP 2023; DOJ 25 JAN + 3 APR 2024",
+   "at": 114
+  },
+  {
+   "type": "name",
+   "name": "Konstantin Ignatov",
+   "role": "Cooperated: time served",
+   "source": "COURT LETTER, US v. MORRO, 10 OCT 2024",
+   "at": 115
+  },
+  {
+   "type": "docreveal",
+   "kind": "City of London Police (recreated)",
+   "title": "UK investors",
+   "lines": [
+    "Police said they were",
+    "unable to find assets."
+   ],
+   "redact": [
+    1
+   ],
+   "step": 0.3,
+   "quote": "unable to identify UK-based assets",
+   "cps": 30,
+   "source": "BBC, 24 NOV 2019",
+   "at": 116
+  },
+  {
+   "type": "scene",
+   "move": "push",
+   "set": "tailor_shop",
+   "time": "afternoon",
+   "cast": [
+    {
+     "who": "rosa",
+     "pose": "thinking",
+     "x": 0.35
+    }
+   ],
+   "label": "Could you?",
+   "marks": [
+    {
+     "k": "emoji",
+     "code": "1F50E",
+     "x": 0.82,
+     "y": 0.3,
+     "t": 1.2,
+     "size": 130
+    }
+   ],
+   "at": 117
+  },
+  {
+   "type": "chapter",
+   "num": 4,
+   "title": "The Lesson",
+   "trans": "leak",
+   "at": 118
+  },
+  {
+   "type": "list",
+   "offset": 2.0,
+   "items": [
+    "Price only goes up",
+    "You can't check it",
+    "Paid to recruit"
+   ],
+   "step": 0.6,
+   "at": 118
+  },
+  {
+   "type": "chart",
+   "points": [
+    0.1,
+    0.25,
+    0.4,
+    0.55,
+    0.7,
+    0.85
+   ],
+   "label": "Red flag 1: only goes up",
+   "illustrative": true,
+   "marks": [
+    {
+     "k": "sticker",
+     "text": "Red flag 1",
+     "x": 0.8,
+     "y": 0.24,
+     "t": 1.4
+    }
+   ],
+   "at": 119
+  },
+  {
+   "type": "pair",
+   "title": "Real vs OneCoin",
+   "photos": [
+    {
+     "q": "stock market chart screen",
+     "mood": "day",
+     "label": "Real: wobbles"
+    },
+    {
+     "q": "staircase steps",
+     "mood": "day",
+     "label": "OneCoin: only up"
+    }
+   ],
+   "source": "U.S. DOJ (SDNY), 12 SEP 2023",
+   "at": 120
+  },
+  {
+   "type": "kinetic",
+   "text": "Red flag two: you can't check it.",
+   "hl": "check",
+   "step": 0.26,
+   "marks": [
+    {
+     "k": "emoji",
+     "code": "1F512",
+     "x": 0.5,
+     "y": 0.7,
+     "t": 1.8,
+     "size": 140
+    }
+   ],
+   "at": 121
+  },
+  {
+   "type": "flow",
+   "title": "Public ledger",
+   "boxes": [
+    "Block",
+    "Block",
+    "Anyone checks"
+   ],
+   "step": 0.5,
+   "source": "U.S. DOJ (SDNY) PLEA, 16 DEC 2022",
+   "at": 122
+  },
+  {
+   "type": "scene",
+   "move": "hold",
+   "set": "event_stage",
+   "time": "night",
+   "cast": [
+    {
+     "who": "victor",
+     "pose": "pointing_clicker",
+     "x": 0.42
+    }
+   ],
+   "label": "'Trust us' = answer",
+   "marks": [
+    {
+     "k": "sticker",
+     "text": "Red flag",
+     "x": 0.8,
+     "y": 0.24,
+     "t": 1.2
+    }
+   ],
+   "at": 123
+  },
+  {
+   "type": "tree",
+   "levels": 3,
+   "branch": 3,
+   "label": "Red flag 3: paid to recruit",
+   "source": "U.S. DOJ (SDNY), 12 SEP 2023",
+   "at": 124
+  },
+  {
+   "type": "phone",
+   "app": "sms",
+   "title": "Sister",
+   "messages": [
+    {
+     "text": "Should I sign up?"
+    },
+    {
+     "text": "Step back first.",
+     "me": true
+    }
+   ],
+   "at": 125
+  },
+  {
+   "type": "stat",
+   "value": 6,
+   "suffix": " MONTHS",
+   "color": "red",
+   "label": "ONECOIN PROMOTER, SINGAPORE",
+   "source": "SINGAPORE POLICE FORCE, 20 JAN 2021",
+   "at": 126
+  },
+  {
+   "type": "tree",
+   "levels": 4,
+   "branch": 2,
+   "label": "Victim and recruiter",
+   "source": "BBC, 24 NOV 2019",
+   "at": 127
+  },
+  {
+   "type": "magnify",
+   "q": "magnifying glass on notebook",
+   "detail": [
+    0.5,
+    0.5
+   ],
+   "zoom": 2.0,
+   "label": "Where is the ledger?",
+   "at": 128
+  },
+  {
+   "type": "coin3d",
+   "text": "ONE",
+   "drain": true,
+   "drain_at": 0.8,
+   "label": "Remember?",
+   "spins": 0.5,
+   "crypto": true,
+   "at": 129
+  },
+  {
+   "type": "kinetic",
+   "text": "A feeling. A family. A number that only goes up.",
+   "hl": "feeling. family.",
+   "step": 0.3,
+   "at": 130
+  },
+  {
+   "type": "flow",
+   "title": "And nobody may check",
+   "boxes": [
+    {
+     "label": "Ledger",
+     "color": "red"
+    },
+    {
+     "label": "Locked",
+     "color": "red",
+     "strike": false
+    }
+   ],
+   "step": 0.5,
+   "at": 131
+  },
+  {
+   "type": "docreveal",
+   "kind": "U.S. DOJ (paraphrased)",
+   "title": "Victim remission opens",
+   "lines": [
+    "13 April 2026",
+    "Remission process",
+    "for OneCoin victims"
+   ],
+   "redact": [
+    1
+   ],
+   "step": 0.3,
+   "source": "U.S. DOJ, 13 APR 2026",
+   "at": 132
+  },
+  {
+   "type": "chart3d",
+   "title": "Back vs taken",
+   "items": [
+    {
+     "label": "Fund",
+     "value": 0.04,
+     "text": "$40M+"
+    },
+    {
+     "label": "Taken",
+     "value": 4,
+     "text": "$4B+"
+    }
+   ],
+   "hl": 1,
+   "source": "U.S. DOJ 13 APR 2026; U.S. DOJ (SDNY), 12 SEP 2023",
+   "at": 133
+  },
+  {
+   "type": "stat",
+   "text": "1¢",
+   "label": "BACK PER DOLLAR (ABOUT)",
+   "color": "red",
+   "source": "DERIVED: $40M+ / $4B+ (DOJ 2026, 2023)",
+   "at": 134
+  },
+  {
+   "type": "scene",
+   "move": "push",
+   "set": "kitchen",
+   "time": "night",
+   "cast": [
+    {
+     "who": "rosa",
+     "pose": "laptop_typing",
+     "x": 0.4
+    }
+   ],
+   "label": "Claim filed",
+   "marks": [
+    {
+     "k": "emoji",
+     "code": "1F4DD",
+     "x": 0.8,
+     "y": 0.3,
+     "t": 1.0,
+     "size": 130
+    }
+   ],
+   "at": 135
+  },
+  {
+   "type": "scene",
+   "move": "pan_r",
+   "set": "tailor_shop",
+   "time": "morning",
+   "cast": [
+    {
+     "who": "rosa",
+     "pose": "sewing",
+     "x": 0.38
+    }
+   ],
+   "label": "One hem at a time",
+   "at": 136
+  },
+  {
+   "type": "card",
+   "kind": "post",
+   "header": "PINNED TO THE WALL",
+   "lines": [
+    "WHERE IS THE LEDGER?"
+   ],
+   "highlight": "LEDGER",
+   "marks": [
+    {
+     "k": "sticker",
+     "text": "Rosa's rule",
+     "x": 0.8,
+     "y": 0.25,
+     "t": 1.2
+    }
+   ],
+   "at": 137
+  },
+  {
+   "type": "kinetic",
+   "text": "Will you ask to see it?",
+   "hl": "see",
+   "step": 0.3,
+   "at": 138
+  },
+  {
+   "type": "end",
+   "text": "Next case",
+   "sub": "Another money crime behind the hype",
+   "marks": [
+    {
+     "k": "sticker",
+     "text": "Subscribe",
+     "x": 0.5,
+     "y": 0.3,
+     "t": 1.2
+    },
+    {
+     "k": "emoji",
+     "code": "1F50D",
+     "x": 0.5,
+     "y": 0.66,
+     "t": 2.4,
+     "size": 130
+    },
+    {
+     "k": "sticker",
+     "text": "Wisdrop",
+     "x": 0.2,
+     "y": 0.2,
+     "t": 3.6
+    },
+    {
+     "k": "sticker",
+     "text": "New case soon",
+     "x": 0.8,
+     "y": 0.2,
+     "t": 4.6
+    }
+   ],
+   "at": 139
   }
  ],
  "counter": {
