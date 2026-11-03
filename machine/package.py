@@ -124,7 +124,7 @@ def v3_thumbs(ep, tl_p, sh, out):
         m = importlib.util.module_from_spec(spec); spec.loader.exec_module(m)
     except Exception as e:
         print("REVIEW thumbnails fell back to simple ones:", e); return 0
-    pref = ["map", "stamp", "stat", "phone", "scene", "pair", "photo", "money"]
+    pref = ["map", "phone", "pair", "scene", "photo", "money", "stamp", "stat"]
     cands = []
     for typ in pref:
         for k, (st, s) in enumerate(m.SHOTS):
@@ -132,14 +132,19 @@ def v3_thumbs(ep, tl_p, sh, out):
     words = sh.get("thumb_text") or ["WISDROP", "THE SCAM", "WATCH"]
     ims = []
     for j, (k, a, b) in enumerate(cands[:3]):
-        fr = m.render(int((a + min(b - a, 3.0) * .85) * 30)).resize((TW, TH), Image.LANCZOS)
-        fr = ImageEnhance.Contrast(ImageEnhance.Brightness(fr).enhance(1.12)).enhance(1.15)
-        d = ImageDraw.Draw(fr); w = words[j % len(words)].upper().split(); y = 40
-        lines = [" ".join(w[:2]), " ".join(w[2:])] if len(w) > 2 else [" ".join(w)]
-        for i, ln in enumerate(l for l in lines if l):
-            f = fit(d, ln, 760, 170); col = (226, 70, 54) if i == len(lines) - 1 else (247, 209, 58)
-            d.text((50, y), ln, font=f, fill=col, stroke_width=12, stroke_fill=(0, 0, 0)); y += f.size + 18
-            if f.size * 246 / TW < 14: print("REVIEW thumb text too small on phones:", ln)
+        fr = m.render(int((a + min(b - a, 3.0) * .85) * 30))
+        fr = fr.crop((240, 60, 1920 - 120, 1080 - 150)).resize((TW, TH), Image.LANCZOS)     # punch in past the frame text edges
+        fr = ImageEnhance.Contrast(ImageEnhance.Color(fr).enhance(1.2)).enhance(1.15)
+        sh_ = Image.new("L", (TW, TH), 0); dd = ImageDraw.Draw(sh_)
+        for x in range(TW): dd.line([(x, 0), (x, TH)], fill=int(250 * min(1, max(0, 1.3 - x / (TW * .5)))))
+        fr = Image.composite(Image.new("RGB", (TW, TH), (12, 12, 16)), fr, sh_)
+        d = ImageDraw.Draw(fr); w = words[j % len(words)].upper().split(); n = len(w)
+        size = min(fit(d, max(w, key=len), 560, 230).size, int((TH - 120) / max(1, n) / 1.08)); f = ImageFont.truetype(ANTON, size)
+        y = (TH - n * size * 1.08) / 2
+        for i, ln in enumerate(w):
+            col = (226, 70, 54) if i == n - 1 else (247, 209, 58)
+            d.text((54, y), ln, font=f, fill=col, stroke_width=10, stroke_fill=(0, 0, 0)); y += size * 1.08
+        if size * 246 / TW < 14: print("REVIEW thumb text too small on phones:", w)
         p = os.path.join(out, f"thumb_{'ABC'[j]}.jpg"); fr.save(p, quality=92); ims.append(fr)
     # phone-size preview: how they look in a feed (246 px wide)
     sheet = Image.new("RGB", (900, 120 + 210 * len(ims)), (255, 255, 255)); d = ImageDraw.Draw(sheet)
