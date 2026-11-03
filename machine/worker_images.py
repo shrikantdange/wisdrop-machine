@@ -31,7 +31,7 @@ LEDIT = "Qwen-Image-Edit-2509/Qwen-Image-Edit-2509-Lightning-8steps-V1.0-bf16.sa
 ENGINE = "v3-lightning8"   # part of every hash; bump only when the look must change
 
 image = (modal.Image.debian_slim(python_version="3.11")
-         .pip_install("torch==2.6.0", "diffusers>=0.36.0", "transformers>=4.51,<5", "accelerate", "peft>=0.17",
+         .pip_install("torch==2.6.0", "torchvision==0.21.0", "diffusers>=0.36.0", "transformers>=4.51,<5", "accelerate", "peft>=0.17",
                       "safetensors", "sentencepiece", "pillow")
          .env({"HF_HOME": HF, "HF_HUB_DISABLE_TELEMETRY": "1"}))
 cpu_image = (modal.Image.debian_slim(python_version="3.11")
@@ -109,6 +109,7 @@ def run_images(jobs: list, style: str) -> list:
                            num_inference_steps=30, true_cfg_scale=4.0, generator=torch.Generator("cuda").manual_seed(j.get("seed", 7))).images[0]
                 p = pathlib.Path("/assets/" + j["out"]); p.parent.mkdir(parents=True, exist_ok=True); img.save(p, "PNG")
                 out.append({"name": j["name"], "out": j["out"], "secs": round(time.time() - t, 1)})
+                avol.commit()
             todo = [x for x in todo if x.get("mode") != "t2i_base30"]
             pipe.scheduler = sch
             pipe.load_lora_weights(hf_hub_download(LREPO, LBASE))
@@ -131,6 +132,7 @@ def run_images(jobs: list, style: str) -> list:
             p = pathlib.Path("/assets/" + j["out"]); p.parent.mkdir(parents=True, exist_ok=True)
             img.save(p, "PNG")
             out.append({"name": j["name"], "out": j["out"], "secs": round(time.time() - t, 1)})
+            avol.commit()                    # keep every finished picture even if a later step fails
         del pipe; torch.cuda.empty_cache()
     avol.commit()
     meta["total_s"] = round(time.time() - t0, 1)
