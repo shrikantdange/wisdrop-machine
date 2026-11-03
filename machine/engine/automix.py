@@ -75,6 +75,7 @@ def main(ep, work):
         a = load(p, 0, dur)
         if len(a) < 10: return
         a = a * 10 ** ((VO_PK - under - 20 * np.log10(np.abs(a).max() + 1e-9)) / 20); pk = np.argmax(np.abs(a).mean(1)) / SR
+        if t - pk < 0: a = a[int((pk - t) * SR):]; pk = t        # near 0 s: trim the lead-in so the hit still lands on time
         start = max(0, t - pk); SYNC.append(round((start + pk - t) * 30, 2))     # AMC-S5: hit lands on its frame
         put(fx, start, fade(a, .005, .3))
     last = {}

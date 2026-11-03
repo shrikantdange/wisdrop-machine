@@ -1,8 +1,8 @@
 [
  {
   "rule": "AMC-W1 no unseeded randomness, wall clock or hash() in render code",
-  "status": "FAIL",
-  "detail": "v3kit.py:101 np.random.default_rng(len(text)).random"
+  "status": "OK",
+  "detail": ""
  },
  {
   "rule": "AMC-C3 text >= 4.5:1 on every board (accent >= 3:1, large type only)",
@@ -58,5 +58,25 @@
   "rule": "AMC-N3 0.5 s pause after a question",
   "status": "REVIEW",
   "detail": "lines [46, 61, 128, 129] (set gap >= 0.5)"
+ },
+ {
+  "rule": "AMC-H1 frame 0 is a picture, not black or flat",
+  "status": "OK",
+  "detail": "mean 192, spread 33"
+ },
+ {
+  "rule": "AMC-M10 at most 3 flashes in any second",
+  "status": "OK",
+  "detail": "max 3/s"
+ },
+ {
+  "rule": "AMC-C2 accent colour on <= 15 % of the frame",
+  "status": "OK",
+  "detail": "150 frames sampled"
+ },
+ {
+  "rule": "AMC-C4 no large pure black / white areas",
+  "status": "OK",
+  "detail": ""
  }
 ]
