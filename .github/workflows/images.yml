@@ -2,8 +2,9 @@ name: images
 on:
   workflow_dispatch:
     inputs:
-      job: {description: "image job file", default: "episodes/ep01-onecoin/img_jobs_test.json"}
-      fetch_weights: {description: "download weights to volume first (once)", type: boolean, default: false}
+      job: {description: "image job file", default: "episodes/ep01-onecoin/img_jobs_v3_test.json"}
+      fetch_weights: {description: "download weights first (CPU only): none, base, edit, both", default: "none"}
+      force: {description: "re-make these picture names with a new seed (comma list)", default: ""}
 permissions:
   contents: write
 concurrency: {group: heavy-worker, cancel-in-progress: false}
@@ -15,17 +16,21 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with: {python-version: "3.11"}
-      - run: pip install -q modal
-      - name: Run on Modal
+      - run: pip install -q modal pillow
+      - name: Run on Modal (cached; only missing pictures use the GPU)
         env:
           MODAL_TOKEN_ID: ${{ secrets.MODAL_TOKEN_ID }}
           MODAL_TOKEN_SECRET: ${{ secrets.MODAL_TOKEN_SECRET }}
         run: |
           export MODAL_TOKEN_ID="$(printf '%s' "$MODAL_TOKEN_ID" | tr -d '[:space:]')"
           export MODAL_TOKEN_SECRET="$(printf '%s' "$MODAL_TOKEN_SECRET" | tr -d '[:space:]')"
-          if [ "${{ inputs.fetch_weights }}" = "true" ]; then modal run machine/worker_images.py::fetch_weights; fi
-          modal run machine/worker_images.py::images --job "${{ inputs.job }}"
-      - name: Publish output to worker-out branch (overwritten each run)
+          case "${{ inputs.fetch_weights }}" in
+            base) modal run machine/worker_images.py::fetch_weights --which base ;;
+            edit) modal run machine/worker_images.py::fetch_weights --which edit ;;
+            both) modal run machine/worker_images.py::fetch_weights --which base && modal run machine/worker_images.py::fetch_weights --which edit ;;
+          esac
+          modal run machine/worker_images.py::images --job "${{ inputs.job }}" --force "${{ inputs.force }}"
+      - name: Publish previews (JPG) + manifest to worker-out branch
         run: |
           cd out && git init -q -b worker-out && git add -A
           git -c user.name=wisdrop-bot -c user.email=bot@users.noreply.github.com commit -qm "images ${{ inputs.job }} ${{ github.run_id }}"
