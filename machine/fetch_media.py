@@ -1,0 +1,62 @@
+"""Fetch real photos for `photo` shots from Wikimedia Commons, commercial-safe licences only.
+
+    python machine/fetch_media.py episodes/ep01-onecoin
+
+For every shot {"type": "photo", "q": "search words"} (or "commons": "File:Exact name.jpg")
+it saves episodes/<ep>/media/<slug>.jpg (1600 px wide) and records the credit in
+media/credits.json. package.py puts every credit in the description.
+
+Allowed: CC0, public domain (PD, PDM, US government), CC BY, CC BY-SA (any version).
+Refused: NC (non-commercial), ND (no-derivatives: our colour treatment is a change), unknown.
+Already-fetched files are kept (free re-runs). Prints OK / FAIL lines like the rest of the machine.
+"""
+import json, os, re, sys, urllib.parse, urllib.request
+
+UA = {"User-Agent": "WisdropMachine/1.0 (https://github.com/shrikantdange/wisdrop-machine)"}
+API = "https://commons.wikimedia.org/w/api.php"
+
+def slug(q): return re.sub(r"[^a-z0-9]+", "-", q.lower()).strip("-")[:60]
+
+def ok_licence(lic):
+    l = (lic or "").lower()
+    if any(x in l for x in ("nc", "nd", "fair use", "non-free")): return False
+    return any(x in l for x in ("cc0", "public domain", "pd", "cc by", "cc-by"))
+
+def get(url):
+    return urllib.request.urlopen(urllib.request.Request(url, headers=UA), timeout=30).read()
+
+def search(q=None, title=None):
+    p = {"action": "query", "format": "json", "prop": "imageinfo", "iiprop": "url|extmetadata|size|mime", "iiurlwidth": "1600"}
+    if title: p["titles"] = title
+    else: p.update({"generator": "search", "gsrnamespace": "6", "gsrsearch": q + " filetype:bitmap", "gsrlimit": "12"})
+    d = json.loads(get(API + "?" + urllib.parse.urlencode(p)))
+    pages = sorted(d.get("query", {}).get("pages", {}).values(), key=lambda x: x.get("index", 0))
+    for pg in pages:
+        i = (pg.get("imageinfo") or [{}])[0]; m = i.get("extmetadata", {})
+        lic = m.get("LicenseShortName", {}).get("value", "")
+        if not ok_licence(lic) or i.get("width", 0) < 1200 or "svg" in i.get("mime", ""): continue
+        artist = re.sub("<[^>]+>", "", m.get("Artist", {}).get("value", "unknown")).strip()[:80]
+        return {"url": i.get("thumburl") or i["url"], "page": i.get("descriptionurl", ""), "licence": lic,
+                "artist": artist, "title": pg["title"]}
+    return None
+
+def main(ep):
+    sh = json.load(open(os.path.join(ep, "shots.json"))); md = os.path.join(ep, "media"); os.makedirs(md, exist_ok=True)
+    cp = os.path.join(md, "credits.json"); cred = json.load(open(cp)) if os.path.exists(cp) else {}
+    bad = 0
+    for s in sh["shots"]:
+        if s.get("type") != "photo" or s.get("file") and os.path.exists(os.path.join(md, s["file"])): continue
+        key = s.get("commons") or s.get("q"); fn = slug(key) + ".jpg"; path = os.path.join(md, fn)
+        if os.path.exists(path) and fn in cred: print("OK cached", fn); continue
+        try:
+            r = search(title=s.get("commons")) if s.get("commons") else search(q=s["q"])
+        except Exception as e:
+            r = None; print("FAIL", key, e)
+        if not r: print("FAIL no commercial-safe photo for", repr(key), "- change q or use a card"); bad += 1; continue
+        open(path, "wb").write(get(r["url"])); cred[fn] = r
+        print("OK", fn, "|", r["licence"], "|", r["artist"])
+    json.dump(cred, open(cp, "w"), indent=1)
+    sys.exit(1 if bad else 0)
+
+if __name__ == "__main__":
+    main(sys.argv[1])

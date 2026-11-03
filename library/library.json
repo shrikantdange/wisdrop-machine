@@ -110,5 +110,6 @@
   "board": {
    "code": true
   }
- }
+ },
+ "look": "collage"
 }

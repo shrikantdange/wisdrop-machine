@@ -10,34 +10,18 @@
  "shots": [
   {
    "at": 0,
-   "type": "scene",
-   "set": "airport_hall",
-   "time": "dawn",
-   "move": "push",
-   "fx": [
-    "dust"
-   ]
+   "type": "photo",
+   "q": "Sofia Airport terminal 2",
+   "mood": "dawn",
+   "label": "Sofia, 25 Oct 2017",
+   "w": 0.76
   },
   {
    "at": 1,
-   "type": "card",
-   "kind": "doc",
-   "header": "DEPARTURES",
-   "date": "25 OCT 2017",
-   "lines": [
-    "SOFIA  >  ATHENS",
-    "DEPARTED"
-   ],
-   "highlight": "SOFIA  >  ATHENS",
-   "source": "FBI.GOV",
-   "recreated": true,
-   "sfx": [
-    {
-     "n": "subdrop",
-     "off": 0.1,
-     "under": 9
-    }
-   ]
+   "type": "kinetic",
+   "text": "Then she vanished.",
+   "hl": "vanished",
+   "step": 0.22
   },
   {
    "at": 2,
@@ -78,7 +62,8 @@
      "pose": "sewing",
      "x": 0.38
     }
-   ]
+   ],
+   "label": "Rosa (composite)"
   },
   {
    "at": 5,
@@ -95,9 +80,10 @@
   },
   {
    "at": 6,
-   "type": "coin",
-   "drain": true,
-   "drain_at": 0.8
+   "type": "kinetic",
+   "text": "A coin that never existed?",
+   "hl": "never existed",
+   "step": 0.3
   },
   {
    "at": 7,
@@ -155,17 +141,11 @@
   },
   {
    "at": 9,
-   "type": "scene",
-   "set": "tailor_shop",
-   "time": "afternoon",
-   "move": "push",
-   "cast": [
-    {
-     "who": "rosa",
-     "pose": "three_quarter_right",
-     "x": 0.3
-    }
-   ]
+   "type": "photo",
+   "q": "Bitcoin physical coin",
+   "mood": "night",
+   "label": "2016",
+   "w": 0.7
   },
   {
    "at": 10,
@@ -227,10 +207,10 @@
   },
   {
    "at": 14,
-   "type": "screen",
-   "device": "laptop",
-   "ui": "banner",
-   "text": "Bigger than Bitcoin"
+   "type": "kinetic",
+   "text": "Get in early. Bigger than Bitcoin.",
+   "hl": "bigger",
+   "step": 0.3
   },
   {
    "at": 15,

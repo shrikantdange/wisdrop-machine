@@ -23,6 +23,13 @@ def titles(ep):
     return pick, opts, thumbs
 
 
+def photo_credits(ep):
+    cp = os.path.join(ep, "media", "credits.json")
+    if not os.path.exists(cp): return []
+    c = json.load(open(cp))
+    return ["", "Photos (Wikimedia Commons; colour-treated and cropped)"] + [f"{v['title'].replace('File:', '')} by {v['artist']}, {v['licence']}: {v['page']}" for v in c.values()]
+
+
 def sources(ep):
     t = open(os.path.join(ep, "research.md")).read(); seen = []
     for u in re.findall(r"https?://[^\s;|)]+", t):
@@ -64,8 +71,8 @@ def main(ep, tl_p, assets, out):
     hook = " ".join(L["text"] for L in tl["segs"][:2])
     music = open(os.path.join(KIT, "music", "ATTRIBUTION.txt")).read().split("SFX")[0].replace("MUSIC (CC BY 4.0, credit in description):", "").strip()
     desc = "\n".join([hook, "", "Chapters"] + [f"{a} {b}" for a, b in ch] + ["", "Sources"] + srcs +
-                     ["", "Characters in story scenes are fictional composites; real people are never shown. Illustrations are AI-assisted and dramatised; every number on screen is sourced above.",
-                      "", "Music", music, "", "#Wisdrop #moneycrimes #fraud"])
+                     ["", "Characters in story scenes are fictional composites; real people are never shown. Some illustrations are AI-assisted and dramatised; every number on screen is sourced above.",
+                      "", "Music", music] + photo_credits(ep) + ["", "#Wisdrop #moneycrimes #fraud"])
     open(os.path.join(out, "description.txt"), "w").write(desc)
     case = re.sub(r"^ep\d+-", "", os.path.basename(ep.rstrip("/"))).replace("-", " ")
     tags = [case, f"{case} scam", f"{case} explained", "financial fraud", "crypto scam", "ponzi scheme", "pyramid scheme", "true crime", "money crimes", "documentary", "Wisdrop"]

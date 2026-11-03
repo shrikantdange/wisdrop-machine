@@ -47,6 +47,8 @@ jobs:
           PY
       - name: 1. Plan pictures from shots.json + library
         run: python machine/plan_images.py "$EP"
+      - name: 1b. Real photos (Wikimedia Commons, commercial-safe licences only; free)
+        run: python machine/fetch_media.py "$EP"
       - name: 2. Images (GPU only for missing pictures; free CPU check for stray people/text)
         run: |
           modal run machine/worker_images.py::images --job "$EP/img_jobs.json" --force "${{ inputs.redo_images }}" | tee /tmp/img.log

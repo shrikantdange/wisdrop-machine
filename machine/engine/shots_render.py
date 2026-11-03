@@ -321,6 +321,92 @@ TYPES = {"scene": s_scene, "stat": s_stat, "headline": s_headline, "card": s_car
          "flow": s_flow, "tree": s_tree, "bars": s_bars, "timeline": s_timeline, "list": s_list, "screen": s_screen, "end": s_end, "chart": s_chart, "coin": s_coin}
 
 # ---------------- schedule ----------------
+
+# ---------------- COLLAGE look (library.json "look": "collage") ----------------
+LOOK = LIB.get("look", "noir")
+if LOOK == "collage":
+    import collage as C
+    NAVY, GOLD, RED, PAPER = C.CHAR, C.YEL, C.RED, C.CREAM
+    COL.update({"red": C.RED, "gold": C.YEL, "amber": C.YEL, "paper": C.CREAM})
+    board = C.board
+    def _pic(s):
+        st, tm = s.get("set", "board"), s.get("time", "night"); cast = s.get("cast", [])
+        shot = "shot_" + st + "__" + tm + "__" + "+".join(f"{c['who']}-{c.get('pose', 'front_neutral')}" for c in cast[:2]) if cast else ""
+        if shot and shot in MAN: return shot_img(shot), shot, tm
+        return plate_of(st, tm), f"set_{st}__{tm}", tm
+    def _media(name):
+        k = "media:" + name
+        if k not in _pc:
+            p = os.path.join(EP, "media", name)
+            _pc[k] = Image.open(p).convert("RGB") if os.path.exists(p) else _placeholder(name, (1600, 900))
+        return _pc[k]
+    def _card_shot(fr, img, key, mood, s, t, d, credit=""):
+        u = ease(t / max(d, .1)); seed = s.get("at", 1) + 3
+        if img.size[0] / img.size[1] < 1.5:      # tall photo: crop to 16:10 around crop_y (0 top, 1 bottom)
+            ch = int(img.size[0] / 1.6); y0 = int((img.size[1] - ch) * s.get("crop_y", .45))
+            k2 = ("crop", key, ch, y0)
+            if k2 not in _pc: _pc[k2] = img.crop((0, y0, img.size[0], y0 + ch))
+            img, key = _pc[k2], f"{key}#c{y0}"
+        if s.get("bleed"):
+            pic = C.treat(img, mood, key=(key, mood)).resize((W, H), Image.LANCZOS)
+            fr.paste(zoom(pic, 1.03 + .06 * u, *s.get("focus", [.5, .5])), (0, 0))
+        else:
+            wd = min(int(W * s.get("w", .62)), int(H * .72 * img.size[0] / img.size[1]) + 36); card = C.framed(img, wd, seed=seed, mood=mood, key=key)
+            e = back(min(1, t / .55)) if t < .55 else 1
+            rot = s.get("rot", (-1.6 if seed % 2 else 1.4)) * (1 + (1 - e) * 2)
+            cx = W * s.get("x", .5) + (1 - e) * (-260 if seed % 2 else 260); cy = H * s.get("y", .43) + (1 - e) * 120
+            C.drop_card(fr, card, cx, cy, rot, a=min(1, t / .25), scale=1 + .035 * u)
+        dr = ImageDraw.Draw(fr)
+        if s.get("label") and t > .5: C.sticker(fr, s["label"].upper(), int(W * .1), int(H * .1), F(ANTON, 46))
+        if credit: dr.text((W - 60 - dr.textlength(credit, font=F(MONO, 16)), 44), credit, font=F(MONO, 16), fill=(150, 145, 134))
+        return fr
+    def s_scene(s, t, d):
+        img, key, tm = _pic(s); fr = board()
+        return _card_shot(fr, img, key, tm, s, t, d), True
+    def s_photo(s, t, d):   # a real photo (CC / public domain) from media/, credited on screen
+        import re as _re
+        fn = s.get("file") or _re.sub(r"[^a-z0-9]+", "-", (s.get("commons") or s.get("q", "")).lower()).strip("-")[:60] + ".jpg"
+        if "_cred" not in _pc:
+            cp = os.path.join(EP, "media", "credits.json"); _pc["_cred"] = json.load(open(cp)) if os.path.exists(cp) else {}
+        c = _pc["_cred"].get(fn, {}); credit = s.get("credit") or (f"PHOTO: {c['artist']} / {c['licence']}".upper()[:90] if c else "")
+        fr = board(); img = _media(fn)
+        return _card_shot(fr, img, "media:" + fn, s.get("mood", "archive"), s, t, d, credit), False
+    def s_kinetic(s, t, d):  # words stamp in one by one; "hl" word gets the highlighter
+        fr = board(); dr = ImageDraw.Draw(fr); words = s["text"].split(); step = s.get("step", .28)
+        f = F(ANTON, s.get("size", 132)); hl = {w.upper().strip(".,!?") for w in s.get("hl", "").split()}
+        lines, cur = [], []
+        for w_ in words:
+            if dr.textlength(" ".join(cur + [w_]).upper(), font=f) > W * .78 and cur: lines.append(cur); cur = []
+            cur.append(w_)
+        lines.append(cur); lh = int(f.size * 1.12); y = H * .44 - lh * len(lines) / 2; k = 0
+        for ln in lines:
+            toks = [x.upper() for x in ln]; ws = [dr.textlength(x, font=f) for x in toks]; sp = dr.textlength(" ", font=f)
+            x = (W - sum(ws) - sp * (len(toks) - 1)) / 2
+            for tok, w_ in zip(toks, ws):
+                tt = t - k * step; k += 1
+                if tt > 0:
+                    if tok.strip(".,!?") in hl: C.highlighter(dr, [x - 6, y + lh * .18, x + w_ + 6, y + lh * .92], tt / .3)
+                    e = back(min(1, tt / .22)); sz = max(8, int(f.size * (.6 + .4 * e)))
+                    ff = F(ANTON, sz); col = C.INK if tok.strip(".,!?") in hl else C.CREAM
+                    dr.text((x + (w_ - dr.textlength(tok, font=ff)) / 2, y + (f.size - sz) * .5), tok, font=ff, fill=col)
+                x += w_ + sp
+            y += lh
+        if s.get("source"): source(dr, s["source"])
+        return fr, False
+    def _c_caption(fr, t):
+        ch = next((c for c in chunks if c[0][0] <= t < c[-1][1] + 0.12), None)
+        if not ch: return fr
+        dr = ImageDraw.Draw(fr); f = F(ANTON, 58); toks = [w.upper() for _, _, w in ch]
+        sp = dr.textlength(" ", font=f); wd = [dr.textlength(x, font=f) for x in toks]; x = (W - sum(wd) - sp * (len(toks) - 1)) / 2
+        for (a, b, _), tok, w_ in zip(ch, toks, wd):
+            on = a <= t < b + .02
+            if on: dr.rectangle([x - 8, 930, x + w_ + 8, 1000], fill=C.YEL)
+            dr.text((x, 932), tok, font=f, fill=C.INK if on else C.CREAM, stroke_width=0 if on else 5, stroke_fill=(0, 0, 0)); x += w_ + sp
+        return fr
+    def _c_tag(fr):
+        C.sticker(fr, "DRAMATISATION", 40, 34, F(MONO, 20), bg=C.CREAM, rot=0); return fr
+    TYPES.update(scene=s_scene, photo=s_photo, kinetic=s_kinetic)
+
 SHOTS = []
 for s in SH["shots"]:
     at = s["at"]; t0 = (ST[at] + LEAD if at in ST else 0) + s.get("offset", 0)
@@ -360,3 +446,6 @@ def render(i):
     fr = finish(fr, i, 0)
     if story and s["type"] == "scene": fr = tag(fr)
     return bug(caption(fr, t)) if s["type"] not in ("chapter", "end") else fr
+
+if LOOK == "collage":
+    caption, tag = _c_caption, _c_tag

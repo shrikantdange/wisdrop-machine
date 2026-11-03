@@ -12,7 +12,8 @@ HERE = os.path.dirname(os.path.abspath(__file__)); REPO = os.path.dirname(os.pat
 SR = 48000
 DEFAULT_MUSIC = ["Spy Glass", "Investigations", "Investigations", "Hitman", "Spy Glass", "Investigations"]
 HITS = {"stat": ("tick", 12, .3), "headline": ("paper", 12, .9), "card": ("paper", 12, .9), "chapter": ("darkhit", 8, 1.4),
-        "name": ("swoosh", 12, .8), "timeline": ("swoosh", 13, .8), "bars": ("tick", 12, .3), "end": ("subdrop", 9, 1.2)}
+        "name": ("swoosh", 12, .8), "timeline": ("swoosh", 13, .8), "bars": ("tick", 12, .3), "end": ("subdrop", 9, 1.2),
+        "scene": ("paperslide", 14, .6), "photo": ("paperslide", 14, .6), "list": ("flick", 13, .2), "flow": ("flick", 13, .2)}
 
 
 def load(p, ss=0, t=None, loop=False):
@@ -70,6 +71,13 @@ def main(ep, work):
     for k, s in enumerate(shots):
         if s["type"] in HITS and not s.get("quiet"):
             n, under, dur = HITS[s["type"]]; hit(n, times[k] + .06, under, dur)
+        if s["type"] in ("scene", "photo") and not s.get("bleed") and not s.get("quiet"): hit("tape", times[k] + .45, 16, .3)
+        if s["type"] == "kinetic":
+            hl = {w.upper().strip(".,!?") for w in s.get("hl", "").split()}
+            for j, w in enumerate(s["text"].split()):
+                tw = times[k] + j * s.get("step", .28)
+                if tw >= times[k + 1] - .05: break
+                hit("marker" if w.upper().strip(".,!?") in hl else "pop", tw, 12 if w.upper().strip(".,!?") in hl else 17, .4)
         for x in s.get("sfx", []): hit(x["n"], times[k] + x.get("off", 0), x.get("under", 10), x.get("dur", 1.2))
     mix = vo + mus + fx
     pcm = (np.clip(mix / max(1, np.abs(mix).max() / .95), -1, 1) * 32767).astype(np.int16)

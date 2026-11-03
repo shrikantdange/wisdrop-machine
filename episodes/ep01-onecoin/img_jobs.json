@@ -10,12 +10,6 @@
   "prompt": "Character model sheet of ONE fictional person: a woman aged 54 who looks early fifties, sturdy build, medium height, dark brown hair with a few thin grey streaks in a neat low bun, tortoiseshell reading glasses worn on her face, warm kind face with light smile lines, burgundy knit cardigan over a beige blouse, olive knee-length skirt, flat brown shoes, a pale off-white cloth tape measure draped around her neck. Full body, standing, front view, arms relaxed at the sides. Background is a perfectly plain flat mid-grey with nothing on it: no wall texture, no floor line, no lamp, no cast shadow. Even soft front light, whole figure visible with margin on all sides."
  },
  {
-  "name": "set_airport_hall__dawn",
-  "lib": "sets/airport_hall",
-  "seed": 41,
-  "prompt": "Lit by pale cold dawn, navy sky warming to a thin amber horizon, long soft shadows. Wide shot of an empty airport departure hall: huge windows onto a runway, rows of empty seats, a large blank departure board panel, polished reflective floor, one lonely rolling suitcase. Open clear floor area in the foreground."
- },
- {
   "name": "set_kitchen__night",
   "lib": "sets/kitchen",
   "seed": 51,
@@ -46,20 +40,6 @@
    "char_rosa__master"
   ],
   "prompt": "Image 1 is the scene. Paint into it the person from image 2 on the left of the frame, standing three-quarter view, one hand at her chin, thinking. Keep image 1's room, camera, composition, colours, grain and illustration style exactly. Each person keeps the identical face, hair, glasses, clothes and colours from their reference image, at realistic scale for the room, lit by the scene's own light with matching shadows on the floor. No extra people, no text."
- },
- {
-  "name": "shot_tailor_shop__afternoon__rosa-three_quarter_right",
-  "lib": "shots/tailor_shop",
-  "mode": "edit",
-  "seed": 38,
-  "people": true,
-  "w": 1664,
-  "h": 928,
-  "refs_from": [
-   "set_tailor_shop__afternoon",
-   "char_rosa__master"
-  ],
-  "prompt": "Image 1 is the scene. Paint into it the person from image 2 on the left of the frame, standing in three-quarter view facing right, calm. Keep image 1's room, camera, composition, colours, grain and illustration style exactly. Each person keeps the identical face, hair, glasses, clothes and colours from their reference image, at realistic scale for the room, lit by the scene's own light with matching shadows on the floor. No extra people, no text."
  },
  {
   "name": "shot_tailor_shop__morning__rosa-envelope",

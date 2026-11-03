@@ -42,3 +42,23 @@ Colours: red, gold, amber, paper, grey, green, white. Words on screen are always
 - Never put `overlay` code text on a generated picture (it will not line up). Put words on board shots:
   card, headline, stat, screen, list.
 - Reuse beats variety: the same set+time+cast+pose makes the same picture for free (cache).
+
+## COLLAGE look (v2, default from 2026-11-03; library.json "look": "collage")
+Vox/BBC-style: charcoal paper board, torn cream paper cards with tape, duotone + halftone
+treatment on every picture, yellow highlighter, red marker, kinetic type. Aim per episode:
+~60% code graphics (stat, card, kinetic, chart, flow, timeline, list, screen), ~25% real photos,
+10-15% AI pictures (only Rosa-type story moments that no photo can show).
+
+New shot types:
+- `photo`: `{"type":"photo","q":"Sofia Airport terminal","mood":"dawn","label":"Sofia, 25 Oct 2017"}`
+  machine/fetch_media.py finds a commercial-safe Wikimedia Commons photo (CC0/PD/CC BY/CC BY-SA),
+  credit goes on screen and in the description. Or `"commons": "File:Exact.jpg"`. Options: `w`,
+  `x`, `y`, `rot`, `crop_y`, `bleed` (full frame), `mood` (time-of-day duotone or `archive`).
+  Never use a photo of a real person as if it were someone else; photos of real people only when
+  they ARE that person and the licence allows.
+- `kinetic`: `{"type":"kinetic","text":"Then she vanished.","hl":"vanished","step":0.25}` words
+  pop in one per `step` s, `hl` words get the highlighter (pop and marker sounds are automatic).
+- `scene` now shows the AI picture as a taped collage card (or `"bleed": true` for full frame),
+  with optional `label` sticker.
+Sounds: every scene/photo gets a paper slide + tape, kinetic words get pops, highlighter gets a
+marker squeak, lists/flows get flicks. All synthesised by tools/synth_sfx.py (CC0, ours).
