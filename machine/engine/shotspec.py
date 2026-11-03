@@ -34,9 +34,9 @@ def events(s, d):
     elif t == "coin": ev += [s.get("drain_at", .6), s.get("drain_at", .6) + 1.6] if s.get("drain") else [.5]
     elif t in ("parallax", "lineart"): ev += [.5, s.get("trace", 1.6)]
     elif t == "docreveal":
-        n = len(s.get("redact", [])); ev += [.5] + _steps(n, s.get("step", .45), .5) + ([.9 + n * s.get("step", .45)] if s.get("quote") else [])
+        n = len(s.get("redact", [])); ev += [.35] + _steps(n, s.get("step", .45), .35) + ([.6 + n * s.get("step", .45)] if s.get("quote") else [])
     elif t == "headlines": ev += _steps(len(s.get("items", [])), s.get("step", .7), .15)
-    elif t == "coin3d": ev += [.45, .6] + ([s.get("drain_at", 1.4), s.get("drain_at", 1.4) + 1.6] if s.get("drain") else [])
+    elif t == "coin3d": ev += [.35, .9] + ([s.get("drain_at", 1.4), s.get("drain_at", 1.4) + 1.6] if s.get("drain") else [])
     elif t == "chart3d": ev += _steps(len(s.get("items", [])), s.get("step", .45), .3)
     elif t == "phone":
         n = len(s.get("messages", [])) or len(s.get("notes", [])) or len(s.get("rows", [])) or 1

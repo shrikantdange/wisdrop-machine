@@ -94,33 +94,35 @@ def paper(w, h, key):
 
 def s_docreveal(s, t, d, part):
     th = V.theme(part); fr = V.board(part); key = s.get("title", "doc")
-    pw, ph = 1180, 860; pg = paper(pw, ph, key).copy(); dr = ImageDraw.Draw(pg)
+    pw, ph = 1100, 640; pg = paper(pw, ph, key).copy(); dr = ImageDraw.Draw(pg)
     dr.text((70, 60), s.get("kind", "COURT FILING").upper(), font=F(MONO, 30), fill=(120, 110, 96))
-    dr.text((70, 104), s.get("title", "").upper(), font=F(SERIF, 52), fill=INK)
+    tf = 52; ttl = s.get("title", "").upper()
+    while tf > 34 and dr.textlength(ttl, font=F(SERIF, tf)) > pw - 140: tf -= 2
+    dr.text((70, 104 + (52 - tf) * .5), ttl, font=F(SERIF, tf), fill=INK)
     dr.line([(70, 178), (pw - 70, 178)], fill=INK, width=3)
-    f = F(SERIF, 38); y = 214; red = set(s.get("redact", [])); step = s.get("step", .45)
+    f = F(SERIF, 38); y = 206; red = set(s.get("redact", [])); step = s.get("step", .45)
     lines = s.get("lines", []); boxes = []
     for i, ln in enumerate(lines):
         dr.text((70, y), ln, font=f, fill=(40, 38, 34))
         if i in red: boxes.append((i, [62, y - 6, 70 + dr.textlength(ln, font=f) + 10, y + 46]))
-        y += 62
+        y += 54
     # redaction bars wipe off right-to-left, one after another (on twos, paper rule AMC-T6)
     tt = MO.on_twos(t)
     for k, (i, b) in enumerate(boxes):
-        u = ease(min(1, max(0, (tt - .5 - k * step) / .35)))
+        u = ease(min(1, max(0, (tt - .35 - k * step) / .3)))
         if u < 1: dr.rectangle([b[0], b[1], b[2] - (b[2] - b[0]) * u, b[3]], fill=(14, 14, 14))
     q = s.get("quote", "")
     if q:
-        q0 = .6 + len(boxes) * step + .3; n = int(max(0, t - q0) * s.get("cps", 26)); qf = F(SERIF, 44)
+        q0 = .45 + len(boxes) * step + .15; n = int(max(0, t - q0) * s.get("cps", 26)); qf = F(SERIF, 44)
         txt = "\u201c" + q[:n] + ("\u201d" if n >= len(q) else ""); yq = y + 20
         if n > 0:
-            for row in V.wrap(dr, txt, qf, pw - 160)[:3]:
+            for row in V.wrap(dr, txt, qf, pw - 160)[:2]:
                 wq = dr.textlength(row, font=qf); dr.rectangle([66, yq + 4, 82 + wq, yq + 56], fill=YEL)
                 dr.text((74, yq), row, font=qf, fill=INK); yq += 64
     pg = pg.rotate(s.get("rot", -1.2), expand=True, resample=Image.BICUBIC, fillcolor=th["bg"])
     e = back(min(1, t / .5)); sc = 1.0 + .03 * ease(t / max(d, .1))
     pg2 = pg.resize((int(pg.size[0] * sc), int(pg.size[1] * sc)), Image.BILINEAR)
-    V.shadow_paste(fr, pg2.convert("RGBA"), (W - pg2.size[0]) / 2, (H - pg2.size[1]) / 2 - 30 + 140 * (1 - e), 22, (12, 18), .45)
+    V.shadow_paste(fr, pg2.convert("RGBA"), (W - pg2.size[0]) / 2, H * .40 - pg2.size[1] / 2 + 140 * (1 - e), 22, (12, 18), .45)
     if s.get("source"): V.source_line(ImageDraw.Draw(fr), s["source"], th)
     return fr
 
@@ -198,7 +200,7 @@ def coin_img(r, phase, text, drain, key):
 
 def s_coin3d(s, t, d, part):
     th = V.theme(part); fr = V.board(part); dr = ImageDraw.Draw(fr); r = s.get("r", 300)
-    spin = s.get("spins", .6) * eout(min(1, t / max(1.8, d * .6))) + .08
+    spin = .02 + s.get("spins", 1.0) * eout(min(1, t / max(.9, min(1.6, d * .7))))
     drain = ease(min(1, max(0, (t - s.get("drain_at", 1.4)) / 1.6))) if s.get("drain") else 0
     c = coin_img(r, spin, s.get("text", ""), drain, s.get("text", ""))
     bob = 12 * math.sin(t * 2.2)
@@ -206,7 +208,7 @@ def s_coin3d(s, t, d, part):
     sh = sh.filter(ImageFilter.GaussianBlur(14)); fr.paste(sh, (int(W / 2 - sh.size[0] / 2), int(H * .45 + r + 10)), sh)
     e = back(min(1, t / .45)); cc = c.resize((max(2, int(c.size[0] * e)), max(2, int(c.size[1] * e))), Image.BILINEAR)
     fr.paste(cc, (int(W / 2 - cc.size[0] / 2), int(H * .45 - cc.size[1] / 2 + bob)), cc)
-    if s.get("label") and t > .6: dr.text((W / 2, H * .45 + r + 80), s["label"].upper(), font=F(ANTON, 76), fill=th["ink"], anchor="mm")
+    if s.get("label") and t > .35: dr.text((W / 2, H * .45 + r + 80), s["label"].upper(), font=F(ANTON, 76), fill=th["ink"], anchor="mm")
     if s.get("source"): V.source_line(dr, s["source"], th)
     return fr
 
