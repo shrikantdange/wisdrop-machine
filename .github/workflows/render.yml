@@ -1,0 +1,27 @@
+name: render
+on:
+  workflow_dispatch:
+    inputs:
+      ep: {description: "episode folder", default: "episodes/ep00-onecoin-test"}
+permissions:
+  contents: write
+concurrency: {group: render-cpu, cancel-in-progress: false}
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.11"}
+      - run: pip install -q modal
+      - name: Render on Modal CPUs (parallel chunks)
+        env:
+          MODAL_TOKEN_ID: ${{ secrets.MODAL_TOKEN_ID }}
+          MODAL_TOKEN_SECRET: ${{ secrets.MODAL_TOKEN_SECRET }}
+        run: |
+          export MODAL_TOKEN_ID="$(printf '%s' "$MODAL_TOKEN_ID" | tr -d '[:space:]')"
+          export MODAL_TOKEN_SECRET="$(printf '%s' "$MODAL_TOKEN_SECRET" | tr -d '[:space:]')"
+          modal run machine/worker_render.py::render --ep "${{ inputs.ep }}"
+      - uses: actions/upload-artifact@v4
+        with: {name: video, path: out/, retention-days: 7}

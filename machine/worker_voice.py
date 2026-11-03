@@ -17,6 +17,8 @@ import modal
 
 app = modal.App("wisdrop-voice")
 vol = modal.Volume.from_name("wisdrop-weights", create_if_missing=True)
+avol = modal.Volume.from_name("wisdrop-assets", create_if_missing=True)
+VO_ENGINE = "cb0.1.7-t4"   # part of every line hash
 HF = "/weights/hf"
 
 image = (modal.Image.debian_slim(python_version="3.11")
@@ -38,7 +40,24 @@ def download_weights() -> str:
     return p
 
 
-@app.function(image=image, gpu="T4", volumes={"/weights": vol}, timeout=1500,
+def line_hash(L: dict, ref_sha: str) -> str:
+    import hashlib
+    k = json.dumps({"e": VO_ENGINE, "t": L["text"], "say": L.get("say", ""), "p": L.get("preset", "facts"),
+                    "ref": ref_sha, "seedbump": L.get("seedbump", 0)}, sort_keys=True)
+    return hashlib.sha256(k.encode()).hexdigest()[:16]
+
+
+@app.function(image=image, volumes={"/assets": avol}, timeout=120, cpu=0.25, memory=512)
+def vo_cache(hashes: list, want: list = None) -> dict:
+    """which line hashes exist; with want=[...] also return their wav + qc."""
+    import os
+    have = [h for h in hashes if os.path.exists(f"/assets/vo/{h}.wav")]
+    blobs = {h: {"wav": open(f"/assets/vo/{h}.wav", "rb").read(), "qc": json.load(open(f"/assets/vo/{h}.json"))}
+             for h in (want or [])}
+    return {"have": have, "blobs": blobs}
+
+
+@app.function(image=image, gpu="T4", volumes={"/weights": vol, "/assets": avol}, timeout=1500,
               max_containers=1, scaledown_window=2)
 def run_lines(lines: list, ref_wav: bytes, takes: int = 2) -> list:
     import io, re, time, numpy as np, torch, torchaudio as ta
@@ -74,7 +93,7 @@ def run_lines(lines: list, ref_wav: bytes, takes: int = 2) -> list:
     for L in lines:
         ex, cfg = PRESETS[L.get("preset", "facts")]; best = None
         for k in range(takes):
-            t = time.time(); torch.manual_seed(1000 + L["id"] * 17 + k)
+            t = time.time(); torch.manual_seed(1000 + L["id"] * 17 + k + 100 * L.get("seedbump", 0))
             with torch.inference_mode():
                 w = m.generate(L.get("say", L["text"]), exaggeration=ex, cfg_weight=cfg).cpu()
             a16 = ta.functional.resample(w, m.sr, 16000).squeeze().numpy().astype(np.float32)
@@ -90,7 +109,12 @@ def run_lines(lines: list, ref_wav: bytes, takes: int = 2) -> list:
                 break
         buf = io.BytesIO(); ta.save(buf, best[1], m.sr, format="wav")
         best[0]["status"] = "ok" if not best[0]["issues"] else "review"
+        if L.get("hash"):                      # cache: this line never needs the GPU again
+            os.makedirs("/assets/vo", exist_ok=True)
+            open(f"/assets/vo/{L['hash']}.wav", "wb").write(buf.getvalue())
+            json.dump(best[0], open(f"/assets/vo/{L['hash']}.json", "w"))
         out.append({"qc": best[0], "wav": buf.getvalue()})
+    avol.commit()
     out.append({"qc": {"load_s": load_s, "total_s": round(time.time() - t0, 1),
                        "gpu": torch.cuda.get_device_name(0)}})
     return out
@@ -102,13 +126,27 @@ def fetch_weights():
 
 
 @app.local_entrypoint()
-def voice(ep: str, only: str = "", takes: int = 2):
+def voice(ep: str, only: str = "", takes: int = 2, redo: str = ""):
+    """Cached: a line whose text, preset and voice are unchanged is never voiced again.
+    redo=3,7 forces new takes (new seed) for those lines only."""
+    import hashlib
     root = pathlib.Path(__file__).resolve().parents[1]
     lines = json.loads((root / ep / "lines.json").read_text())
     if only:
         keep = {int(x) for x in only.split(",")}; lines = [l for l in lines if l["id"] in keep]
-    ref = (root / "kit/voice/ref_michael.wav").read_bytes()
-    res = run_lines.remote(lines, ref, takes)
+    ref = (root / "kit/voice/ref_michael.wav").read_bytes(); ref_sha = hashlib.sha256(ref).hexdigest()[:16]
+    rd = {int(x) for x in redo.split(",") if x}
+    for L in lines:
+        if L["id"] in rd:
+            L["seedbump"] = L.get("seedbump", 0) + 1
+        L["hash"] = line_hash(L, ref_sha)
+    have = set(vo_cache.remote([L["hash"] for L in lines])["have"])
+    todo = [L for L in lines if L["hash"] not in have]
+    print(f"PLAN {len(lines)} lines, {len(have)} cached, {len(todo)} to voice")
+    res = run_lines.remote(todo, ref, takes) if todo else []
+    cached = vo_cache.remote([], [L["hash"] for L in lines if L["hash"] in have])["blobs"]
+    idmap = {L["hash"]: L["id"] for L in lines}
+    res = list(res) + [{"qc": dict(v["qc"], cached=True, id=idmap[h]), "wav": v["wav"]} for h, v in cached.items()]
     od = root / "out" / pathlib.Path(ep).name / "vo"; od.mkdir(parents=True, exist_ok=True)
     qc = []
     for r in res:
