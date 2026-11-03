@@ -24,6 +24,7 @@ DUO = {"dawn": ((30, 36, 58), (236, 214, 196)), "morning": ((44, 34, 26), (246, 
 
 _rng = np.random.default_rng(11)
 def _paper(base, amp, size=(W, H)):
+    import zlib; _rng = np.random.default_rng(zlib.crc32(f"paper:{base}:{amp}:{size}".encode()))   # AMC-W1: same paper on any worker
     n = _rng.normal(0, 1, (size[1] // 3, size[0] // 3))
     fib = Image.fromarray(np.clip(128 + n * amp, 0, 255).astype(np.uint8)).resize(size, Image.BICUBIC)
     streak = Image.fromarray(np.clip(128 + _rng.normal(0, 1, (size[1] // 2, 8)) * amp * .8, 0, 255).astype(np.uint8)).resize(size, Image.BICUBIC)

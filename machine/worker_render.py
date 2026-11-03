@@ -76,7 +76,7 @@ def plan(ep: str, seconds: float = 0) -> list:
               volumes={"/assets": avol})
 def render_batch(ep: str, items: list) -> float:
     """render each (a, b, key) to /assets/cache/shots/key.mp4; returns seconds spent."""
-    import subprocess, os, time as _t
+    import subprocess, os, hashlib, time as _t
     t0 = _t.time(); m = _load(ep); os.makedirs("/assets/cache/shots", exist_ok=True)
     for a, b, key in items:
         tmp = f"/tmp/{key}.mp4"
@@ -84,9 +84,13 @@ def render_batch(ep: str, items: list) -> float:
                                "-r", str(m.FPS), "-i", "-", "-c:v", "libx264", "-preset", "veryfast", "-crf", "19",
                                "-pix_fmt", "yuv420p", tmp], stdin=subprocess.PIPE)
         for i in range(a, b):
-            ff.stdin.write(m.render(i).convert("RGB").tobytes())
+            px = m.render(i).convert("RGB").tobytes(); ff.stdin.write(px)
+            if i == a and "probe" not in locals(): probe = (i, hashlib.sha256(px).hexdigest())
         ff.stdin.close(); ff.wait()
         subprocess.run(["cp", tmp, f"/assets/cache/shots/{key}.mp4"], check=True)
+    if items:   # AMC-W1/W2 determinism probe: the first frame rendered again, after later frames, must be identical
+        same = hashlib.sha256(m.render(probe[0]).convert("RGB").tobytes()).hexdigest() == probe[1]
+        print(("OK" if same else "FAIL") + f": determinism, frame {probe[0]} re-rendered out of order is {'identical' if same else 'DIFFERENT'} (AMC-W2)")
     avol.commit()
     return _t.time() - t0
 

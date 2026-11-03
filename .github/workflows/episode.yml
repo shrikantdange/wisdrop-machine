@@ -51,6 +51,7 @@ jobs:
         run: |
           UPTO=""; if [ "${{ inputs.preview_seconds }}" != "0" ]; then UPTO="--upto ${{ inputs.preview_seconds }}"; fi
           python machine/craft_check.py "$EP" $UPTO
+          python machine/motion_check.py "$EP"
           python machine/score_script.py "$EP" || true
       - name: 1. Plan pictures from shots.json + library
         run: python machine/plan_images.py "$EP"

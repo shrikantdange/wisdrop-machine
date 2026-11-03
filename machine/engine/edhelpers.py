@@ -1,5 +1,5 @@
 """Wisdrop shared drawing helpers (easing, glow, grain, zoom, fonts). Used by shots_render.py."""
-import sys, math, random, subprocess, json
+import sys, math, random, subprocess, json, zlib
 import numpy as np
 from PIL import Image, ImageDraw, ImageFont, ImageFilter, ImageChops, ImageEnhance
 
@@ -108,7 +108,7 @@ def vignette():
     m = np.clip((r - 0.55) / 0.75, 0, 1) ** 1.6 * 0.55
     return Image.fromarray((m * 255).astype(np.uint8))
 VIG = vignette(); BLACK = Image.new("RGB", (W, H), (4, 6, 12))
-GRAIN = [Image.fromarray(np.clip(np.random.normal(128, 8 if V != "B" else 11, (H // 2, W // 2)), 0, 255).astype(np.uint8)).resize((W, H)).convert("RGB") for _ in range(6)]
+GRAIN = [Image.fromarray(np.clip(np.random.default_rng(zlib.crc32(f'grain:{_g}'.encode())).normal(128, 8 if V != "B" else 11, (H // 2, W // 2)), 0, 255).astype(np.uint8)).resize((W, H)).convert("RGB") for _g in range(6)]
 PAPERTEX = None
 if True:
     n = np.random.normal(0, 1, (H // 4, W // 4)); n = Image.fromarray(np.clip(128 + n * 18, 0, 255).astype(np.uint8)).resize((W, H), Image.BICUBIC).filter(ImageFilter.GaussianBlur(2))
@@ -123,7 +123,8 @@ def bug(fr):
 def finish(fr, i, shake=0.0):
     fr = grade(fr)
     if shake:
-        dx, dy = int(random.uniform(-1, 1) * shake), int(random.uniform(-1, 1) * shake)
+        r_ = np.random.default_rng(zlib.crc32(f"shake:{i}".encode()))   # AMC-W1: seeded per frame
+        dx, dy = int(r_.uniform(-1, 1) * shake), int(r_.uniform(-1, 1) * shake)
         fr = ImageChops.offset(fr, dx, dy)
     fr = Image.composite(BLACK, fr, VIG)
     if PAPERTEX is not None: fr = Image.blend(fr, ImageChops.overlay(fr, PAPERTEX), .45 if V == "B" else .28)

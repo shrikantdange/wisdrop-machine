@@ -128,7 +128,7 @@ def s_stat(s, t, d):
     f = F(ANTON, int(250 * (0.9 + 0.1 * back(t / .45)))); tw = dr.textlength(txt, font=f)
     dr.text(((W - tw) / 2, 380 - f.size * .62), txt, font=f, fill=col)
     a = eout((t - .5) / .6)
-    if a > 0: cw(dr, s.get("label", ""), F(ANTON, 72), 560 + 20 * (1 - a), PAPER)
+    if a > 0: cw(dr, s.get("label", ""), F(ANTON, 76), 560 + 20 * (1 - a), PAPER)
     if t > .6: source(dr, s.get("source", ""))
     return drift(fr, t, d), False
 
@@ -472,6 +472,7 @@ if LOOK == "v3":
     import re as _re2
     import v3kit as V
     import shotspec as SS
+    import motion as MO
     _base_col = dict(COL)
     def apply_theme(part):
         global PAPER, GREY, GOLD
@@ -519,7 +520,7 @@ if LOOK == "v3":
             fr, story = fn(s, t, d)
             if s.get("stickers"):
                 for k, st_ in enumerate(s["stickers"]):
-                    V.pop_sticker(fr, st_.upper(), int(W * (.82 if k % 2 == 0 else .18)), int(H * (.2 + .5 * (k // 2))), t - .7 - k * .6, F(ANTON, 40), C.YEL if k % 2 == 0 else C.CREAM, C.INK, 4 if k % 2 else -4)
+                    V.pop_sticker(fr, st_.upper(), int(W * (.82 if k % 2 == 0 else .18)), int(H * (.2 + .5 * (k // 2))), MO.on_twos(t) - .7 - k * .6, F(ANTON, 40), C.YEL if k % 2 == 0 else C.CREAM, C.INK, 4 if k % 2 else -4)
             return fr, story
         return g
     TYPES.update(kinetic=s_kinetic, chapter=s_chapter, scene=_surround(TYPES["scene"]), photo=_surround(TYPES["photo"]),
@@ -537,12 +538,15 @@ if LOOK == "v3":
                  barrace=lambda s, t, d: (V.s_barrace(s, t, d, CUR_PART), False))
     _acc = {}
     def v3_after(fr, s, tt, d, k):
-        fr = V.marks(fr, s, tt, CUR_PART)
+        fr = V.marks(fr, s, MO.on_twos(tt), CUR_PART)   # AMC-T6 paper on twos
         if k not in _acc: _acc[k] = SS.accents(s, d)
-        z, cx = 1.0, .5
+        # AMC-V2/V3 (owner): no punch-ins except stamps; holds get a slow push (1.2 %/s, cap +6 %)
+        # and each automatic accent re-aims the push sideways on the 'camera' ease (a drift, not a zoom jump).
+        if s["type"] in ("stamp", "chapter", "end"): return fr
+        z, cx = MO.hold_push(tt), .5
         for j, a in enumerate(_acc[k]):
-            if tt >= a: z += .035 * ease((tt - a) / .35); cx += (.012 if j % 2 else -.012) * ease((tt - a) / .35)
-        return zoom(fr, z, cx, .5) if z > 1.0001 else fr
+            if tt >= a: cx += (.014 if j % 2 else -.014) * MO.ease("camera", (tt - a) / .65)
+        return zoom(fr, z, cx, .5)
     _cnt = [(st_, s_["counter_to"]) for st_, s_ in SHOTS if "counter_to" in s_]
     def v3_counter(fr, k, t):
         c = SH.get("counter")

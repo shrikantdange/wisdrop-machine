@@ -1,0 +1,62 @@
+[
+ {
+  "rule": "AMC-W1 no unseeded randomness, wall clock or hash() in render code",
+  "status": "FAIL",
+  "detail": "v3kit.py:101 np.random.default_rng(len(text)).random"
+ },
+ {
+  "rule": "AMC-C3 text >= 4.5:1 on every board (accent >= 3:1, large type only)",
+  "status": "OK",
+  "detail": ""
+ },
+ {
+  "rule": "AMC-C3 accent colour as text only at >= 76 px on these boards",
+  "status": "REVIEW",
+  "detail": "offwhite 4.0:1, sky 3.0:1"
+ },
+ {
+  "rule": "AMC-V3 punch-in only on stamps (owner)",
+  "status": "OK",
+  "detail": ""
+ },
+ {
+  "rule": "AMC-L2 headline type >= 76 px (owner)",
+  "status": "OK",
+  "detail": ""
+ },
+ {
+  "rule": "AMC-N4 nothing appears before the voice names it (no negative offsets)",
+  "status": "OK",
+  "detail": ""
+ },
+ {
+  "rule": "AMC-S2 no coin / ding / cash sounds (owner)",
+  "status": "OK",
+  "detail": ""
+ },
+ {
+  "rule": "AMC-E1 every map shows a change (route, flight, fill, date or 2+ pins)",
+  "status": "OK",
+  "detail": ""
+ },
+ {
+  "rule": "AMC-E8 snap beats (stamps) <= 3 per episode",
+  "status": "OK",
+  "detail": "2 stamps"
+ },
+ {
+  "rule": "AMC-H3 no signpost phrases",
+  "status": "OK",
+  "detail": ""
+ },
+ {
+  "rule": "AMC-N2 sentence > 20 words gets two pictures",
+  "status": "OK",
+  "detail": ""
+ },
+ {
+  "rule": "AMC-N3 0.5 s pause after a question",
+  "status": "REVIEW",
+  "detail": "lines [46, 61, 128, 129] (set gap >= 0.5)"
+ }
+]

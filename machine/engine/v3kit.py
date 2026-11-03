@@ -490,7 +490,7 @@ def s_stamp(s, t, d, part, under=None):
     th = theme(part); fr = under.copy() if under is not None else board(part)
     if under is not None: fr = Image.blend(fr, Image.new("RGB", (W, H), (0, 0, 0)), .35)
     dr = ImageDraw.Draw(fr)
-    if s.get("pre"): dr.text((W / 2, 300), s["pre"].upper(), font=F(ANTON, 70), fill=th["ink"] if under is None else CREAM, anchor="mm")
+    if s.get("pre"): dr.text((W / 2, 300), s["pre"].upper(), font=F(ANTON, 76), fill=th["ink"] if under is None else CREAM, anchor="mm")
     st = stamp_img(s.get("text", "FRAUD").upper(), tuple(s.get("color", RED)), s.get("size", 170), s.get("sub", ""))
     tt = t - s.get("at_s", .3)
     if tt > 0:
@@ -499,7 +499,8 @@ def s_stamp(s, t, d, part, under=None):
         fr.paste(im, (int(W / 2 - im.size[0] / 2), int(H * .52 - im.size[1] / 2)), im)
     if t > .8 and s.get("source"): source_line(ImageDraw.Draw(fr), s["source"], th)
     shake = 9 * math.exp(-max(0, tt) * 14) if 0 < tt < .4 else 0
-    return zoom(fr, 1.01 + .01 * ease(t / max(d, .1)), .5 + shake / W, .5)
+    import motion as MO      # AMC-V3 (owner): the stamp is the only punch-in, stepped on twos
+    return zoom(fr, MO.punch(tt, s.get("punch", .15)) + .01 * ease(t / max(d, .1)), .5 + shake / W, .5)
 
 def s_scrub(s, t, d, part):
     th = theme(part); fr = board(part); dr = ImageDraw.Draw(fr); ev = s.get("events", [])

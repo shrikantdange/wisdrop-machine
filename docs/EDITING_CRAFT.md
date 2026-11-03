@@ -56,7 +56,7 @@ results only (lead, not proof).
 |---|---|---|
 | T1 **[check]** | Reading time: text that is not spoken word-for-word must stay settled for at least **1 s per 13 characters** (2.3 s for a 30-character line); minimum 0.8 s for any label. | [19][15] |
 | T2 | Max ~30 characters per line, max 3 lines per text block. | [19] |
-| T3 | Body text >= 40-60 px at 1080p (phone legibility); titles >= 1.5x body. Our minimums: labels 34 px, body 40 px, headlines 72 px+. | [19][15] |
+| T3 | Body text >= 40-60 px at 1080p (phone legibility); titles >= 1.5x body. Our minimums: labels 34 px, body 40 px, headlines **76 px+** (owner 2026-11-03, AMC-L2). | [19][15] |
 | T4 | Entrances 0.25-0.6 s, exits faster; motion ends, then text holds; never wobble readable text. | [15][20] |
 | T5 | One emphasised word per card (the highlighter word), timed to the narrator's stress. | [1][4][20] |
 | T6 **[check]** | Captions never overlap a card: cards and kinetic text keep out of the caption band (y > 900 px). | owner rule |
@@ -69,9 +69,9 @@ results only (lead, not proof).
 | S1 | Four layers: voice, music, effects, ambience/room tone. Voice first. | [21] |
 | S2 | Whoosh peaks ON the cut (starts a few frames early); riser ends exactly on the reveal, often by stopping dead; impact on the reveal frame. | [18][21] |
 | S3 | Effects: on the contact frame or one frame early, never two (ITU sync window ~45 ms early). | [21] |
-| S4 | While the voice speaks, effects sit **4-10 dB under** it; ambience beds >= 15 LU under voice. Place effects in the gaps between words. | [21] |
+| S4 | While the voice speaks, effects sit **4-10 dB under** it; ambience beds >= 15 LU under voice; **music bed 22 dB under the voice, band 18-25, alert under 8 dB on any line** (owner 2026-11-03, AMC-S3). Place effects in the gaps between words. | [21] |
 | S5 | Fewer than you think: sound the cuts that carry meaning; never more than 2 same-kind sounds at once (Murch's law of two-and-a-half). | [18][21] |
-| S6 | Each element type has its own sound (phone = buzz/ding, map = whoosh+marker, money = coin/register, stamp = stamp, photo = shutter/tape, page = page turn). | [21] (sound tells what the picture does not) |
+| S6 | Each element type has its own sound (phone = buzz/pop/tick, map = whoosh+marker, money = swish/tick (**no coin, ding or cash sounds**, owner 2026-11-03, AMC-S2), stamp = stamp, photo = shutter/tape, page = page turn). | [21] (sound tells what the picture does not) |
 | S7 **[check]** | Master -14 LUFS integrated, true peak <= -2 dBTP (owner rule; -1 dBTP is the common online ceiling [18]); voice RMS always above music RMS while speaking. | [18][21] |
 | S8 | J-cuts: the next part's music/ambience may start up to 0.75 s before the picture changes. | [22] |
 
