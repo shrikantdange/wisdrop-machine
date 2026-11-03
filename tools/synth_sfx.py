@@ -28,4 +28,41 @@ x = np.sin(2 * np.pi * (70 + 60 * np.exp(-t(.35) * 30)) * t(.35)) * env(n(.35), 
 save("stamp", x)
 # flick: tiny card flip
 x = hp(R.normal(0, 1, n(.09)), .95) * env(n(.09), .001, .02); save("flick", x)
-print("OK sfx: pop marker tape paperslide stamp flick")
+# ---- v3 additions (each element type gets its own sound; docs/EDITING_CRAFT.md S6) ----
+def bp(x, lo, hi): return lp(hp(x, lo), hi)
+# swipe: band-passed noise swoosh, loudest at 60% (put the peak on the cut)
+T = .7; e = np.sin(np.pi * np.clip(t(T) / T, 0, 1) ** 1.4) ** 2; save("swipe", bp(R.normal(0, 1, n(T)), .98, .35) * e)
+# typewriter: 9 key clicks with a little body
+x = np.zeros(n(1.2))
+for k in range(9):
+    i = n(.05 + k * .12 + R.uniform(-.02, .02)); c = hp(R.normal(0, 1, n(.03)), .7) * env(n(.03), .0005, .006) + .4 * np.sin(2 * np.pi * 900 * t(.03)) * env(n(.03), .001, .01)
+    x[i:i + len(c)] += c
+save("typewriter", x)
+# ding: notification chime, two partials
+x = (np.sin(2 * np.pi * 1318 * t(.9)) + .5 * np.sin(2 * np.pi * 1976 * t(.9))) * env(n(.9), .002, .25); save("ding", x)
+# buzz: phone vibration, three pulses
+x = np.zeros(n(.9))
+for k in range(2):
+    i = n(k * .4); seg = np.sign(np.sin(2 * np.pi * 160 * t(.28))) * .6 + .4 * np.sin(2 * np.pi * 320 * t(.28)); seg *= np.minimum(1, t(.28) / .02) * np.minimum(1, (.28 - t(.28)) / .03)
+    x[i:i + len(seg)] += lp(seg, .5)
+save("buzz", x)
+# cash: register bell + drawer slide
+x = (np.sin(2 * np.pi * 2093 * t(1.0)) + .6 * np.sin(2 * np.pi * 2637 * t(1.0))) * env(n(1.0), .002, .3); x[:n(.35)] += .5 * bp(R.normal(0, 1, n(.35)), .99, .5) * env(n(.35), .02, .2); save("cash", x)
+# coindrop: metallic bounces
+x = np.zeros(n(1.1))
+for k, (dt, a) in enumerate([(0, 1), (.22, .6), (.38, .4), (.5, .25), (.58, .15)]):
+    i = n(dt); c = a * sum(np.sin(2 * np.pi * f * t(.4)) for f in (3200, 4700, 6100)) * env(n(.4), .0005, .06); x[i:i + len(c)] += c
+save("coindrop", x)
+# shutter: camera click-clack
+x = np.zeros(n(.25)); c = hp(R.normal(0, 1, n(.04)), .6) * env(n(.04), .0005, .008); x[:len(c)] += c; x[n(.09):n(.09) + len(c)] += .8 * c; save("shutter", x)
+# rise: 2 s riser that stops dead (end it ON the reveal)
+T = 2.0; f = 200 * (40 ** (t(T) / T)); x = bp(R.normal(0, 1, n(T)), .995, .2) * (t(T) / T) ** 2 + .3 * np.sin(2 * np.pi * np.cumsum(220 * 2 ** (t(T) / T)) / SR) * (t(T) / T) ** 2
+x[-n(.004):] *= np.linspace(1, 0, n(.004)); save("rise", x)
+# impact: sub drop + noise burst
+x = np.sin(2 * np.pi * np.cumsum(40 + 80 * np.exp(-t(1.5) * 6)) / SR) * env(n(1.5), .002, .45) + .6 * hp(R.normal(0, 1, n(1.5)), .7) * env(n(1.5), .001, .03); save("impact", x)
+# pageturn: paper flip
+x = bp(R.normal(0, 1, n(.5)), .99, .3) * np.sin(np.pi * np.clip(t(.5) / .5, 0, 1)) ** 3 * (1 + .5 * np.sin(2 * np.pi * 13 * t(.5))); save("pageturn", x)
+# room tone beds (20 s loops): quiet room and office hum
+x = lp(R.normal(0, 1, n(20)), .97) * .6 + .05 * np.sin(2 * np.pi * 50 * t(20)); save("room_quiet", x)
+x = lp(R.normal(0, 1, n(20)), .9) * .4 + .08 * (np.sin(2 * np.pi * 100 * t(20)) + .5 * np.sin(2 * np.pi * 150 * t(20))); save("room_office", x)
+print("OK sfx: pop marker tape paperslide stamp flick swipe typewriter ding buzz cash coindrop shutter rise impact pageturn room_quiet room_office")

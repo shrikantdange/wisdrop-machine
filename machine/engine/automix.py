@@ -11,7 +11,10 @@ import numpy as np
 HERE = os.path.dirname(os.path.abspath(__file__)); REPO = os.path.dirname(os.path.dirname(HERE)); KIT = os.path.join(REPO, "kit")
 SR = 48000
 DEFAULT_MUSIC = ["Spy Glass", "Investigations", "Investigations", "Hitman", "Spy Glass", "Investigations"]
-HITS = {"stat": ("tick", 12, .3), "headline": ("paper", 12, .9), "card": ("paper", 12, .9), "chapter": ("darkhit", 8, 1.4),
+HITS = {"map": ("swipe", 13, .7), "phone": ("buzz", 14, .9), "pair": ("swipe", 15, .7), "trio": ("swipe", 15, .7), "wall": ("swipe", 15, .7),
+        "polaroids": ("pageturn", 13, .5), "split": ("swipe", 12, .7), "magnify": ("swipe", 14, .7), "money": ("swipe", 14, .7),
+        "scrub": ("swipe", 14, .7), "barrace": ("tick", 12, .3), "stamp": ("pageturn", 16, .5), "coin": ("coindrop", 13, 1.1),
+        "stat": ("tick", 12, .3), "headline": ("pageturn", 12, .5), "card": ("pageturn", 12, .5), "chapter": ("impact", 9, 1.5),
         "name": ("swoosh", 12, .8), "timeline": ("swoosh", 13, .8), "bars": ("tick", 12, .3), "end": ("subdrop", 9, 1.2),
         "scene": ("paperslide", 14, .6), "photo": ("paperslide", 14, .6), "list": ("flick", 13, .2), "flow": ("flick", 13, .2)}
 
@@ -68,22 +71,62 @@ def main(ep, work):
         if len(a) < 10: return
         a = a * 10 ** ((VO_PK - under - 20 * np.log10(np.abs(a).max() + 1e-9)) / 20); t -= np.argmax(np.abs(a).mean(1)) / SR
         put(fx, max(0, t), fade(a, .005, .3))
+    last = {}
+    def hit2(n, t, under, dur):          # S5: same sound never stacked closer than 0.12 s
+        if t - last.get(n, -9) < .12: return
+        last[n] = t; hit(n, t, under, dur)
     for k, s in enumerate(shots):
+        t0, typ = times[k], s["type"]
+        if s.get("quiet"): continue
+        if typ == "phone":
+            st_, n_ = s.get("step", .9), len(s.get("messages", [])) or len(s.get("notes", [])) or len(s.get("rows", []))
+            for j in range(min(n_, 8)):
+                tj = t0 + s.get("first", .5) + j * st_
+                if tj < times[k + 1] - .1: hit2("ding" if s.get("app") in ("sms", "group", "whatsapp", "notify", "inbox") else "tick", tj, 15 if s.get("app") != "live" else 20, .6)
+            if s.get("app") == "notify": hit2("buzz", t0 + s.get("first", .5), 13, .9)
+        if typ in ("pair", "trio", "wall", "polaroids"):
+            for j in range(len(s.get("photos", []))): hit2("shutter", t0 + j * s.get("step", .45) + .05, 14, .25); hit2("tape", t0 + j * s.get("step", .45) + .4, 17, .3)
+        if typ == "map":
+            for j, p in enumerate(s.get("pins", [])): hit2("pop", t0 + p.get("t", .2 + j * .6), 15, .2)
+            if s.get("pins") and (s.get("flight") or s.get("route")): hit2("marker", t0 + s.get("route_at", .5), 17, .4)
+        if typ == "money":
+            for j, fl in enumerate(s.get("flows", [])): hit2("coindrop", t0 + 1.1 + j * .5, 15, .8)
+            if s.get("counter"): hit2("cash", t0 + s["counter"].get("t", .8) + 1.6, 13, 1.0)
+        if typ == "stamp": hit2("stamp", t0 + s.get("at_s", .3), 8, .4); hit2("impact", t0 + s.get("at_s", .3), 12, 1.2)
+        if typ == "chapter": hit("rise", t0 - 2.0, 16, 2.0)          # riser ends exactly on the chapter card (J-cut)
+        if typ == "card" and s.get("kind") in ("doc", "filing", "email"): hit2("typewriter", t0 + .8, 18, 1.0)
+        for j, m in enumerate(s.get("marks", [])):
+            tm = t0 + m.get("t", .9 + j * .8)
+            if tm >= times[k + 1] - .05: continue
+            hit2({"circle": "marker", "underline": "marker", "arrow": "swipe", "sticker": "pop", "emoji": "pop"}.get(m.get("k", "circle"), "pop"), tm, 15, .4)
+        for j, _ in enumerate(s.get("stickers", [])): hit2("pop", t0 + .7 + j * .6, 16, .2)
         if s["type"] in HITS and not s.get("quiet"):
             n, under, dur = HITS[s["type"]]; hit(n, times[k] + .06, under, dur)
         if s["type"] in ("scene", "photo") and not s.get("bleed") and not s.get("quiet"): hit("tape", times[k] + .45, 16, .3)
         if s["type"] == "kinetic":
             hl = {w.upper().strip(".,!?") for w in s.get("hl", "").split()}
+            stp = {w.upper() for w in s.get("stamp", [])}
             for j, w in enumerate(s["text"].split()):
                 tw = times[k] + j * s.get("step", .28)
                 if tw >= times[k + 1] - .05: break
-                hit("marker" if w.upper().strip(".,!?") in hl else "pop", tw, 12 if w.upper().strip(".,!?") in hl else 17, .4)
+                b = w.upper().strip(".,!?")
+                hit2("stamp" if b in stp or w.upper() in stp else "marker" if b in hl else "pop", tw, 10 if b in stp else 12 if b in hl else 17, .4)
         for x in s.get("sfx", []): hit(x["n"], times[k] + x.get("off", 0), x.get("under", 10), x.get("dur", 1.2))
+    # QC (S4/S7): voice must sit above music while speaking
+    def rms(a): return 20 * np.log10(np.sqrt(np.mean(a ** 2)) + 1e-9)
+    margin = rms(vo[act]) - rms(mus[act]) if act.any() else 99
     mix = vo + mus + fx
     pcm = (np.clip(mix / max(1, np.abs(mix).max() / .95), -1, 1) * 32767).astype(np.int16)
     raw = os.path.join(work, "mix_raw.wav")
     with wave.open(raw, "wb") as w: w.setnchannels(2); w.setsampwidth(2); w.setframerate(SR); w.writeframes(pcm.tobytes())
     subprocess.run([sys.executable, os.path.join(HERE, "master.py"), raw, os.path.join(work, "mix.wav")], check=True)
+    r = subprocess.run(["ffmpeg", "-hide_banner", "-nostats", "-i", os.path.join(work, "mix.wav"), "-af", "ebur128=peak=true", "-f", "null", "-"], capture_output=True, text=True).stderr
+    import re as _re
+    I = float(_re.findall(r"I:\s+(-?[\d.]+) LUFS", r)[-1]); TP = float(_re.findall(r"Peak:\s+(-?[\d.]+) dBFS", r)[-1])
+    qc = {"lufs": I, "true_peak": TP, "voice_over_music_db": round(float(margin), 1),
+          "ok": bool(abs(I + 14) <= 1.0 and TP <= -1.0 and margin >= 10)}
+    json.dump(qc, open(os.path.join(work, "audio_qc.json"), "w"))
+    print(("OK" if qc["ok"] else "FAIL") + f" audio: {I} LUFS (target -14), true peak {TP} dBTP (max -1), voice {margin:.1f} dB over music (min 10)")
     print("OK mix", round(DUR, 1), "s")
 
 

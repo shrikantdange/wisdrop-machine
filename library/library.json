@@ -85,7 +85,7 @@
   "kitchen": {
    "seed": 51,
    "base": "Small modest family kitchen: a round wooden table with two chairs, an open laptop, a mug, a stack of plain envelopes, a fridge, a window over the sink showing rooftops.",
-   "bed": ""
+   "bed": "room_quiet"
   },
   "event_stage": {
    "seed": 61,
@@ -95,7 +95,7 @@
   "dev_flat": {
    "seed": 71,
    "base": "Cluttered one-room flat of a software developer: a desk with three blank monitors, stacks of books, a whiteboard with only scribbled lines, a desk lamp, a window.",
-   "bed": ""
+   "bed": "room_quiet"
   },
   "airport_hall": {
    "seed": 41,

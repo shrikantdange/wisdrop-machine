@@ -1,1 +1,1 @@
-pop marker tape paperslide stamp flick: made by Wisdrop with code (tools/synth_sfx.py), CC0
+pop marker tape paperslide stamp flick swipe typewriter ding buzz cash coindrop shutter rise impact pageturn room_quiet room_office: made by Wisdrop with code (tools/synth_sfx.py), CC0
