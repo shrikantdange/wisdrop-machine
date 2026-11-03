@@ -83,6 +83,14 @@ jobs:
             out/*/cost.json
             out/*/audio_qc.json
           retention-days: 14
+      - name: Test runs only - push a small preview to branch preview (one commit, overwritten each test)
+        if: env.TEST == 'true'
+        run: |
+          N=$(basename "$EP"); mkdir -p /tmp/pv && cd /tmp/pv
+          ffmpeg -v error -y -i "$GITHUB_WORKSPACE/out/$N/video.mp4" -c:v libx264 -crf 23 -preset veryfast -c:a aac -b:a 160k preview.mp4
+          cp $GITHUB_WORKSPACE/out/$N/package/thumb* $GITHUB_WORKSPACE/out/$N/cost.json $GITHUB_WORKSPACE/out/$N/audio_qc.json . 2>/dev/null || true
+          git init -q -b preview && git add -A && git -c user.name=wisdrop-bot -c user.email=bot@users.noreply.github.com commit -qm "$N test preview, run ${{ github.run_id }}"
+          git push -qf "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" preview
       - name: Save state + open the owner's final review PR
         if: env.TEST != 'true'
         env: {GH_TOKEN: "${{ github.token }}"}
