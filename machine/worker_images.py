@@ -199,7 +199,7 @@ def images(job: str, force: str = ""):
     blobs = read_assets.remote(want)
     for path, b in blobs.items():
         im = Image.open(io.BytesIO(b))
-        name = pathlib.Path(path).name.split("__")[0] + ("_cut" if path.endswith("__cut.png") else "")
+        stem = pathlib.Path(path).name.replace("__cut.png", ".png"); name = stem.rsplit("__", 1)[0] + ("_cut" if path.endswith("__cut.png") else "")
         if im.mode == "RGBA":
             bg = Image.new("RGB", im.size, (128, 128, 128)); bg.paste(im, mask=im.getchannel("A")); im = bg
         im.convert("RGB").save(od / f"{name}.jpg", quality=88)
