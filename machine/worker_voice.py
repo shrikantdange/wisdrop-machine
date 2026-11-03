@@ -82,12 +82,15 @@ def run_lines(lines: list, ref_wav: bytes, takes: int = 2) -> list:
     def norm(s):
         s = s.lower().replace("-", " ").replace("%", " percent").replace("$", " dollars ")
         s = re.sub(r"(\d+)(st|nd|rd|th)\b", lambda g: num2words(int(g.group(1)), to="ordinal"), s)
+        s = re.sub(r"\b(19|20)\d\d\b", lambda g: num2words(int(g.group(0)), to="year"), s)
         s = re.sub(r"\d[\d,]*", lambda g: num2words(int(g.group(0).replace(",", ""))), s)
         s = s.replace("f.b.i.", "fbi"); s = re.sub(r"[^a-z' ]", " ", s).replace("'s", "s")
         return s.split()
 
     def wer(a, b):
-        r, h = norm(a), norm(b); d = list(range(len(h) + 1))
+        """character error rate on letters only (spaces and 'and' dropped), so 'OneCoin' = 'one coin'
+        and 'twenty-fifth' ~ '25'. Name kept as wer for the cache/QC fields."""
+        r = "".join(w for w in norm(a) if w != "and"); h = "".join(w for w in norm(b) if w != "and"); d = list(range(len(h) + 1))
         for i in range(1, len(r) + 1):
             p = d[:]; d[0] = i
             for j in range(1, len(h) + 1):

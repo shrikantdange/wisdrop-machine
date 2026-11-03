@@ -36,6 +36,10 @@ def plate_of(st, tm):
         m = MAN.get(k); p = os.path.join(ASSETS, m["asset"]) if m else ""
         _pc[k] = Image.open(p).convert("RGB").resize((W, H), Image.LANCZOS) if p and os.path.exists(p) else _placeholder(k, (W, H))
     return _pc[k]
+def shot_img(k):
+    if k not in _pc:
+        _pc[k] = Image.open(os.path.join(ASSETS, MAN[k]["asset"])).convert("RGB").resize((W, H), Image.LANCZOS)
+    return _pc[k]
 def cut_of(who, pose, hfrac, tm):
     k = (who, pose, round(hfrac, 3), tm)
     if k not in _cc:
@@ -88,10 +92,14 @@ def highlight_lines(cd, lines, f, x0, y0, lh, hl, t, t0=.7, ink=(24, 24, 30)):
 # ---------------- shot types ----------------
 def s_scene(s, t, d):
     st, tm = s.get("set", "board"), s.get("time", "night")
-    fr = board() if st == "board" else plate_of(st, tm).copy()
+    cast = s.get("cast", [])
+    shot = "shot_" + st + "__" + tm + "__" + "+".join(f"{c['who']}-{c.get('pose', 'front_neutral')}" for c in cast[:2]) if cast else ""
+    composed = bool(shot) and shot in MAN and s.get("compose", True)
+    fr = board() if st == "board" else (shot_img(shot) if composed else plate_of(st, tm)).copy()
+    if composed: cast = []           # the cast is already painted into the picture
     for L in s.get("light", []):     # [x, y, r] in 0-1 frame units: warm lamp that breathes
         fr = glow(fr, int(L[0] * W), int(L[1] * H), int(L[2] * W), (255, 205, 130), .14 + .03 * math.sin(t * 1.9 + L[0] * 7))
-    for k, c in enumerate(s.get("cast", [])):
+    for k, c in enumerate(cast):
         sp = cut_of(c["who"], c.get("pose", "front_neutral"), c.get("h", LIB["cast"].get(c["who"], {}).get("h", .84)), tm)
         if c.get("flip"): sp = sp.transpose(Image.FLIP_LEFT_RIGHT)
         u = ease(t / max(d, .1)); par = {"pan_l": -1, "pan_r": 1}.get(s.get("move"), 0) * 26 * u

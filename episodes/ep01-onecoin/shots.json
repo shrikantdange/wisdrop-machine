@@ -16,33 +16,21 @@
    "move": "push",
    "fx": [
     "dust"
-   ],
-   "overlay": [
-    {
-     "text": "SOFIA  >  ATHENS",
-     "x": 0.6,
-     "y": 0.22,
-     "size": 34,
-     "color": "amber"
-    },
-    {
-     "text": "25 OCT 2017",
-     "x": 0.6,
-     "y": 0.27,
-     "size": 30,
-     "color": "paper"
-    }
    ]
   },
   {
    "at": 1,
-   "type": "scene",
-   "set": "airport_hall",
-   "time": "dawn",
-   "move": "hold",
-   "fx": [
-    "dim"
+   "type": "card",
+   "kind": "doc",
+   "header": "DEPARTURES",
+   "date": "25 OCT 2017",
+   "lines": [
+    "SOFIA  >  ATHENS",
+    "DEPARTED"
    ],
+   "highlight": "SOFIA  >  ATHENS",
+   "source": "FBI.GOV",
+   "recreated": true,
    "sfx": [
     {
      "n": "subdrop",
@@ -155,16 +143,6 @@
      "pose": "envelope",
      "x": 0.4,
      "h": 0.95
-    }
-   ],
-   "overlay": [
-    {
-     "text": "UNI",
-     "x": 0.47,
-     "y": 0.52,
-     "size": 28,
-     "color": "red",
-     "t": 0.3
     }
    ],
    "sfx": [

@@ -43,7 +43,7 @@ qc_image = (modal.Image.debian_slim(python_version="3.11")
             .pip_install("torch==2.6.0", "torchvision==0.21.0", index_url="https://download.pytorch.org/whl/cpu")
             .pip_install("rapidocr_onnxruntime==1.4.4", "pillow")
             .env({"TORCH_HOME": "/weights/torch"}))
-MAX_QC_ROUNDS = 2      # a plate that keeps failing is flagged for a human look, never looped forever
+MAX_QC_ROUNDS = 1      # a plate that keeps failing is flagged for a human look, never looped forever
 
 NO_PEOPLE = " The place is completely empty: no people, no figures, no silhouettes, no reflections of people."
 NO_TEXT = " Every surface is blank: no writing, no letters, no numbers, no signs, no labels, no screens with text."
@@ -199,7 +199,7 @@ def cutouts(pairs: list) -> list:
     """pairs: [src_asset, dst_asset]. Transparent character cutouts, CPU only."""
     from rembg import new_session, remove
     from PIL import Image
-    s = new_session("isnet-general-use"); done = []
+    s = new_session("birefnet-general"); done = []
     for src, dst in pairs:
         im = Image.open("/assets/" + src).convert("RGB")
         cut = remove(im, session=s, alpha_matting=True)

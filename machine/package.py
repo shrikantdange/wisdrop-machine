@@ -77,12 +77,14 @@ def main(ep, tl_p, assets, out):
     def load(rel, rgba=False):
         p = os.path.join(assets, rel) if rel else ""
         return Image.open(p).convert("RGBA" if rgba else "RGB") if p and os.path.exists(p) else None
-    bg = load(man.get(f"set_{scene['set']}__{scene.get('time', 'night')}", {}).get("asset")) if scene else None
+    shot = ("shot_" + scene["set"] + "__" + scene.get("time", "night") + "__" + "+".join(f"{c['who']}-{c.get('pose', 'front_neutral')}" for c in scene.get("cast", [])[:2])) if scene and scene.get("cast") else ""
+    bg = load(man.get(shot, {}).get("asset")) if shot in man else load(man.get(f"set_{scene['set']}__{scene.get('time', 'night')}", {}).get("asset")) if scene else None
     who = ({"who": th["who"], "pose": th.get("pose", "front_neutral")} if th and th.get("who") else
            (scene.get("cast") or [None])[0] if scene else None)
     cut = load(man.get(f"char_{who['who']}__{who.get('pose', 'front_neutral')}", {}).get("cut"), True) if who else None
     tA = (thumbs[0] if thumbs else pick.split()[1] if pick else "").split() or ["WISDROP"]
     tB = (thumbs[1] if len(thumbs) > 1 else "NO COIN").split()
+    if shot in man: cut = None       # the character is already in the composed picture
     thumb(bg, cut, [" ".join(tA)], " ".join(tA), os.path.join(out, "thumb_A.jpg"))
     thumb(None, None, [" ".join(tB[:-1]) or tB[0], tB[-1]], tB[-1], os.path.join(out, "thumb_B.jpg"))
     print(f"OK packaged: title '{pick}', {len(srcs)} sources, {len(ch)} chapters, 2 thumbnails")

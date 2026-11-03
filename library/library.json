@@ -3,7 +3,8 @@
  "templates": {
   "master": "Character model sheet of ONE fictional person: {look} Full body, standing, front view, arms relaxed at the sides. Background is a perfectly plain flat mid-grey with nothing on it: no wall texture, no floor line, no lamp, no cast shadow. Even soft front light, whole figure visible with margin on all sides.",
   "pose": "The same person from the reference image, identical face, hair, glasses, body and identical clothes and colours. Now {pose}. Keep exactly the same illustration style, ink outlines and colours. Plain flat mid-grey background, no floor, no cast shadow, no lamp, no props except those named, full body visible with margin.",
-  "set": "Lit by {light}. {base} Open clear floor area in the foreground."
+  "set": "Lit by {light}. {base} Open clear floor area in the foreground.",
+  "compose": "Image 1 is the scene. Paint into it {acts}. Keep image 1's room, camera, composition, colours, grain and illustration style exactly. Each person keeps the identical face, hair, glasses, clothes and colours from their reference image, at realistic scale for the room, lit by the scene's own light with matching shadows on the floor. No extra people, no text."
  },
  "time_light": {
   "dawn": "pale cold dawn, navy sky warming to a thin amber horizon, long soft shadows",

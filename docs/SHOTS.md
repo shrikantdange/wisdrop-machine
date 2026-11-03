@@ -34,3 +34,11 @@ every episode has the same visual language.
 Rules: real people are never a `cast` member (use name/card/headline). A new set, cast member or
 pose must be added to library/library.json first; `machine/plan_images.py` refuses unknown ones.
 Colours: red, gold, amber, paper, grey, green, white. Words on screen are always drawn by code.
+
+## Quality rules (v1.1)
+- A `scene` with `cast` is COMPOSED by the image model: the character is painted into the set with the
+  set's own light and shadows (Qwen-Image-Edit-2509, refs = set plate + character master). No paste-on
+  cutouts in story shots. Use `"compose": false` only for a character entering/moving (`enter`).
+- Never put `overlay` code text on a generated picture (it will not line up). Put words on board shots:
+  card, headline, stat, screen, list.
+- Reuse beats variety: the same set+time+cast+pose makes the same picture for free (cache).

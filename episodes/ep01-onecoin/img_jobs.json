@@ -13,72 +13,72 @@
   "name": "set_airport_hall__dawn",
   "lib": "sets/airport_hall",
   "seed": 41,
-  "prompt": "TIME/LIGHT: pale cold dawn, navy sky warming to a thin amber horizon, long soft shadows. Wide shot of an empty airport departure hall: huge windows onto a runway, rows of empty seats, a large blank departure board panel, polished reflective floor, one lonely rolling suitcase. Clear empty floor space where a person could stand later."
+  "prompt": "Lit by pale cold dawn, navy sky warming to a thin amber horizon, long soft shadows. Wide shot of an empty airport departure hall: huge windows onto a runway, rows of empty seats, a large blank departure board panel, polished reflective floor, one lonely rolling suitcase. Open clear floor area in the foreground."
  },
  {
   "name": "set_kitchen__night",
   "lib": "sets/kitchen",
   "seed": 51,
-  "prompt": "TIME/LIGHT: late night, deep navy shadows, one warm lamp as the only strong light. Small modest family kitchen: a round wooden table with two chairs, an open laptop, a mug, a stack of plain envelopes, a fridge, a window over the sink showing rooftops. Clear empty floor space where a person could stand later."
+  "prompt": "Lit by late night, deep navy shadows, one warm lamp as the only strong light. Small modest family kitchen: a round wooden table with two chairs, an open laptop, a mug, a stack of plain envelopes, a fridge, a window over the sink showing rooftops. Open clear floor area in the foreground."
  },
  {
   "name": "set_tailor_shop__afternoon",
   "lib": "sets/tailor_shop",
   "seed": 31,
-  "prompt": "TIME/LIGHT: sunny late afternoon, warm amber light raking across, crisp shadows. Wide interior of a small neighbourhood tailoring shop seen from inside: wooden front counter with one sewing machine under a hanging lamp, a dress form wearing a half-finished white wedding dress, rolls of fabric on shelves, a small old TV on a shelf, a large shop window onto a quiet street with one street lamp. Clear empty floor space where a person could stand later."
+  "prompt": "Lit by sunny late afternoon, warm amber light raking across, crisp shadows. Wide interior of a small neighbourhood tailoring shop seen from inside: wooden front counter with one sewing machine under a hanging lamp, a dress form wearing a half-finished white wedding dress, rolls of fabric on shelves, a small old TV on a shelf, a large shop window onto a quiet street with one street lamp. Open clear floor area in the foreground."
  },
  {
   "name": "set_tailor_shop__morning",
   "lib": "sets/tailor_shop",
   "seed": 31,
-  "prompt": "TIME/LIGHT: warm low morning sun through the window, soft gold light pools, cool shadows. Wide interior of a small neighbourhood tailoring shop seen from inside: wooden front counter with one sewing machine under a hanging lamp, a dress form wearing a half-finished white wedding dress, rolls of fabric on shelves, a small old TV on a shelf, a large shop window onto a quiet street with one street lamp. Clear empty floor space where a person could stand later."
+  "prompt": "Lit by warm low morning sun through the window, soft gold light pools, cool shadows. Wide interior of a small neighbourhood tailoring shop seen from inside: wooden front counter with one sewing machine under a hanging lamp, a dress form wearing a half-finished white wedding dress, rolls of fabric on shelves, a small old TV on a shelf, a large shop window onto a quiet street with one street lamp. Open clear floor area in the foreground."
  },
  {
-  "name": "char_rosa__envelope",
-  "lib": "cast/rosa",
+  "name": "shot_tailor_shop__afternoon__rosa-thinking",
+  "lib": "shots/tailor_shop",
   "mode": "edit",
+  "seed": 38,
+  "people": true,
   "refs_from": [
+   "set_tailor_shop__afternoon",
    "char_rosa__master"
   ],
-  "seed": 22,
-  "people": true,
-  "cutout": true,
-  "prompt": "The same person from the reference image, identical face, hair, glasses, body and identical clothes and colours. Now standing three-quarter view facing right, slipping banknotes into a plain envelope, careful. Keep exactly the same illustration style, ink outlines and colours. Plain flat mid-grey background, no floor, no cast shadow, no lamp, no props except those named, full body visible with margin."
+  "prompt": "Image 1 is the scene. Paint into it the person from image 2 on the left of the frame, standing three-quarter view, one hand at her chin, thinking. Keep image 1's room, camera, composition, colours, grain and illustration style exactly. Each person keeps the identical face, hair, glasses, clothes and colours from their reference image, at realistic scale for the room, lit by the scene's own light with matching shadows on the floor. No extra people, no text."
  },
  {
-  "name": "char_rosa__sewing",
-  "lib": "cast/rosa",
+  "name": "shot_tailor_shop__afternoon__rosa-three_quarter_right",
+  "lib": "shots/tailor_shop",
   "mode": "edit",
+  "seed": 38,
+  "people": true,
   "refs_from": [
+   "set_tailor_shop__afternoon",
    "char_rosa__master"
   ],
-  "seed": 22,
-  "people": true,
-  "cutout": true,
-  "prompt": "The same person from the reference image, identical face, hair, glasses, body and identical clothes and colours. Now seated on an invisible stool facing right, leaning forward, hands forward guiding fabric as if at a sewing machine (no machine drawn). Keep exactly the same illustration style, ink outlines and colours. Plain flat mid-grey background, no floor, no cast shadow, no lamp, no props except those named, full body visible with margin."
+  "prompt": "Image 1 is the scene. Paint into it the person from image 2 on the left of the frame, standing in three-quarter view facing right, calm. Keep image 1's room, camera, composition, colours, grain and illustration style exactly. Each person keeps the identical face, hair, glasses, clothes and colours from their reference image, at realistic scale for the room, lit by the scene's own light with matching shadows on the floor. No extra people, no text."
  },
  {
-  "name": "char_rosa__thinking",
-  "lib": "cast/rosa",
+  "name": "shot_tailor_shop__morning__rosa-envelope",
+  "lib": "shots/tailor_shop",
   "mode": "edit",
+  "seed": 38,
+  "people": true,
   "refs_from": [
+   "set_tailor_shop__morning",
    "char_rosa__master"
   ],
-  "seed": 22,
-  "people": true,
-  "cutout": true,
-  "prompt": "The same person from the reference image, identical face, hair, glasses, body and identical clothes and colours. Now standing three-quarter view, one hand at her chin, thinking. Keep exactly the same illustration style, ink outlines and colours. Plain flat mid-grey background, no floor, no cast shadow, no lamp, no props except those named, full body visible with margin."
+  "prompt": "Image 1 is the scene. Paint into it the person from image 2 in the middle of the frame, standing three-quarter view facing right, slipping banknotes into a plain envelope, careful. Keep image 1's room, camera, composition, colours, grain and illustration style exactly. Each person keeps the identical face, hair, glasses, clothes and colours from their reference image, at realistic scale for the room, lit by the scene's own light with matching shadows on the floor. No extra people, no text."
  },
  {
-  "name": "char_rosa__three_quarter_right",
-  "lib": "cast/rosa",
+  "name": "shot_tailor_shop__morning__rosa-sewing",
+  "lib": "shots/tailor_shop",
   "mode": "edit",
+  "seed": 38,
+  "people": true,
   "refs_from": [
+   "set_tailor_shop__morning",
    "char_rosa__master"
   ],
-  "seed": 22,
-  "people": true,
-  "cutout": true,
-  "prompt": "The same person from the reference image, identical face, hair, glasses, body and identical clothes and colours. Now standing in three-quarter view facing right, calm. Keep exactly the same illustration style, ink outlines and colours. Plain flat mid-grey background, no floor, no cast shadow, no lamp, no props except those named, full body visible with margin."
+  "prompt": "Image 1 is the scene. Paint into it the person from image 2 on the left of the frame, seated on a stool facing right, leaning forward, hands forward guiding fabric as if at a sewing machine at the sewing machine. Keep image 1's room, camera, composition, colours, grain and illustration style exactly. Each person keeps the identical face, hair, glasses, clothes and colours from their reference image, at realistic scale for the room, lit by the scene's own light with matching shadows on the floor. No extra people, no text."
  }
 ]
