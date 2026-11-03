@@ -62,3 +62,48 @@ New shot types:
   with optional `label` sticker.
 Sounds: every scene/photo gets a paper slide + tape, kinetic words get pops, highlighter gets a
 marker squeak, lists/flows get flicks. All synthesised by tools/synth_sfx.py (CC0, ours).
+
+## v3 look (default from 2026-11-03; library.json "look": "v3")
+Board colour rotates per part (cold open navy, then off-white, sky blue, charcoal...), faint grid and
+paper grain on every board, so the screen is never empty. Any shot may add:
+- `marks`: `[{"k": "circle|arrow|underline|sticker|emoji", "t": seconds, ...}]` circle {x0,y0,x1,y1},
+  arrow {x0,y0,x1,y1}, underline {x0,x1,y}, sticker {text,x,y,size}, emoji {code (OpenMoji hex), x,y,size}.
+  Coordinates 0-1 of the frame; keep y <= 0.78 (captions live below).
+- `stickers`: `["word", ...]` pop-in labels around a picture. `label`: one sticker.
+- `counter_to`: value for the episode money counter (shots.json top level `"counter": {label, prefix, suffix, decimals}`).
+The renderer adds a small camera punch-in when a shot would otherwise hold still > 2.5 s.
+
+| type | fields |
+|---|---|
+| phone | app: sms {title, messages[{text, me, meta}]}, group {title, sub, messages[{from, text, me}]}, notify {notes[{app, title, text, icon, when}]}, bank {title, value, from, prefix, decimals, sub, down, rows[{name, when, amount, icon}]}, ticker {title, sym, values[a,b], points, change, illustrative}, inbox {rows[{from, subject, snippet, when, hl}]}, live {title, banner, viewers, messages[{from, text}]}; plus step, first, x, rot, side (kinetic line beside the phone), label, source |
+| pair / trio / wall / polaroids | photos[{file or q or commons, mood, label, caption}], step, title, circle (index) |
+| split | photos[2], vs (default true) |
+| magnify | file or q, detail [x,y] (0-1 of the photo), zoom, label |
+| map | bbox [lon0, lat0, lon1, lat1], highlight [ISO3], pins[{name, lat, lon, t, dx, dy}], flight or route [[lat,lon],...], route_at, route_s, focus, label, source |
+| money | nodes[{label, icon (Tabler name), x, y, color}], flows[{from, to, label, bend}], counter {value, prefix, suffix, label}, title, source |
+| stamp | text, sub, pre, color, size, rot, at_s, source |
+| scrub | events[{year, label}], from, to, speed, title, source |
+| barrace | items[{label, values[], color}], steps[labels], prefix, suffix, decimals, title, source |
+| kinetic | + stamp: ["WORD"] words that slam in red |
+
+## The 20 templates (copy, then change the words)
+1. **Flight-route hook**: `map` + flight + 2 pins + date label (ep01 line 0).
+2. **Stamp verdict**: `stamp` VANISHED / FRAUD / GUILTY with sub line + source.
+3. **Big number**: `stat` + `counter_to` + underline mark.
+4. **Number sentence**: `kinetic` with `stamp` on the figure + `hl` on the unit.
+5. **Story picture**: `scene` (AI, composite) + label + 2 stickers + emoji mark.
+6. **Document**: `card` doc/filing + highlight + sticker + marker circle.
+7. **Question beat**: `coin` drain or `kinetic` question + emoji mark.
+8. **Part opener**: `chapter` (stamp PART n, title, underline; riser into it).
+9. **Text from a friend**: `phone` sms, 2-3 messages, side line, DRAMATISATION label.
+10. **Group hype**: `phone` group, 4-6 messages from different senders.
+11. **Lock screen**: `phone` notify, 2-3 notifications (buzz + ding each).
+12. **Balance drop**: `phone` bank, value from -> to, rows of withdrawals (sourced numbers).
+13. **Price ticker**: `phone` ticker, line draws, `illustrative` unless real data.
+14. **The webinar**: `phone` live, banner, chat scrolling, side line.
+15. **Inbox**: `phone` inbox, one row highlighted.
+16. **Evidence pair**: `pair` of photos + labels + circle on one.
+17. **Collage wall**: `wall` of 4-6 photos for "everywhere" moments.
+18. **Polaroid memory**: `polaroids` stack with captions.
+19. **Follow the money**: `money` nodes + flows + coins + counter.
+20. **Years fly by**: `scrub` timeline or `barrace` for rankings over time.

@@ -1,95 +1,31 @@
-# WISDROP OPERATOR FILE (read this first, every time)
+# WISDROP OPERATOR FILE (read first, every time) - machine v3
 
-You are the operator of the Wisdrop machine: a faceless YouTube channel, "Money crimes behind the hype".
-One episode = one real financial fraud, scam or bubble, told in 5 parts, 6-20 minutes, editorial flat-vector
-visuals plus code-built evidence cards, one fixed narrator voice.
-
+Faceless YouTube channel "Money crimes behind the hype": one real financial fraud per episode, 5 parts,
+8-12 min, collage-style code graphics + real photos + a few AI pictures, one fixed narrator voice.
 You drive. The machine checks. The owner approves. You never skip a gate.
 
-## 1. Sources of truth (in this order)
-1. `playbook/rules.yaml`: hard rules the checker enforces (owner edits these).
-2. `playbook/WISDROP_PLAYBOOK.md`: creative rules. Wins over everything except rules.yaml.
-3. `playbook/WISDROP_AI_INSTRUCTIONS.md`: how each step is built.
-4. `episodes/<ep>/state.json`: where an episode stands. Never edit it by hand; use `wis`.
+## Read in this order
+1. `playbook/rules.yaml` (hard rules the checker enforces) and `playbook/WISDROP_PLAYBOOK.md` (creative rules).
+2. `docs/OPERATOR_GUIDE.md` (how to run everything; the PDF copy is for the owner).
+3. `docs/SHOTS.md` (every shot type and the 20 templates) and `docs/EDITING_CRAFT.md` (editing rules, cited).
+4. `library/library.json` (cast, sets, look "v3") and `episodes/ep01-onecoin/` (worked example).
 
-## 2. The only command you need
-```
-python machine/wis.py status            # what is where, and who acts next
-python machine/wis.py new <slug> "<title>"
-python machine/wis.py check <ep>        # run rules on the next stage
-python machine/wis.py advance <ep> <state>
-python machine/wis.py voice <ep>        # on the worker; repeat until OK
-python machine/wis.py render <ep>
-python machine/wis.py package <ep>
-```
-Every output line starts with OK, FAIL, WAIT or NEXT. Do what it says. On FAIL, fix the listed items and re-run.
+## Never bend
+- Never draw a real person. Real people appear only as names on cards, documents, headlines.
+- Every number on screen or in narration has a source in research.md (two for key numbers).
+- Owner approves cast + script (PR `gate/<ep>/script`) before any picture or voice, and the final video
+  + thumbnail (FINAL REVIEW PR) before upload. Never approve for the owner.
+- No secrets in files, logs or chat (keys live in GitHub secrets: MODAL_TOKEN_ID, MODAL_TOKEN_SECRET).
+- Frugal Modal spend: test first (`test_lines=0-3`, `preview_seconds=15`), keep `max_gpu_seconds` low,
+  at most 4-6 AI pictures per episode, redo only what failed.
+- Words on screen are drawn by code. Generated pictures never contain text.
+- Never change the voice reference, fonts or the v3 board palette. No logo sting.
 
-## 3. The episode loop
-| State | You do | Who approves |
-|---|---|---|
-| draft -> research_ok | Pick a case (if owner gave none, propose 3 with one line each). Write research.md: timeline, every number with sources, two sources for key numbers. | checker |
-| -> cast_approved | Write cast.md: fictional composite characters and sets only. | **OWNER** (PR merge) |
-| -> script_approved | Write script.md and lines.json (id, text, preset, gap, visual, src). | **OWNER** (PR merge) |
-| -> images_ok | Make plates and cutouts in the house style (see kit/style_ref). | checker |
-| -> voice_ok | `wis voice` until OK. | checker |
-| -> render_ok | Write render.py/mix.py from the engine templates; `wis render`. | checker |
-| -> packaged | 3 titles, 2-3 thumbnails, description with sources, tags. | checker |
-| -> final_approved | Open PR with the video link and package. | **OWNER** (PR merge) |
-| -> released | Upload (scheduled, private until owner flips if the API requires). | - |
+## The loop
+`python machine/wis.py new|status|check|advance` -> research.md -> cast.md + script.md + lines.json ->
+shots.json -> `python machine/craft_check.py <ep>` and `python machine/score_script.py <ep> --hooks`
+must not FAIL -> owner script gate -> workflow **episode** (test, then full) -> FINAL REVIEW PR -> owner.
 
-Owner gates: work on a branch `ep/<ep>-<stage>`, open a pull request titled `[<ep>] approve <gate>`.
-The owner merging it IS the approval. Never merge it yourself.
-
-## 4. Hard don'ts
-- Never draw a real person. Real people appear only as documents, headlines or silhouettes-free text cards.
-- Never invent a number, date, quote or name. No source, no line.
-- Never change kit/voice/ref_michael.wav, fonts, palette or grade. No logo sting.
-- Never publish with edge-tts or any non-commercial voice.
-- Never run two heavy jobs (voice, whisper, render) at once on one worker.
-- Never put a password, token or key in any file. Keys live in GitHub Secrets / the worker's env and are referred to by name:
-  `HF_TOKEN`, `MODAL_TOKEN_ID`, `MODAL_TOKEN_SECRET`, `YOUTUBE_CLIENT` (later).
-
-## 5. When something breaks
-1. Read the last 40 lines of the step's log (`vo_run.log`, `render.log`, `qa/check_*.json`).
-2. Fix the smallest thing that explains the error. Re-run that step only; every step resumes.
-3. Same error 3 times: stop, open an issue titled `[blocked] <ep> <step>` with the log tail and what you tried, and tell the owner in one sentence.
-
-## 6. Workers
-- Primary: Modal (GPU, free monthly credits). Fallback: owner's Mac mini M4 (16 GB). Last resort: any Linux box with 8 GB+.
-- Setup for a worker: `docs/WORKER_SETUP.md`.
-
-## 7. Done means
-Owner merged the final PR, the video is uploaded with title, thumbnail, description, tags, and state.json says `released`.
-
-## Image style (owner lock, 2026-11-03)
-- Style = kit/style_prompt.txt (technique is fixed; palette follows the scene). References: kit/style_ref/owner_ref_*.jpg.
-- Every image prompt MUST state the scene's TIME/LIGHT (e.g. "overcast morning", "night, one street lamp", "sunny afternoon"). Not every scene is night.
-
-## Library-first and frugal (owner rule, 2026-11-03)
-- Read library/LIBRARY.md and docs/COST_PLAN.md before making any picture or sound.
-- Reuse before you make: cast from the repertory, use existing sets and their time
-  variants, draw evidence in code. Make only what library/library.json lacks, then add it there.
-- Never re-run a whole batch to fix one item. Images: `force=<names>`. Voice: `redo=<line ids>`.
-  Everything else is cached by hash and costs nothing to re-run.
-- GPU only for images (A100-80GB, Lightning 8-step) and voice (T4). Render, motion, mix,
-  master, cutouts: Modal CPU. Outputs live in volume wisdrop-assets or Actions artifacts,
-  never committed.
-- Workflows: images.yml (job, fetch_weights, force), voice.yml (ep, only, takes, redo),
-  render.yml (ep).
-
-## ONE-COMMAND RUN (v1.1) - full guide: docs/OPERATOR_GUIDE.md
-Any AI with access to this repo can produce an episode. The whole job:
-1. `python machine/wis.py new <slug> "<title>"` -> write research.md, cast.md, script.md, lines.json
-   (rules: WISDROP_PLAYBOOK.md + playbook/rules.yaml; `wis check <ep>` must pass).
-2. Write shots.json (docs/SHOTS.md). Add any new cast/pose/set to library/library.json first.
-   `python machine/plan_images.py <ep>` must print OK.
-3. Owner gate: push branch `gate/<ep-folder>/script` with the files and open a PR. The owner
-   merging it approves cast + script (workflow gates.yml). Never self-approve.
-4. Run workflow **episode** with `ep=episodes/<ep-folder>`. It plans pictures, makes only the
-   missing ones (with a free CPU check for stray people/text), voices only new lines, assembles,
-   renders on parallel CPUs, mixes, masters, packages, and opens the FINAL REVIEW PR.
-   Test first: `test_lines=0-15` renders a short preview without touching state.
-5. Fixes cost only the fix: `redo_images=<names>`, `redo_lines=<ids>`, edit shots.json and re-run.
-6. Owner merges the FINAL REVIEW PR = final approval. Upload is manual in v1 (package has title,
-   description, tags, two thumbnails).
-Read the run log: every step prints PLAN / OK / WAIT / FAIL / QC-FAIL / REVIEW lines.
+## Logs
+Every tool prints PLAN / OK / WAIT / FAIL / REVIEW / COST lines. FAIL stops the run before money is spent.
+REVIEW is for the owner and never blocks. Same error 3 times: stop, open issue `[blocked] <ep> <step>`.
