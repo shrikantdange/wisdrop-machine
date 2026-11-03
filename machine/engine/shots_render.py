@@ -459,6 +459,7 @@ def render(i):
     fr = finish(fr, i, 0)
     if LOOK == "v3" and s["type"] not in ("chapter", "end"): fr = v3_counter(fr, k, t)
     if story and s["type"] == "scene": fr = tag(fr)
+    if os.environ.get("WIS_NO_CAPTIONS"): return fr
     return bug(caption(fr, t)) if s["type"] not in ("chapter", "end") else fr
 
 if LOOK in ("collage", "v3"):

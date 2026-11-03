@@ -491,5 +491,12 @@
   "SHE VANISHED",
   "$4B GONE",
   "NO COIN"
- ]
+ ],
+ "title_facts": {
+  "case": "OneCoin",
+  "who": "Cryptoqueen",
+  "money": "$4 Billion",
+  "people": "3.5 Million",
+  "_sources": "F04 DOJ SDNY 2023-09-12 + Reuters; 'Cryptoqueen' as used by CNBC 2022-06-30 (F03)"
+ }
 }

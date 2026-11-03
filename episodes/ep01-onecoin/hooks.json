@@ -1,0 +1,53 @@
+[
+ {
+  "name": "A_numbers_first",
+  "src": [
+   "F04",
+   "F04",
+   "F10",
+   "F10",
+   ""
+  ],
+  "lines": [
+   "More than four billion dollars.",
+   "At least three and a half million people.",
+   "And a coin with no real blockchain behind it.",
+   "So how do you sell millions of people a coin that never existed?",
+   "This is the story of OneCoin, told through one saver who believed in it."
+  ]
+ },
+ {
+  "name": "B_flight_question",
+  "src": [
+   "F01",
+   "F01",
+   "F03",
+   "F04",
+   ""
+  ],
+  "lines": [
+   "On October twenty-fifth, twenty seventeen, a woman boarded a flight from Sofia to Athens.",
+   "Where did she go?",
+   "Five years later, she was on the F.B.I.'s Ten Most Wanted list.",
+   "Her company, OneCoin, had taken in more than four billion dollars.",
+   "This is how she did it, and who paid for it."
+  ]
+ },
+ {
+  "name": "C_second_person",
+  "src": [
+   "F10",
+   "F04",
+   "F04",
+   "F01",
+   ""
+  ],
+  "lines": [
+   "What if the coin you bought never existed?",
+   "For at least three and a half million people, that was OneCoin.",
+   "Together they handed over more than four billion dollars.",
+   "Then its founder boarded a flight from Sofia to Athens, and vanished.",
+   "This is how the scam worked, and why so many believed it."
+  ]
+ }
+]
