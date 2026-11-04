@@ -1,0 +1,11 @@
+{
+ "ep": "ep01-onecoin",
+ "status": "success",
+ "test": true,
+ "failed_checks": [],
+ "cost_usd": 0.0027,
+ "gpu_secs": 0,
+ "video": true,
+ "preview_url": "https://github.com/shrikantdange/wisdrop-machine/raw/preview/preview.mp4",
+ "run_url": "https://github.com/shrikantdange/wisdrop-machine/actions/runs/41796431704"
+}

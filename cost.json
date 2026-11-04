@@ -1,0 +1,41 @@
+{
+ "steps": [
+  {
+   "step": "prepare+plan",
+   "secs": 8.7,
+   "gpu": null,
+   "calls": 2,
+   "usd": 0.00015
+  },
+  {
+   "step": "render",
+   "secs": 116.3,
+   "gpu": null,
+   "calls": 1,
+   "usd": 0.00204
+  },
+  {
+   "step": "mix",
+   "secs": 13.3,
+   "gpu": null,
+   "calls": 1,
+   "usd": 0.00029
+  },
+  {
+   "step": "join",
+   "secs": 7.4,
+   "gpu": null,
+   "calls": 1,
+   "usd": 0.00013
+  },
+  {
+   "step": "package",
+   "secs": 4.2,
+   "gpu": null,
+   "calls": 1,
+   "usd": 8e-05
+  }
+ ],
+ "total_usd": 0.0027,
+ "gpu_secs": 0
+}
