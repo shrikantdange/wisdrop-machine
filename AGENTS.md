@@ -22,6 +22,7 @@
 11. When two rules conflict, the simpler option wins.
 12. v5: flat empty area <= 35 % of the frame (`machine/frame_fill.py`); captions = keywords, never repeat on-screen words; people only as faceless code silhouettes tagged ILLUSTRATION.
 13. Director brief: `docs/DIRECTOR_PROMPT.md` = the system prompt for any AI making an episode (stages, file formats, 1-2 min chapters, self-review, when to ask the owner).
+15. Agent chain: `prompts/00_README.md` = 4 standalone prompts (01 research+writer, 02 director, 03 builder, 04 voice+finish), hand-off files, owner gates. `schemas/chapters.schema.json`; `python tools/chapter_lines.py <ep>` = test_lines per chapter.
 14. What can go wrong: `docs/FAILURE_MODES.md` = 134 FM-* rules (symptom, cause, prevention, check). Code-checkable ones: `python machine/fm_check.py <ep>` -> `<ep>/qa/fm.json`.
 Check: `python machine/motion_check.py <ep>` (before spend) and `--video <mp4>` (after render).
 
