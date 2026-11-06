@@ -1,59 +1,80 @@
-# Wisdrop agent chain (4 prompts)
+# Wisdrop agent chain (4 standalone prompts)
 
-Written 2026-11-06. Splits `docs/DIRECTOR_PROMPT.md` + `docs/FAILURE_MODES.md` into four agents.
-Each prompt is standalone: paste it into any AI chat as the system prompt (or first message),
-then paste or attach the input files it asks for. Each agent writes exact files; the next agent
-reads them. If a prompt and a repo doc disagree, the repo doc wins and the agent flags it.
+Version 2, 2026-11-06. Each prompt is now **fully self-contained**: role, inputs and their validation, numbered steps
+with time and token budgets, every rule inlined with its FM id, exact output schemas, a worked example from ep01
+OneCoin, a self-check, the exact owner-gate message, error handling, hand-off and token-saving rules. An agent never
+needs to open another document. The long reference stays in `docs/` (DIRECTOR_PROMPT, FAILURE_MODES, SHOTS,
+AI_MOTION_CRAFT, EDITING_CRAFT, RETENTION, THUMBNAILS, PUBLISH_CHECKLIST); if a prompt and a repo doc ever disagree,
+the repo doc wins and the agent flags it in one line.
+
+## Which file to paste where
+
+| agent | file | paste into | needs | start with |
+|---|---|---|---|---|
+| 1 Research + Writer | `01_research_writer.md` | any AI chat with web browsing (system prompt or first message) | web access | `Start. Episode folder: episodes/<epNN-slug>. Constraints: <...>` |
+| 2 Director | `02_director.md` | any capable AI chat; attach agent 1's files | no tools needed (repo helps for free checks) | `Direct episodes/<ep>.` |
+| 3 Builder | `03_builder.md` | an AI with code execution + the repo + GitHub workflow access (Hark project, Codex, Claude Code, etc.) | repo, gh/GitHub connector | `Build episodes/<ep>, chapter c01 first.` |
+| 4 Voice + Finisher | `04_voice_finish.md` | same as agent 3 | repo, GitHub workflows | `Voice and finish episodes/<ep>.` |
+
+Use a **new chat per agent**. In a plain chat without code, agents 3 and 4 print exact commands and workflow inputs; you
+run them and paste back the JSON results.
 
 ## The chain
 
 ```
-AGENT 1  Research + Writer   ->  topics.md  (OWNER GATE 1: pick topic)
-                             ->  brief.md, research.md, beats.md, bible.md, script.md, lines.json,
-                                 titles.md, package_draft.md          (OWNER GATE 2: approve script)
+AGENT 1  Research + Writer   ->  topics.md                                  OWNER GATE 1: pick the topic
+                             ->  brief.md, research.md, beats.md, bible.md, hooks.md,
+                                 script.md, lines.json, titles.md, package_draft.md
+                                                                            OWNER GATE 2: approve script + cast
+                                                                            (merge PR gate/<ep>/script)
 AGENT 2  Director            ->  chapters.json, chapters.md, scenes.md, shots.json, director_check.md
-AGENT 3  Builder (chapters)  ->  rendered chapter previews + qa/*.json + build_log.md
-                                 (OWNER GATE 3: approve chapter-1 look)
-AGENT 4  Voice + Finisher    ->  vo/ + vo_qc.json, final video.mp4, captions.srt, package/
-                                 (OWNER GATE 4: final video + thumbnail, before ANY upload)
+AGENT 3  Builder             ->  chapter previews (c01 first), qa/*.json, build_log.md
+                                                                            OWNER GATE 3: approve the chapter-1 look
+AGENT 4  Voice + Finisher    ->  voice QC + retakes, full cached run = one film, seams.md,
+                                 mastered video.mp4, captions, package/, thumbnails
+                                                                            OWNER GATE 4: final video + thumbnail +
+                                                                            title + AI disclosure (merge FINAL REVIEW PR)
+OWNER uploads (never an agent)
 ```
 
-All files live in `episodes/<ep>/` (e.g. `episodes/ep02-ftx`). In a chat, "write file X" means:
-print it in one fenced block headed with its file name, so the owner can save it.
+## Hand-off files
 
-## Hand-off files (formats are defined inside the prompt that writes them)
-
-| file | written by | read by | format |
+| file | written by | read by | format defined in |
 |---|---|---|---|
-| topics.md | 1 | owner | scored table, 5-10 rows |
-| brief.md, research.md | 1 | 2, 4 | markdown; research = fact table F01.. with 2 sources per key number |
-| bible.md | 1 | 2, 3, 4 | names, `say` spellings, palette per part, music per part, counter ledger |
-| lines.json | 1 | 2, 3, 4 | list of {id, text, preset, gap, visual, src, say?} |
-| titles.md, package_draft.md | 1 | 4 | 5 titles, description, chapters, tags, thumbnail concepts, credits |
-| chapters.json | 2 | 3, 4 | schema `schemas/chapters.schema.json` |
-| shots.json | 2 | 3 | `docs/SHOTS.md` field reference |
-| scenes.md | 2 | owner, 3 | one row per shot (human sheet) |
-| qa/*.json, build_log.md | 3 | 4 | machine checks + per-chapter result |
-| package/ | 4 | owner | title, description, chapters, captions, credits, thumbnail |
+| topics.md | 1 | owner | 01 section 5 (weighted score /100) |
+| brief.md, research.md | 1 | 2, 4 | 01 sections 6-8 (fact table F01.., two sources per key number) |
+| beats.md, hooks.md | 1 | 2 | 01 sections 9, 11 |
+| bible.md | 1 | 2, 3, 4 | 01 section 10 (names, say spellings, palette, music, counter ledger) |
+| script.md, lines.json | 1 | 2, 3, 4 | 01 section 12 (lines.json schema + ep01 excerpt) |
+| titles.md, package_draft.md | 1 | 4 | 01 section 13 |
+| chapters.json, chapters.md | 2 | 3, 4 | 02 section 8 (schema `schemas/chapters.schema.json`, ep01 example) |
+| scenes.md, shots.json | 2 | 3 | 02 sections 9-10 (field reference + ep01 excerpt) |
+| director_check.md | 2 | 3, owner | 02 section 11 |
+| build_log.md, qa/*.json | 3 | 4 | 03 section 6 |
+| seams.md, package/, captions | 4 | owner | 04 sections 8-9 |
 
-## Owner gates (an agent never passes one for the owner: FM-O01, FM-K10)
-1. Topic pick (agent 1 stops after topics.md).
-2. Script + cast (agent 1 stops after lines.json; repo: PR `gate/<ep>/script`).
-3. Chapter-1 look (agent 3 stops after chapter 1 preview).
-4. Final video + thumbnail + AI-disclosure setting (agent 4 stops; repo: FINAL REVIEW PR). No upload before it.
+## Owner gates (an agent never passes one for you: FM-O01, FM-K10)
 
-## How to run
-**In any AI chat (no repo):** new chat per agent. Paste the prompt file, then the input files.
-Agents 3 and 4 need code execution; in a plain chat they output exact commands/specs and you run them.
+| gate | when | you see | you do |
+|---|---|---|---|
+| 1 topic | after topics.md | top 3 with scores and risks | reply with a row number |
+| 2 script + cast | after lines.json | runtime, hook, title, open items | merge PR `gate/<ep>/script` or send line ids + notes |
+| 3 chapter-1 look | after c01 renders | preview link, checks, cost | approve, or say what to change (cheap now) |
+| 4 final | after the full run | video, thumbnail, title, AI-disclosure recommendation, cost | merge the FINAL REVIEW PR; then upload yourself |
 
-**Via the repo machine:** an AI with the repo reads `docs/REPO_MAP.md` first, then the prompt.
-- Agent 1/2 write files in `episodes/<ep>/` and run free checks:
-  `python machine/fm_check.py <ep>`, `python machine/craft_check.py <ep>`, `python machine/motion_check.py <ep>`.
-- Agent 3 renders one chapter at a time: `python tools/chapter_lines.py <ep>` prints each chapter's
-  `test_lines` range; run workflow `episode` with that range (`max_gpu_seconds` low), read `out/<ep>/summary.json`.
-- Agent 4 runs the full `episode` workflow (cache reuses every passed line and shot), then package.
+## Token cost note
+
+A longer prompt costs a little more input on every turn (about 7-11k tokens per prompt; cached by most providers after
+the first turn). It saves far more: no exploring the repo, no guessing formats, fewer wrong outputs and far fewer redo
+rounds, which are the expensive part (a redo of research or a render costs more than the whole prompt many times over).
 
 ## Never bend (all agents)
-Never draw a real person (FM-L03). Every number sourced, key numbers twice (FM-R01, FM-R02).
-No secrets anywhere (FM-X12). Frugal: free checks first, test small, redo only what changed (FM-X08..X10).
-Absolute dates (2026-11-06), times with zone. Licences CC0/PD/CC BY/CC BY-SA/MIT only (FM-P06).
+
+Never draw a real person (FM-L03). Every number sourced, key numbers twice (FM-R01, FM-R02). No secrets anywhere
+(FM-X12). Frugal: free checks first, test small, redo only what changed (FM-X08, FM-X09, FM-X10). Absolute dates,
+times with zone. Licences CC0 / PD / CC BY / CC BY-SA / MIT only (FM-P06). Owner approves before any upload (FM-K10).
+
+## Files
+
+PDFs for reading: `WISDROP_AGENT_1_RESEARCH_WRITER.pdf`, `WISDROP_AGENT_2_DIRECTOR.pdf`, `WISDROP_AGENT_3_BUILDER.pdf`,
+`WISDROP_AGENT_4_VOICE_FINISH.pdf`, `WISDROP_AGENT_CHAIN_README.pdf`. Paste the `.md` files, not the PDFs.
