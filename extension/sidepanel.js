@@ -1,11 +1,11 @@
 import { PROVIDERS, detectProvider, resolve, originPattern, chat, listModels, testConnection } from './lib/providers.js';
 import * as V from './lib/store.js';
 import { GitHub } from './lib/github.js';
-import { AGENTS, loadSystemPrompt, runLoop, gateReply, epName } from './lib/agent.js';
+import { AGENTS, loadSystemPrompt, runLoop, gateReply, epName, checkEp } from './lib/agent.js';
 
 const $ = id => document.getElementById(id);
 const el = (tag, attrs = {}, ...kids) => { const e = document.createElement(tag); for (const [k, v] of Object.entries(attrs)) { if (k === 'class') e.className = v; else if (k.startsWith('on')) e.addEventListener(k.slice(2), v); else e.setAttribute(k, v); } for (const c of kids) e.append(c instanceof Node ? c : document.createTextNode(String(c))); return e; };
-const ep = () => $('ep').value.trim().replace(/\/+$/, '');
+const ep = () => checkEp($('ep').value);
 const say = (node, text, cls = '') => { node.textContent = V.redact(text); node.className = node.className.replace(/ ?(ok|err)\b/g, '') + (cls ? ' ' + cls : ''); };
 
 // ---------- tabs ----------
@@ -29,7 +29,7 @@ $('unlockBtn').onclick = async () => {
   try { await V.unlock($('unlockPass').value); $('unlockPass').value = ''; $('lockbar').hidden = true; afterUnlock(); }
   catch (e) { $('unlockPass').setAttribute('aria-invalid', 'true'); $('unlockPass').placeholder = e.message; $('unlockPass').value = ''; }
 };
-async function afterUnlock() { $('ghRepo').value = (await V.getLocal('gh_repo')) || $('ghRepo').value; await renderProfiles(); }
+async function afterUnlock() { $('ghRepo').value = (await V.getLocal('gh_repo')) || $('ghRepo').value; await renderProfiles(); if (V.getSecret('github')) restoreSession(); }
 function gh() {
   const t = V.getSecret('github'); if (!t) throw new Error('Add a GitHub token in Keys first');
   return new GitHub(t, $('ghRepo').value.trim());
@@ -129,7 +129,27 @@ function bubble(cls, text) { const m = el('div', { class: `msg ${cls}` }, V.reda
 function logStep(s) { const li = el('li', { class: s.kind }, `${new Date().toLocaleTimeString()} ${s.kind}: ${V.redact(s.text)}`); $('log').append(li); li.scrollIntoView({ block: 'nearest' }); if (s.kind === 'say') bubble('agent', s.text); }
 function setBusy(b) { $('send').disabled = b; $('stop').disabled = !b; }
 function showTokens() { if (session) $('tokens').textContent = `tokens in ${session.tokens.in} · out ${session.tokens.out} / ${$('tokBudget').value}`; $('costTok').textContent = totalTokens; }
-$('newChat').onclick = () => { session = null; pendingGate = null; $('gateCard').hidden = true; chatBox.replaceChildren(); $('log').replaceChildren(); $('tokens').textContent = ''; };
+// Persist the agent session after every step so closing the panel (or a crash) does not lose the run.
+// Stored in chrome.storage.local next to the keys; key-shaped strings are redacted before saving.
+async function saveSession() {
+  if (!session) { await chrome.storage.local.remove('agent_session'); return; }
+  let snap = { v: 1, agent: sessionAgent, ep: $('ep').value, tokens: session.tokens, pendingGate, messages: session.messages.map(m => ({ role: m.role, content: m.role === 'system' ? '' : V.redact(m.content) })), log: [...$('log').children].slice(-200).map(li => li.textContent), at: new Date().toISOString() };
+  while (JSON.stringify(snap).length > 4e6 && snap.messages.length > 3) snap.messages.splice(1, 2); // keep under ~4 MB
+  await chrome.storage.local.set({ agent_session: snap });
+}
+async function restoreSession() {
+  const snap = (await chrome.storage.local.get('agent_session')).agent_session; if (!snap?.messages?.length) return;
+  try {
+    const sys = await loadSystemPrompt(gh(), snap.agent, $('withRef').checked);
+    session = { messages: [{ role: 'system', content: sys }, ...snap.messages.slice(1)], tokens: snap.tokens || { in: 0, out: 0 } };
+    sessionAgent = snap.agent; $('agentSel').value = snap.agent; if (snap.ep) $('ep').value = snap.ep;
+    for (const t of snap.log || []) $('log').append(el('li', {}, t));
+    bubble('sys', `Restored the ${AGENTS[snap.agent]?.name || ''} session from ${snap.at}. Send a message to continue.`);
+    if (snap.pendingGate) { pendingGate = snap.pendingGate; $('gateText').textContent = V.redact(`${pendingGate.stage.toUpperCase()}: ${pendingGate.summary}${pendingGate.ask ? '\n\n' + pendingGate.ask : ''}`); $('gateCard').hidden = false; }
+    showTokens();
+  } catch (e) { bubble('sys', `Saved session not restored: ${e.message}`); }
+}
+$('newChat').onclick = () => { session = null; chrome.storage.local.remove('agent_session'); pendingGate = null; $('gateCard').hidden = true; chatBox.replaceChildren(); $('log').replaceChildren(); $('tokens').textContent = ''; };
 $('agentSel').onchange = () => { if (session) bubble('sys', 'Agent changed: next message starts a new chat.'); session = null; };
 $('stop').onclick = () => abort?.abort();
 
@@ -146,7 +166,11 @@ async function fetchUrl(url) {
     });
     if (!ok) throw new Error(`owner did not allow ${u.hostname}`);
   }
-  const r = await fetch(url); const t = await r.text();
+  // 20 s timeout, 3 MB cap: a huge page must not freeze the panel or blow the context.
+  const r = await fetch(url, { signal: AbortSignal.timeout(20000), credentials: 'omit' });
+  if (!r.ok) throw new Error(`HTTP ${r.status} from ${u.hostname}`);
+  if (Number(r.headers.get('content-length') || 0) > 3e6) throw new Error('page larger than 3 MB: refused');
+  const t = (await r.text()).slice(0, 3e6);
   return (r.headers.get('content-type') || '').includes('html') ? t.replace(/<(script|style)[\s\S]*?<\/\1>/gi, '').replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ') : t;
 }
 
@@ -165,11 +189,12 @@ async function drive(userText) {
     const ctx = { gh: g, ep: ep(), looksSecret: V.looksSecret, fetchUrl, maxGpuCap: Number($('runGpu').value) || 120,
       confirmSpend: inputs => askConfirm(chatBox, `Agent wants to run episode.yml: ${JSON.stringify(inputs)}. This can spend GPU (cap ${inputs.max_gpu_seconds} s).`, 'Run it', 'Decline') };
     const llm = (msgs, o) => chat(prof, msgs, { ...o, maxTokens: 4096 });
-    const r = await runLoop(session, llm, ctx, { maxSteps: +$('maxSteps').value, tokenBudget: +$('tokBudget').value }, { onStep: s => { logStep(s); showTokens(); } }, abort.signal);
+    const r = await runLoop(session, llm, ctx, { maxSteps: +$('maxSteps').value, tokenBudget: +$('tokBudget').value }, { onStep: s => { logStep(s); showTokens(); saveSession().catch(() => {}); } }, abort.signal);
     totalTokens += session.tokens.in + session.tokens.out - before; showTokens();
     if (r.status === 'gate') { pendingGate = r; $('gateText').textContent = V.redact(`${r.stage.toUpperCase()}: ${r.summary}${r.ask ? '\n\n' + r.ask : ''}`); $('gateCard').hidden = false; $('gateApprove').focus(); }
     else if (r.status === 'done') bubble('sys', 'Agent finished this step.');
     else bubble('sys', `Stopped: ${r.reason || r.status}. Send a message to continue.`);
+    await saveSession().catch(() => {});
   } catch (e) { bubble('sys', `Error: ${e.message}`); }
   finally { setBusy(false); abort = null; }
 }
@@ -178,7 +203,7 @@ $('msg').addEventListener('keydown', e => { if (e.key === 'Enter' && (e.metaKey 
 function answerGate(ok) {
   if (!pendingGate) return; const notes = $('gateNotes').value.trim();
   if (!ok && !notes) { $('gateNotes').focus(); $('gateNotes').placeholder = 'Write what to change first'; return; }
-  const txt = gateReply(pendingGate.stage, ok, notes); pendingGate = null; $('gateCard').hidden = true; $('gateNotes').value = '';
+  const txt = gateReply(pendingGate.stage, ok, notes); pendingGate = null; saveSession().catch(() => {}); $('gateCard').hidden = true; $('gateNotes').value = '';
   bubble('user', txt); drive(txt);
 }
 $('gateApprove').onclick = () => answerGate(true);
@@ -269,6 +294,7 @@ $('runChapLoad').onclick = async () => {
 };
 $('runChap').onchange = () => { if ($('runChap').value) $('runLines').value = $('runChap').value; };
 async function dispatchRun(kind) {
+  try { ep(); } catch (e) { $('runList').prepend(el('li', {}, e.message)); $('ep').focus(); return; }
   const lines = $('runLines').value.trim();
   if (kind !== 'final' && !/^\d+(-\d+)?(,\d+(-\d+)?)*$/.test(lines)) { $('runLines').focus(); return; }
   const inputs = { ep: ep(), test_lines: kind === 'final' ? '' : lines, preview_seconds: kind === 'final' ? '0' : String($('runPrev').value || 0),
@@ -293,4 +319,5 @@ $('costLoad').onclick = async () => {
   } catch (e) { $('costOut').textContent = e.message; }
 };
 
+chrome.storage.local.setAccessLevel?.({ accessLevel: 'TRUSTED_CONTEXTS' }).catch(() => {});
 initVault();

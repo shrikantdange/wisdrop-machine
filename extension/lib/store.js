@@ -70,6 +70,7 @@ export async function setSecret(path, value) {
 
 export async function setPassphrase(pass) { // '' removes encryption
   if (!secrets) throw new Error('Vault locked');
+  if (pass && pass.length < 10) throw new Error('Passphrase: use at least 10 characters');
   passphrase = pass || null; await persist();
 }
 

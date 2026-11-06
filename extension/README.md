@@ -1,4 +1,4 @@
-# Wisdrop Studio (Chrome side panel) v1
+# Wisdrop Studio (Chrome side panel) v1.1
 
 A side panel that runs the 4 Wisdrop agents (`prompts/01-04`) with **any AI key**, drives the engine on **GitHub Actions + Modal**,
 and stops at every **owner gate** for Approve / Send back. Plain JS/HTML/CSS, Manifest V3, no build step, no remote code.
@@ -46,6 +46,9 @@ and stops at every **owner gate** for Approve / Send back. Plain JS/HTML/CSS, Ma
 - Host access is requested per provider at runtime; only `api.github.com` is granted at install.
 - No remote code; strict extension CSP. Insert-into-chat only types into the box you focused; it never clicks other sites' buttons.
 - Agents commit to `main` inside `episodes/<ep>/` with messages starting `studio:`; owner approvals stay PR merges (gates.yml).
+
+## v1.1 changes (2026-11-06 audit)
+Episode folder must be `episodes/<name>`; JSON actions with code fences in content parse; agent dispatch inputs validated and GPU capped; session saved and restored after panel close; retries with backoff on 429/5xx; fetch_url 20 s / 3 MB caps; storage locked to extension pages; passphrase >= 10 chars. Details: `docs/EXTENSION_AUDIT.md`.
 
 ## Tests (free)
 `cd extension && node test/run.js` - adapters' request building for every provider (mock fetch), vault crypto,

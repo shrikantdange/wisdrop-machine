@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Wisdrop Studio",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Side panel for the Wisdrop machine: run the 4 agents with any AI key, drive GitHub + Modal workflows, review and approve at owner gates.",
   "minimum_chrome_version": "116",
   "icons": {"16": "icons/16.png", "48": "icons/48.png", "128": "icons/128.png"},

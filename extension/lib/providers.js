@@ -118,9 +118,25 @@ async function readJson(res) {
   return j;
 }
 
+// Retry 429 / 5xx / 529 (overloaded) with exponential backoff + jitter, honouring Retry-After (capped 30 s).
+// A chat call has no side effects, so a retry is safe. Auth/4xx errors fail at once.
+export const RETRY = new Set([408, 409, 425, 429, 500, 502, 503, 504, 529]);
+export async function fetchRetry(fetchImpl, url, init = {}, { tries = 4, baseMs = 1000, sleep = ms => new Promise(r => setTimeout(r, ms)) } = {}) {
+  for (let i = 1; ; i++) {
+    let res;
+    try { res = await fetchImpl(url, init); }
+    catch (e) { if (init.signal?.aborted || i >= tries) throw e; await sleep(baseMs * 2 ** (i - 1)); continue; }
+    if (!RETRY.has(res.status) || i >= tries || init.signal?.aborted) return res;
+    // Anthropic monthly spend cap answers 429 with no retry-after: retrying cannot help, stop at once.
+    if (res.status === 429 && !res.headers?.get?.('retry-after') && res.clone) { try { if ((await res.clone().text()).includes('spend_limit')) return res; } catch {} }
+    const ra = Number(res.headers?.get?.('retry-after'));
+    await sleep(Math.min(30000, Number.isFinite(ra) && ra > 0 ? ra * 1000 : baseMs * 2 ** (i - 1) * (1 + Math.random() * 0.25)));
+  }
+}
+
 export async function chat(profile, messages, opts = {}, fetchImpl = globalThis.fetch) {
   const { url, init } = buildChatRequest(profile, messages, opts);
-  const res = await fetchImpl(url, { ...init, signal: opts.signal });
+  const res = await fetchRetry(fetchImpl, url, { ...init, signal: opts.signal }, opts.retry);
   return parseChatResponse(resolve(profile).kind, await readJson(res));
 }
 

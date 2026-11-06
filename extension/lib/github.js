@@ -15,7 +15,15 @@ export class GitHub {
     return h;
   }
   async req(path, init = {}, raw = false) {
-    const res = await this.f(path.startsWith('http') ? path : `${API}${path}`, { ...init, headers: this.headers(init.headers) });
+    const url = path.startsWith('http') ? path : `${API}${path}`, opts = { ...init, headers: this.headers(init.headers) };
+    // GET only: retry 429/5xx with backoff (never retry a write or a dispatch: it could run twice).
+    let res;
+    for (let i = 1; ; i++) {
+      res = await this.f(url, opts);
+      const m = (init.method || 'GET').toUpperCase();
+      if (m !== 'GET' || i >= 3 || !(res.status === 429 || res.status >= 500 || (res.status === 403 && res.headers?.get?.('x-ratelimit-remaining') === '0'))) break;
+      await new Promise(r => setTimeout(r, (this.retryMs ?? 1500) * i));
+    }
     if (!res.ok) { const t = await res.text(); throw new Error(`GitHub ${res.status}: ${t.slice(0, 200)}`); }
     if (raw) return res;
     return res.status === 204 ? null : res.json();

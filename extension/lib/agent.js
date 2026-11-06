@@ -30,8 +30,10 @@ Rules: one tool per reply; read before you write; free checks before spend; test
 When a TOOL RESULT arrives, continue. When OWNER: APPROVED or OWNER: SENT BACK arrives, act on it.`;
 
 export function extractAction(text) {
-  const fence = text.match(/```(?:json)?\s*([\s\S]*?)```/i);
-  const cand = fence ? fence[1] : text;
+  // Find the opening fence (if any) and scan braces over the rest of the text: a ``` inside a JSON string
+  // (markdown written by write_file) must not cut the action short.
+  const open = text.search(/```(?:json)?/i);
+  const cand = open >= 0 ? text.slice(open) : text;
   const s = cand.indexOf('{');
   if (s < 0) throw new Error('no JSON object');
   let depth = 0, inStr = false, esc = false;
@@ -50,12 +52,18 @@ export function extractAction(text) {
 
 export function epName(ep) { return ep.replace(/\/+$/, '').split('/').pop(); }
 
+export const EP_RX = /^episodes\/[A-Za-z0-9][\w.-]*$/;
+export function checkEp(ep) {
+  const e = String(ep || '').trim().replace(/\/+$/, '');
+  if (!EP_RX.test(e) || e.includes('..')) throw new Error(`episode folder must look like episodes/<name> (got "${e}")`);
+  return e;
+}
 export function checkWritePath(ep, path) {
   const p = String(path || '').replace(/^\/+/, '');
-  const root = ep.replace(/\/+$/, '') + '/';
+  const root = checkEp(ep) + '/';
   if (p.includes('..') || p.includes('\\')) throw new Error('path traversal refused');
   if (!p.startsWith(root)) throw new Error(`write refused: only inside ${root}`);
-  if (/(^|\/)state\.json$/.test(p)) throw new Error('write refused: state.json changes only through owner gate PRs');
+  if (/(^|\/)state\.json$/i.test(p)) throw new Error('write refused: state.json changes only through owner gate PRs');
   return p;
 }
 export function checkReadPath(path) {
@@ -63,6 +71,20 @@ export function checkReadPath(path) {
   if (p.includes('..')) throw new Error('path traversal refused');
   if (!READ_ROOTS.some(r => p === r || p.startsWith(r))) throw new Error(`read refused: allowed ${READ_ROOTS.join(', ')}`);
   return p;
+}
+
+// Clean + cap the agent's dispatch inputs: GPU seconds is a whole number within the owner's cap (never NaN/negative),
+// line lists are digits/ranges only. Whole-episode builds (empty test_lines) are refused from the agent: owner uses Run tab.
+const LINES_RX = /^\d+(-\d+)?(,\d+(-\d+)?)*$/;
+export function dispatchInputs(ep, args, capIn) {
+  const cap = Math.max(0, Math.floor(Number(capIn) || 120));
+  let gpu = Math.floor(Number(args.max_gpu_seconds));
+  if (!Number.isFinite(gpu) || gpu <= 0 || gpu > cap) gpu = cap;
+  const list = (v, name, need) => { const x = String(v ?? '').replace(/\s+/g, ''); if ((x || need) && !LINES_RX.test(x)) throw new Error(`${name} must look like 0-15 or 3,7,9-12`); return x; };
+  // redo_images = comma list of picture ids/names (not line numbers): letters, digits, _ . - only.
+  const names = v => { const x = String(v ?? '').replace(/\s+/g, ''); if (x && !/^[\w.-]+(,[\w.-]+)*$/.test(x)) throw new Error('redo_images must be a comma list of picture ids'); return x; };
+  const prev = Math.max(0, Math.min(600, Math.floor(Number(args.preview_seconds) || 0)));
+  return { ep, test_lines: list(args.test_lines, 'test_lines', true), preview_seconds: String(prev), redo_images: names(args.redo_images), redo_lines: list(args.redo_lines, 'redo_lines'), max_gpu_seconds: String(gpu) };
 }
 
 const cut = (s, n = 12000) => (s.length > n ? s.slice(0, n) + `\n…[cut ${s.length - n} chars]` : s);
@@ -80,8 +102,7 @@ export async function runTool(ctx, a) {
       return `written ${r.path} (commit ${String(r.commit).slice(0, 7)})`;
     }
     case 'dispatch_episode': {
-      const cap = ctx.maxGpuCap ?? 600;
-      const inputs = { ep, test_lines: String(args.test_lines || ''), preview_seconds: String(args.preview_seconds ?? '0'), redo_images: String(args.redo_images || ''), redo_lines: String(args.redo_lines || ''), max_gpu_seconds: String(Math.min(Number(args.max_gpu_seconds || cap), cap)) };
+      const inputs = dispatchInputs(checkEp(ep), args, ctx.maxGpuCap);
       if (ctx.confirmSpend && !(await ctx.confirmSpend(inputs))) return 'OWNER DECLINED the dispatch. Ask what to change, or continue without it.';
       await gh.dispatch('episode.yml', inputs);
       await new Promise(r => setTimeout(r, ctx.dispatchWaitMs ?? 4000));

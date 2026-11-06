@@ -2,7 +2,7 @@
 import assert from 'node:assert/strict';
 import * as P from '../lib/providers.js';
 import { encryptJson, decryptJson, redact, looksSecret } from '../lib/store.js';
-import { extractAction, checkWritePath, checkReadPath, runLoop } from '../lib/agent.js';
+import { extractAction, checkWritePath, checkReadPath, runLoop, dispatchInputs, checkEp } from '../lib/agent.js';
 import { GitHub } from '../lib/github.js';
 
 let n = 0; const t = async (name, fn) => { await fn(); n++; console.log('ok', name); };
@@ -92,5 +92,20 @@ await t('github client request building', async () => {
   assert.equal(calls[0].init.headers.Authorization, 'Bearer TOKEN');
   await g.putFile('episodes/x/a.md', 'é', 'm'); const put = calls.find(c => c.init.method === 'PUT'); assert.equal(JSON.parse(put.init.body).sha, 's1');
   await g.dispatch('episode.yml', { ep: 'episodes/x' }); const d = calls.find(c => c.init.method === 'POST'); assert.ok(d.url.endsWith('/actions/workflows/episode.yml/dispatches')); assert.equal(JSON.parse(d.init.body).ref, 'main');
+});
+await t('v1.1 fixes: fence in content, ep guard, dispatch caps, retry', async () => {
+  const a = extractAction('```json\n{"say":"w","tool":"write_file","args":{"path":"episodes/ep01/x.md","content":"# t\\n```py\\nprint(1)\\n```\\nend"}}\n```');
+  assert.ok(a.args.content.endsWith('end'));
+  assert.throws(() => checkWritePath('docs', 'docs/x.md'), /episodes/); assert.throws(() => checkWritePath('', 'AGENTS.md'), /episodes/);
+  assert.throws(() => checkWritePath('episodes/ep01', 'episodes/ep01/STATE.json'), /state/); assert.equal(checkEp('episodes/ep01-onecoin/'), 'episodes/ep01-onecoin');
+  assert.equal(dispatchInputs('episodes/e', { test_lines: '0-15', max_gpu_seconds: 'lots' }, 120).max_gpu_seconds, '120');
+  assert.equal(dispatchInputs('episodes/e', { test_lines: '0-15', max_gpu_seconds: -5 }, 120).max_gpu_seconds, '120');
+  assert.equal(dispatchInputs('episodes/e', { test_lines: '0-15', max_gpu_seconds: 9999 }, 120).max_gpu_seconds, '120');
+  assert.equal(dispatchInputs('episodes/e', { test_lines: '0-15', max_gpu_seconds: 60 }, 120).max_gpu_seconds, '60');
+  assert.throws(() => dispatchInputs('episodes/e', { test_lines: '' }, 120), /test_lines/); assert.equal(dispatchInputs('episodes/e', { test_lines: '0-3', redo_images: 'victor_stage, s12' }, 120).redo_images, 'victor_stage,s12'); assert.throws(() => dispatchInputs('episodes/e', { test_lines: '0-3', redo_images: 'a;b' }, 120)); assert.throws(() => dispatchInputs('episodes/e', { test_lines: '1;rm' }, 120));
+  let calls = 0; const f = async () => (++calls < 3 ? new Response('busy', { status: 529, headers: { 'retry-after': '0' } }) : new Response('{"choices":[{"message":{"content":"ok"}}],"usage":{}}', { status: 200 }));
+  assert.equal((await P.chat({ provider: 'openai', key: 'k' }, msgs, { retry: { baseMs: 1, sleep: async () => {} } }, f)).text, 'ok'); assert.equal(calls, 3);
+  let c2 = 0; const f401 = async () => { c2++; return new Response('{"error":"no"}', { status: 401 }); };
+  await assert.rejects(P.chat({ provider: 'openai', key: 'k' }, msgs, { retry: { sleep: async () => {} } }, f401)); assert.equal(c2, 1);
 });
 console.log(`\n${n} test groups passed`);
