@@ -55,3 +55,6 @@ shots.json -> `python machine/craft_check.py <ep>`, `python machine/motion_check
 ## Logs
 Every tool prints PLAN / OK / WAIT / FAIL / REVIEW / COST lines. FAIL stops the run before money is spent.
 REVIEW is for the owner and never blocks. Same error 3 times: stop, open issue `[blocked] <ep> <step>`.
+
+## Wisdrop Studio (side panel)
+Chrome extension in `extension/` runs the agent chain from the browser with any AI key and stops at owner gates. Install + security: `extension/README.md`.

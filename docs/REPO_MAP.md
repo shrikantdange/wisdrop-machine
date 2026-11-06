@@ -59,6 +59,7 @@ Outputs: artifact `<run_id>-review` (video.mp4, package/, cost.json, audio_qc.js
 brief.md, research.md (sources), beats.md, bible.md (continuity), chapters.md, scenes.md (new per DIRECTOR_PROMPT; ep01 predates them), cast.md, script.md, lines.json (id,text,preset,gap,visual,src), shots.json (music, shots[], counter, thumb_text, title_facts), hooks.md/json, titles.md, state.json, img_jobs.json, media/ (photos+credits.json), img/, vo/, qa/ (check outputs), package/, thumbs/ (designed thumbnails + phone mock + score.json).
 
 ## Other dirs
+- `extension/` - **Wisdrop Studio** Chrome side panel (MV3, plain JS): runs agents 1-4 with any AI key (universal box), GitHub/Modal runs, owner gates, review, cost. See `extension/README.md`; tests `node extension/test/run.js`.
 - `prompts/` - agent chain: 00_README (chain, hand-offs, gates), 01_research_writer, 02_director, 03_builder, 04_voice_finish; each fully self-contained (rules inlined with FM ids, schemas, ep01 worked examples, gates). PDFs: prompts/WISDROP_AGENT_*.pdf.
 - `schemas/chapters.schema.json` - chapters.json format (agent 2 -> 3, 4). `tools/chapter_lines.py <ep>` prints test_lines per chapter + checks counter/board/music chain.
 - `docs/` - DIRECTOR_PROMPT.md (system prompt for any AI: role, look, pipeline + file formats, chapter sync, self-review, when to ask owner), FAILURE_MODES.md (134 FM-* rules), OPERATOR_GUIDE (.pdf for owner), SHOTS.md (shot types + templates), EDITING_CRAFT.md, AI_MOTION_CRAFT.md, THUMBNAILS.md, PUBLISH_CHECKLIST.md, RETENTION.md, V3_PLAN.md, REPO_MAP.md.

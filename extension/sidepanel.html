@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Wisdrop Studio</title>
+<link rel="stylesheet" href="sidepanel.css">
+</head>
+<body>
+<header class="top">
+  <span class="brand">WISDROP</span><span class="sub">Studio</span>
+  <label class="ep">Episode <input id="ep" value="episodes/ep01-onecoin" aria-label="Episode folder" spellcheck="false"></label>
+</header>
+<div id="lockbar" class="lockbar" hidden>
+  <label for="unlockPass">Keys are locked.</label>
+  <input id="unlockPass" type="password" placeholder="Passphrase" autocomplete="current-password">
+  <button id="unlockBtn" class="btn primary">Unlock</button>
+</div>
+<nav class="tabs" role="tablist" aria-label="Studio panels">
+  <button role="tab" id="t-agents" aria-controls="p-agents" aria-selected="true">Agents</button>
+  <button role="tab" id="t-pipeline" aria-controls="p-pipeline" aria-selected="false">Pipeline</button>
+  <button role="tab" id="t-review" aria-controls="p-review" aria-selected="false">Review</button>
+  <button role="tab" id="t-run" aria-controls="p-run" aria-selected="false">Run</button>
+  <button role="tab" id="t-cost" aria-controls="p-cost" aria-selected="false">Cost</button>
+  <button role="tab" id="t-keys" aria-controls="p-keys" aria-selected="false">Keys</button>
+</nav>
+<main>
+<!-- AGENTS -->
+<section id="p-agents" role="tabpanel" aria-labelledby="t-agents">
+  <div class="row">
+    <label>Agent <select id="agentSel"></select></label>
+    <label>Model <select id="modelSel" aria-label="AI profile"></select></label>
+  </div>
+  <div class="row small">
+    <label><input type="checkbox" id="withRef"> Attach DIRECTOR_PROMPT + FAILURE_MODES</label>
+    <label>Max steps <input id="maxSteps" type="number" min="1" max="60" value="12" class="num"></label>
+    <label>Token budget <input id="tokBudget" type="number" min="2000" step="1000" value="60000" class="num"></label>
+  </div>
+  <div class="row small">
+    <button id="copyPrompt" class="btn ghost">Copy prompt</button>
+    <button id="insertPrompt" class="btn ghost">Insert prompt into page</button>
+    <button id="newChat" class="btn ghost">New chat</button>
+  </div>
+  <div id="chat" class="chat" aria-live="polite" aria-label="Conversation"></div>
+  <div id="gateCard" class="gate" hidden role="alertdialog" aria-labelledby="gateTitle">
+    <h3 id="gateTitle">Owner gate</h3>
+    <p id="gateText"></p>
+    <label for="gateNotes">Notes</label>
+    <textarea id="gateNotes" rows="3" placeholder="What to change (for Send back) or extra notes"></textarea>
+    <div class="row"><button id="gateApprove" class="btn primary">Approve</button><button id="gateBack" class="btn warn">Send back with notes</button></div>
+  </div>
+  <div class="composer">
+    <label for="msg" class="sr">Message to the agent</label>
+    <textarea id="msg" rows="3" placeholder="e.g. Direct episodes/ep01-onecoin."></textarea>
+    <div class="row"><button id="send" class="btn primary">Send</button><button id="stop" class="btn ghost" disabled>Stop</button><span id="tokens" class="muted"></span></div>
+  </div>
+  <details open><summary>Step log</summary><ol id="log" class="log" aria-live="polite"></ol></details>
+</section>
+<!-- PIPELINE -->
+<section id="p-pipeline" role="tabpanel" aria-labelledby="t-pipeline" hidden>
+  <div class="row"><button id="pipeLoad" class="btn">Refresh from repo</button><span id="pipeState" class="pill"></span></div>
+  <ol id="pipeList" class="stages"></ol>
+</section>
+<!-- REVIEW -->
+<section id="p-review" role="tabpanel" aria-labelledby="t-review" hidden>
+  <div class="row"><button id="revLoad" class="btn">Load last preview</button><span id="revSum" class="muted"></span></div>
+  <video id="revVideo" controls preload="none" hidden></video>
+  <h3>Voice lines</h3><div id="revVoice" class="voice"></div>
+  <h3>Facts and sources</h3><div id="revFacts" class="facts"></div>
+  <h3>Gate pull requests</h3><ul id="revPRs" class="prs"></ul>
+  <label for="revNotes">Notes for Send back</label><textarea id="revNotes" rows="2"></textarea>
+</section>
+<!-- RUN -->
+<section id="p-run" role="tabpanel" aria-labelledby="t-run" hidden>
+  <div class="row">
+    <label>Chapter <select id="runChap"><option value="">(load chapters)</option></select></label>
+    <label>Lines <input id="runLines" placeholder="0-15" class="mid"></label>
+    <button id="runChapLoad" class="btn ghost">Load chapters</button>
+  </div>
+  <div class="row">
+    <label>max_gpu_seconds <input id="runGpu" type="number" value="120" min="0" class="num"></label>
+    <label>preview_seconds <input id="runPrev" type="number" value="0" min="0" class="num"></label>
+  </div>
+  <div class="row"><label>redo_lines <input id="runRedoL" class="mid"></label><label>redo_images <input id="runRedoI" class="mid"></label></div>
+  <div class="row">
+    <button id="runVoice" class="btn">Voice chapter</button>
+    <button id="runRender" class="btn">Render chapter</button>
+    <button id="runFinal" class="btn warn">Build final</button>
+  </div>
+  <p class="muted small">All three call episode.yml. Voice is cached per line, so Render chapter re-uses voiced lines. Build final = whole episode, no test_lines.</p>
+  <div class="row"><button id="runRefresh" class="btn ghost">Refresh runs</button></div>
+  <ul id="runList" class="runs"></ul>
+</section>
+<!-- COST -->
+<section id="p-cost" role="tabpanel" aria-labelledby="t-cost" hidden>
+  <div class="row"><button id="costLoad" class="btn">Load cost.json (last test run)</button></div>
+  <div id="costOut"></div>
+  <p class="muted small">AI tokens this panel session: <span id="costTok">0</span></p>
+</section>
+<!-- KEYS -->
+<section id="p-keys" role="tabpanel" aria-labelledby="t-keys" hidden>
+  <h3>Universal AI box</h3>
+  <p class="muted small">Paste any AI key. Provider is detected from the key; otherwise set the base URL (any OpenAI-compatible API) and model.</p>
+  <label for="kKey">API key</label><input id="kKey" type="password" autocomplete="off" spellcheck="false" placeholder="sk-… / sk-ant-… / AIza… / gsk_… / sk-or-…">
+  <div class="row"><label>Provider <select id="kProv"></select></label><span id="kDetect" class="pill"></span></div>
+  <label for="kBase">Base URL</label><input id="kBase" spellcheck="false">
+  <label for="kModel">Model</label><input id="kModel" list="kModels" spellcheck="false"><datalist id="kModels"></datalist>
+  <label for="kLabel">Name this profile</label><input id="kLabel" placeholder="e.g. Claude main">
+  <div class="row"><button id="kFetch" class="btn ghost">Fetch models</button><button id="kTest" class="btn">Test connection</button><button id="kSave" class="btn primary">Save</button></div>
+  <p id="kMsg" class="muted" role="status"></p>
+  <ul id="kList" class="profiles"></ul>
+  <h3>GitHub</h3>
+  <p class="muted small">Fine-grained token, this repo only: Contents R/W, Actions R/W, Pull requests R/W, Metadata R. Modal keys stay as GitHub secrets.</p>
+  <label for="ghRepo">Repo</label><input id="ghRepo" value="shrikantdange/wisdrop-machine" spellcheck="false">
+  <label for="ghTok">Token</label><input id="ghTok" type="password" autocomplete="off" placeholder="github_pat_…">
+  <div class="row"><button id="ghTest" class="btn">Test</button><button id="ghSave" class="btn primary">Save</button></div>
+  <p id="ghMsg" class="muted" role="status"></p>
+  <h3>Lock</h3>
+  <label for="passSet">Passphrase (encrypts all keys with AES-GCM; empty = no encryption)</label>
+  <input id="passSet" type="password" autocomplete="new-password">
+  <div class="row"><button id="passSave" class="btn">Set passphrase</button><button id="forget" class="btn warn">Forget all keys</button></div>
+  <p class="muted small">Keys stay in this browser (chrome.storage.local). Never synced, logged or committed.</p>
+</section>
+</main>
+<script type="module" src="sidepanel.js"></script>
+</body>
+</html>
