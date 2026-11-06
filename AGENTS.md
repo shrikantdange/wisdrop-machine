@@ -21,6 +21,8 @@
 10. Pause 0.5 s after a question. No "let's get into it". Over 20 words = two pictures.
 11. When two rules conflict, the simpler option wins.
 12. v5: flat empty area <= 35 % of the frame (`machine/frame_fill.py`); captions = keywords, never repeat on-screen words; people only as faceless code silhouettes tagged ILLUSTRATION.
+13. Director brief: `docs/DIRECTOR_PROMPT.md` = the system prompt for any AI making an episode (stages, file formats, 1-2 min chapters, self-review, when to ask the owner).
+14. What can go wrong: `docs/FAILURE_MODES.md` = 134 FM-* rules (symptom, cause, prevention, check). Code-checkable ones: `python machine/fm_check.py <ep>` -> `<ep>/qa/fm.json`.
 Check: `python machine/motion_check.py <ep>` (before spend) and `--video <mp4>` (after render).
 
 Faceless YouTube channel "Money crimes behind the hype": one real financial fraud per episode, 5 parts,
@@ -47,7 +49,7 @@ You drive. The machine checks. The owner approves. You never skip a gate.
 ## The loop
 `python machine/wis.py new|status|check|advance` -> research.md -> cast.md + script.md + lines.json ->
 shots.json -> `python machine/craft_check.py <ep>`, `python machine/motion_check.py <ep>` and
-`python machine/score_script.py <ep> --hooks` must not FAIL -> owner script gate -> workflow **episode** (test, then full) -> FINAL REVIEW PR -> owner.
+`python machine/score_script.py <ep> --hooks` and `python machine/fm_check.py <ep>` must not FAIL -> owner script gate -> workflow **episode** (test, then full) -> FINAL REVIEW PR -> owner.
 
 ## Logs
 Every tool prints PLAN / OK / WAIT / FAIL / REVIEW / COST lines. FAIL stops the run before money is spent.

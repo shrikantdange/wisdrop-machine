@@ -1,0 +1,277 @@
+[
+ {
+  "id": "FM-R01",
+  "status": "REVIEW",
+  "msg": "unknown F-ids []; number-like lines without src [7, 8, 31, 36, 46, 61, 87, 118, 136]"
+ },
+ {
+  "id": "FM-R02",
+  "status": "OK",
+  "msg": "key rows with < 2 URLs: []"
+ },
+ {
+  "id": "FM-R12",
+  "status": "OK",
+  "msg": "key rows citing Wikipedia: []"
+ },
+ {
+  "id": "FM-W02",
+  "status": "OK",
+  "msg": "digits/symbols in text without say: []"
+ },
+ {
+  "id": "FM-W03",
+  "status": "OK",
+  "msg": "lines over 20 words: []"
+ },
+ {
+  "id": "FM-W04",
+  "status": "FAIL",
+  "msg": "questions with gap < 0.5 s: [46, 61, 128, 129]"
+ },
+ {
+  "id": "FM-W05",
+  "status": "OK",
+  "msg": "bare acronyms (TTS may read as a word): []"
+ },
+ {
+  "id": "FM-W08",
+  "status": "OK",
+  "msg": "banned openers: []"
+ },
+ {
+  "id": "FM-L15",
+  "status": "OK",
+  "msg": "investment-advice phrasing: []"
+ },
+ {
+  "id": "FM-P04",
+  "status": "REVIEW",
+  "msg": "thumbnail '$4B GONE' words not found early: ['gone'] (numbers may be spoken as words)"
+ },
+ {
+  "id": "FM-C05",
+  "status": "OK",
+  "msg": "music beds 6 vs chapter cards 4 (+cold open, +end)"
+ },
+ {
+  "id": "FM-C08",
+  "status": "OK",
+  "msg": "shots pointing at missing lines []; dup ids 0"
+ },
+ {
+  "id": "FM-X14",
+  "status": "OK",
+  "msg": "invalid json: []"
+ },
+ {
+  "id": "FM-X12",
+  "status": "OK",
+  "msg": "possible secrets in: []"
+ },
+ {
+  "id": "FM-K05",
+  "status": "TODO",
+  "msg": "no package/chapters.txt or description.txt yet"
+ },
+ {
+  "id": "FM-R04",
+  "status": "TODO",
+  "msg": "status-check date"
+ },
+ {
+  "id": "FM-R06",
+  "status": "TODO",
+  "msg": "recompute formulas"
+ },
+ {
+  "id": "FM-R07",
+  "status": "TODO",
+  "msg": "currency vs F-row"
+ },
+ {
+  "id": "FM-R08",
+  "status": "TODO",
+  "msg": "dates vs timeline"
+ },
+ {
+  "id": "FM-R10",
+  "status": "TODO",
+  "msg": "dead URLs (--net)"
+ },
+ {
+  "id": "FM-L01",
+  "status": "TODO",
+  "msg": "guilt words w/o attribution"
+ },
+ {
+  "id": "FM-L04",
+  "status": "TODO",
+  "msg": "stamp text vs banned list"
+ },
+ {
+  "id": "FM-P01",
+  "status": "TODO",
+  "msg": "template/music sameness vs last ep"
+ },
+ {
+  "id": "FM-P03",
+  "status": "TODO",
+  "msg": "AI disclosure flag"
+ },
+ {
+  "id": "FM-P06",
+  "status": "TODO",
+  "msg": "media without credits"
+ },
+ {
+  "id": "FM-P07",
+  "status": "TODO",
+  "msg": "TASL fields"
+ },
+ {
+  "id": "FM-S02",
+  "status": "TODO",
+  "msg": "twist near 40%"
+ },
+ {
+  "id": "FM-S03",
+  "status": "TODO",
+  "msg": "loops opened vs closed"
+ },
+ {
+  "id": "FM-S05",
+  "status": "TODO",
+  "msg": "named people <= 5"
+ },
+ {
+  "id": "FM-S06",
+  "status": "TODO",
+  "msg": "F-id overuse"
+ },
+ {
+  "id": "FM-S13",
+  "status": "TODO",
+  "msg": "runtime band"
+ },
+ {
+  "id": "FM-W01",
+  "status": "TODO",
+  "msg": "names without say"
+ },
+ {
+  "id": "FM-V02",
+  "status": "TODO",
+  "msg": "per-line LUFS spread"
+ },
+ {
+  "id": "FM-V04",
+  "status": "TODO",
+  "msg": "voice ref hash"
+ },
+ {
+  "id": "FM-V05",
+  "status": "TODO",
+  "msg": "wpm band"
+ },
+ {
+  "id": "FM-G02",
+  "status": "TODO",
+  "msg": "media reuse across chapters"
+ },
+ {
+  "id": "FM-G08",
+  "status": "TODO",
+  "msg": "recreation tags"
+ },
+ {
+  "id": "FM-G09",
+  "status": "TODO",
+  "msg": "ISO-3 + lat/lon"
+ },
+ {
+  "id": "FM-G10",
+  "status": "TODO",
+  "msg": "invented clock times"
+ },
+ {
+  "id": "FM-G15",
+  "status": "TODO",
+  "msg": "safe area"
+ },
+ {
+  "id": "FM-A04",
+  "status": "TODO",
+  "msg": "seam loudness"
+ },
+ {
+  "id": "FM-A07",
+  "status": "TODO",
+  "msg": "ambience across chapter card"
+ },
+ {
+  "id": "FM-A08",
+  "status": "TODO",
+  "msg": "silence holes"
+ },
+ {
+  "id": "FM-A09",
+  "status": "TODO",
+  "msg": "bed shorter than part"
+ },
+ {
+  "id": "FM-C01",
+  "status": "TODO",
+  "msg": "counter monotonic"
+ },
+ {
+  "id": "FM-C02",
+  "status": "TODO",
+  "msg": "colour change off chapter card"
+ },
+ {
+  "id": "FM-C03",
+  "status": "TODO",
+  "msg": "cast prompt stem"
+ },
+ {
+  "id": "FM-C04",
+  "status": "TODO",
+  "msg": "name/role label"
+ },
+ {
+  "id": "FM-X04",
+  "status": "TODO",
+  "msg": "render length"
+ },
+ {
+  "id": "FM-X05",
+  "status": "TODO",
+  "msg": "A/V drift"
+ },
+ {
+  "id": "FM-X06",
+  "status": "TODO",
+  "msg": "format"
+ },
+ {
+  "id": "FM-X07",
+  "status": "TODO",
+  "msg": "glyph coverage"
+ },
+ {
+  "id": "FM-X13",
+  "status": "TODO",
+  "msg": "big tracked files"
+ },
+ {
+  "id": "FM-K03",
+  "status": "TODO",
+  "msg": "title/thumb overlap"
+ },
+ {
+  "id": "FM-K04",
+  "status": "TODO",
+  "msg": "description completeness"
+ }
+]

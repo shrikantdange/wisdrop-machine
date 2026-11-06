@@ -24,6 +24,7 @@ Outputs: artifact `<run_id>-review` (video.mp4, package/, cost.json, audio_qc.js
 - `wis.py` - driver: `new|status|check|advance|reach <ep> <state>`; state machine in `<ep>/state.json`.
 - `checker.py` - playbook/rules.yaml as code: `checker.py <ep> <target_state>` -> `<ep>/qa/check_*.json`.
 - `craft_check.py` - free editing checks (P1 dead frames, H1 hook, P4 repeats, sources, caption band, v4 fx rules) -> `<ep>/qa/craft.json`.
+- `fm_check.py` - FM-* checks from docs/FAILURE_MODES.md (sources, TTS text, questions, music beds, line refs, secrets, JSON, chapters); TODO stubs for the rest -> `<ep>/qa/fm.json`.
 - `motion_check.py` - AMC-* motion rules: seeds lint, theme contrast, spec; `--video <mp4>` frame checks -> `<ep>/qa/motion.json`.
 - `score_script.py` - hook timing/pace/jargon; `--hooks` scores hooks.md variants.
 - `plan_images.py` - shots.json + library -> `<ep>/img_jobs.json`.
@@ -55,10 +56,10 @@ Outputs: artifact `<run_id>-review` (video.mp4, package/, cost.json, audio_qc.js
 - `master.py` - loudness master. `vo_runner.py`, `run_vo.sh`, `whisper_words.py` - voice takes + word timing.
 
 ## episodes/<ep>/ (one folder per episode)
-research.md (sources), cast.md, script.md, lines.json (id,text,preset,gap,visual,src), shots.json (music, shots[], counter, thumb_text, title_facts), hooks.md/json, titles.md, state.json, img_jobs.json, media/ (photos+credits.json), img/, vo/, qa/ (check outputs), package/, thumbs/ (designed thumbnails + phone mock + score.json).
+brief.md, research.md (sources), beats.md, bible.md (continuity), chapters.md, scenes.md (new per DIRECTOR_PROMPT; ep01 predates them), cast.md, script.md, lines.json (id,text,preset,gap,visual,src), shots.json (music, shots[], counter, thumb_text, title_facts), hooks.md/json, titles.md, state.json, img_jobs.json, media/ (photos+credits.json), img/, vo/, qa/ (check outputs), package/, thumbs/ (designed thumbnails + phone mock + score.json).
 
 ## Other dirs
-- `docs/` - OPERATOR_GUIDE (.pdf for owner), SHOTS.md (shot types + templates), EDITING_CRAFT.md, AI_MOTION_CRAFT.md, THUMBNAILS.md, PUBLISH_CHECKLIST.md, RETENTION.md, V3_PLAN.md, REPO_MAP.md.
+- `docs/` - DIRECTOR_PROMPT.md (system prompt for any AI: role, look, pipeline + file formats, chapter sync, self-review, when to ask owner), FAILURE_MODES.md (134 FM-* rules), OPERATOR_GUIDE (.pdf for owner), SHOTS.md (shot types + templates), EDITING_CRAFT.md, AI_MOTION_CRAFT.md, THUMBNAILS.md, PUBLISH_CHECKLIST.md, RETENTION.md, V3_PLAN.md, REPO_MAP.md.
 - `playbook/` - rules.yaml (checker), WISDROP_PLAYBOOK.md (creative), WISDROP_AI_INSTRUCTIONS.md.
 - `library/` - library.json (cast, sets, look "v3"), LIBRARY.md.
 - `kit/` - fonts (Anton, DejaVu), music (+ATTRIBUTION), sfx (synth, +ATTRIBUTION), voice ref (never change), style_prompt.txt, style_ref/, vectors/.
